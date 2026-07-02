@@ -16,6 +16,7 @@ import LoanCalculator from './components/LoanCalculator';
 import LeadDashboard from './components/LeadDashboard';
 import SEOManager from './components/SEOManager';
 import ProductDetails from './components/ProductDetails';
+import PriceListSection from './components/PriceListSection';
 
 export default function App() {
   const [language, setLanguage] = useState<Language>('vi');
@@ -39,6 +40,9 @@ export default function App() {
   const [bookingType, setBookingType] = useState<'quote' | 'test-drive' | 'installment' | 'general'>('quote');
   const [bookingVehicle, setBookingVehicle] = useState('');
   const [isAdminOpen, setIsAdminOpen] = useState(false);
+  const [isAdminUnlocked, setIsAdminUnlocked] = useState<boolean>(() => {
+    return localStorage.getItem('admin_logged_in') === 'true';
+  });
 
   // Form states
   const [fullName, setFullName] = useState('');
@@ -301,10 +305,10 @@ export default function App() {
             </div>
             <div className="flex flex-col">
               <div className="flex items-center space-x-1.5">
-                <span className="font-extrabold text-sm tracking-wider uppercase bg-clip-text text-transparent bg-gradient-to-r from-[#C8102E] to-red-500">
+                <span className="font-extrabold text-sm tracking-wider uppercase bg-clip-text text-transparent bg-gradient-to-r from-[#D6001C] to-red-500">
                   KIM LONG
                 </span>
-                <span className="text-[#D6B25E] font-black text-sm tracking-widest uppercase font-poppins">
+                <span className="text-[#C9A227] font-black text-sm tracking-widest uppercase font-poppins">
                   TI TOÀN
                 </span>
               </div>
@@ -318,6 +322,7 @@ export default function App() {
           <nav className={`hidden lg:flex items-center space-x-7 text-xs uppercase tracking-widest font-bold ${isDarkMode ? 'text-neutral-400' : 'text-neutral-600'}`}>
             <a href="#intro" className="hover:text-[#C8102E] transition-colors">{isVi ? 'Giới thiệu' : 'About'}</a>
             <a href="#products" className="hover:text-[#C8102E] transition-colors">{isVi ? 'Sản phẩm' : 'Vehicles'}</a>
+            <a href="#pricing" className="hover:text-[#C8102E] transition-colors">{isVi ? 'Bảng giá' : 'Pricing'}</a>
             <a href="#benefits" className="hover:text-[#C8102E] transition-colors">{isVi ? 'Ưu điểm' : 'Benefits'}</a>
             <a href="#process" className="hover:text-[#C8102E] transition-colors">{isVi ? 'Quy trình' : 'Process'}</a>
             <a href="#reviews" className="hover:text-[#C8102E] transition-colors">{isVi ? 'Đánh giá' : 'Reviews'}</a>
@@ -360,6 +365,7 @@ export default function App() {
             <div className="grid grid-cols-2 gap-3 text-xs uppercase tracking-widest font-bold text-neutral-500">
               <a href="#intro" onClick={() => setMobileMenuOpen(false)} className="p-2 hover:text-[#C8102E]">{isVi ? 'Giới thiệu' : 'About'}</a>
               <a href="#products" onClick={() => setMobileMenuOpen(false)} className="p-2 hover:text-[#C8102E]">{isVi ? 'Sản phẩm' : 'Vehicles'}</a>
+              <a href="#pricing" onClick={() => setMobileMenuOpen(false)} className="p-2 hover:text-[#C8102E]">{isVi ? 'Bảng giá' : 'Pricing'}</a>
               <a href="#benefits" onClick={() => setMobileMenuOpen(false)} className="p-2 hover:text-[#C8102E]">{isVi ? 'Lợi ích' : 'Benefits'}</a>
               <a href="#process" onClick={() => setMobileMenuOpen(false)} className="p-2 hover:text-[#C8102E]">{isVi ? 'Quy trình' : 'Process'}</a>
               <a href="#reviews" onClick={() => setMobileMenuOpen(false)} className="p-2 hover:text-[#C8102E]">{isVi ? 'Đánh giá' : 'Reviews'}</a>
@@ -505,7 +511,7 @@ export default function App() {
               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
               
               <div className="absolute bottom-6 left-6 right-6 text-center bg-black/60 backdrop-blur-md border border-neutral-800 py-3 rounded-2xl">
-                <p className="text-[#D6B25E] font-poppins font-bold text-lg tracking-wider uppercase">NGUYỄN QUỐC TOÀN</p>
+                <p className="text-[#C9A227] font-poppins font-bold text-lg tracking-wider uppercase">NGUYỄN QUỐC TOÀN</p>
                 <p className="text-[9px] font-mono text-neutral-300 mt-1 uppercase tracking-widest">
                   {isVi ? 'Đại Diện Thương Mại Xuất Sắc' : 'Senior Commercial Agent'}
                 </p>
@@ -516,7 +522,7 @@ export default function App() {
           {/* Biography and commitments */}
           <div className="lg:col-span-7 space-y-8">
             <div className="space-y-2">
-              <span className="text-[#C8102E] text-xs font-mono uppercase tracking-widest font-black block">
+              <span className="text-[#D6001C] text-xs font-mono uppercase tracking-widest font-black block">
                 {isVi ? 'Chân dung thương hiệu' : 'Personal Brand Portrait'}
               </span>
               <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight font-poppins uppercase leading-tight">
@@ -708,6 +714,15 @@ export default function App() {
 
         </div>
       </section>
+
+      {/* Pricing Matrix Section */}
+      <PriceListSection
+        language={language}
+        isDarkMode={isDarkMode}
+        isAdminUnlocked={isAdminUnlocked}
+        onOpenBooking={openBookingModal}
+        onOpenAdminLogin={() => setIsAdminOpen(true)}
+      />
 
       {/* 6. Product Details Drawer Overlay */}
       {selectedProductId && activeProduct && (
@@ -1759,7 +1774,11 @@ export default function App() {
 
       {/* Gated Administrative Sales Dashboard Modal */}
       {isAdminOpen && (
-        <LeadDashboard language={language} onClose={() => setIsAdminOpen(false)} />
+        <LeadDashboard 
+          language={language} 
+          onClose={() => setIsAdminOpen(false)} 
+          onAuthSuccess={() => setIsAdminUnlocked(true)}
+        />
       )}
 
     </div>

@@ -5,9 +5,10 @@ import { Language, Lead } from '../types';
 interface LeadDashboardProps {
   language: Language;
   onClose?: () => void;
+  onAuthSuccess?: () => void;
 }
 
-export default function LeadDashboard({ language, onClose }: LeadDashboardProps) {
+export default function LeadDashboard({ language, onClose, onAuthSuccess }: LeadDashboardProps) {
   const isVi = language === 'vi';
   const [pin, setPin] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -44,6 +45,8 @@ export default function LeadDashboard({ language, onClose }: LeadDashboardProps)
     e.preventDefault();
     if (pin === correctPin || pin.toLowerCase() === 'admin') {
       setIsAuthenticated(true);
+      localStorage.setItem('admin_logged_in', 'true');
+      if (onAuthSuccess) onAuthSuccess();
       setError('');
     } else {
       setError(isVi ? 'Mã pin bảo mật không chính xác.' : 'Invalid security PIN.');
