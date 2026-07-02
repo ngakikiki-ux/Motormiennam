@@ -137,7 +137,7 @@ app.post('/api/chat', async (req, res) => {
       5. Xe đầu kéo: KIM LONG Prime-T (sức kéo 40 tấn, máy Weichai Euro 5 siêu khoẻ, giá từ 1.850 triệu VNĐ).
       6. Minibus & Van:
          - KIM LONG X9 VAN: Bản Van 2026 tải trọng 950kg chạy phố 24/7, giá niêm yết 530 triệu VNĐ.
-         - KIM LONG X9 (16 Chỗ): Xe khách 16 chỗ thế hệ mới 2026, động cơ DK5E tiết kiệm dầu, giá công bố 719 triệu VNĐ (giá bán tối thiểu hỗ trợ đại lý là 699 triệu VNĐ).
+         - KIM LONG X9 (16 Chỗ): Xe khách 16 chỗ thế hệ mới 2026, động cơ DK5E tiết kiệm dầu, giá công bố 719 triệu VNĐ.
       7. Xe bus & Giường nằm cao cấp (9m2 & 12m):
          - KIM LONG 99 N29 / 29 N35 (29 ghế ngồi cao cấp): Giá niêm yết từ 1.990 triệu đến 2.010 triệu VNĐ.
          - KIM LONG 99 N47 (47 ghế ngồi): Giá từ 2.610 triệu đến 2.960 triệu VNĐ.

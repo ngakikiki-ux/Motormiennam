@@ -13,12 +13,6 @@ export interface VehiclePriceItem {
   dongCoQuyCach: string;
   namSx: number;
   giaCongBo: number | string;
-  giaToiThieu: number | string;
-  khuyenMai: number | string;
-  hoaHongQuanLy: number | string;
-  hoaHongTvbh: number | string;
-  thuongNongQuanLy: number | string;
-  thuongNongTvbh: number | string;
   ghiChu: string;
 }
 
@@ -41,9 +35,8 @@ export default function PriceListSection({
   const [activeFilter, setActiveFilter] = useState<'all' | 'bus-ghe' | 'bus-giuong' | 'tai'>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [showNotification, setShowNotification] = useState<string | null>(null);
-  const [showPublicOnly, setShowPublicOnly] = useState<boolean>(true); // User toggle to hide/show partner columns when authorized
 
-  // Complete data parsed from PDF
+  // Complete data parsed from PDF (Only published price / giaCongBo)
   const pricingData: VehiclePriceItem[] = [
     // BUS GHẾ
     {
@@ -54,12 +47,6 @@ export default function PriceListSection({
       dongCoQuyCach: 'DK5E',
       namSx: 2026,
       giaCongBo: 719000000,
-      giaToiThieu: 699000000,
-      khuyenMai: 'x',
-      hoaHongQuanLy: 'x',
-      hoaHongTvbh: '4.500.000 (nhận từ nhà máy)',
-      thuongNongQuanLy: 5000000,
-      thuongNongTvbh: 'x',
       ghiChu: ''
     },
     {
@@ -70,12 +57,6 @@ export default function PriceListSection({
       dongCoQuyCach: 'Yuchai/Weichai',
       namSx: 2026,
       giaCongBo: 3440000000,
-      giaToiThieu: 3410000000,
-      khuyenMai: 'x',
-      hoaHongQuanLy: 'x',
-      hoaHongTvbh: '18.000.000 (nhận từ nhà máy)',
-      thuongNongQuanLy: 'x',
-      thuongNongTvbh: 'x',
       ghiChu: ''
     },
     {
@@ -86,12 +67,6 @@ export default function PriceListSection({
       dongCoQuyCach: 'Yuchai/Weichai',
       namSx: 2026,
       giaCongBo: 2960000000,
-      giaToiThieu: 2930000000,
-      khuyenMai: 'x',
-      hoaHongQuanLy: 'x',
-      hoaHongTvbh: '18.000.000 (nhận từ nhà máy)',
-      thuongNongQuanLy: 'x',
-      thuongNongTvbh: 'x',
       ghiChu: ''
     },
     {
@@ -102,12 +77,6 @@ export default function PriceListSection({
       dongCoQuyCach: 'Yuchai',
       namSx: 2026,
       giaCongBo: 1990000000,
-      giaToiThieu: 1990000000,
-      khuyenMai: 2000000,
-      hoaHongQuanLy: 2000000,
-      hoaHongTvbh: 5000000,
-      thuongNongQuanLy: 'x',
-      thuongNongTvbh: 'x',
       ghiChu: 'Không có phiên bản đưa đón'
     },
     {
@@ -118,12 +87,6 @@ export default function PriceListSection({
       dongCoQuyCach: 'Yuchai',
       namSx: 2026,
       giaCongBo: 2010000000,
-      giaToiThieu: 2010000000,
-      khuyenMai: 2000000,
-      hoaHongQuanLy: 2000000,
-      hoaHongTvbh: 5000000,
-      thuongNongQuanLy: 'x',
-      thuongNongTvbh: 'x',
       ghiChu: 'Không có phiên bản đưa đón'
     },
     {
@@ -134,12 +97,6 @@ export default function PriceListSection({
       dongCoQuyCach: 'Yuchai',
       namSx: 2026,
       giaCongBo: 'liên hệ PMH',
-      giaToiThieu: 'liên hệ PMH',
-      khuyenMai: 'x',
-      hoaHongQuanLy: 'liên hệ PMH',
-      hoaHongTvbh: 'liên hệ PMH',
-      thuongNongQuanLy: 'x',
-      thuongNongTvbh: 'x',
       ghiChu: 'Không có phiên bản đưa đón'
     },
     {
@@ -150,12 +107,6 @@ export default function PriceListSection({
       dongCoQuyCach: 'Yuchai/Weichai',
       namSx: 2026,
       giaCongBo: 2960000000,
-      giaToiThieu: 2930000000,
-      khuyenMai: 'x',
-      hoaHongQuanLy: 'x',
-      hoaHongTvbh: '18.000.000 (nhận từ nhà máy)',
-      thuongNongQuanLy: 'x',
-      thuongNongTvbh: 'x',
       ghiChu: ''
     },
     {
@@ -166,12 +117,6 @@ export default function PriceListSection({
       dongCoQuyCach: 'Yuchai/Weichai',
       namSx: 2026,
       giaCongBo: 2610000000,
-      giaToiThieu: 2580000000,
-      khuyenMai: 'x',
-      hoaHongQuanLy: 'x',
-      hoaHongTvbh: '18.000.000 (nhận từ nhà máy)',
-      thuongNongQuanLy: 'x',
-      thuongNongTvbh: 'x',
       ghiChu: ''
     },
 
@@ -184,12 +129,6 @@ export default function PriceListSection({
       dongCoQuyCach: 'Yuchai/Weichai',
       namSx: 2026,
       giaCongBo: 3739000000,
-      giaToiThieu: 3709000000,
-      khuyenMai: 'x',
-      hoaHongQuanLy: 'x',
-      hoaHongTvbh: '18.000.000 (nhận từ nhà máy)',
-      thuongNongQuanLy: 'x',
-      thuongNongTvbh: 'x',
       ghiChu: ''
     },
     {
@@ -200,12 +139,6 @@ export default function PriceListSection({
       dongCoQuyCach: 'Yuchai/Weichai',
       namSx: 2026,
       giaCongBo: 3609000000,
-      giaToiThieu: 3579000000,
-      khuyenMai: 'x',
-      hoaHongQuanLy: 'x',
-      hoaHongTvbh: '18.000.000 (nhận từ nhà máy)',
-      thuongNongQuanLy: 'x',
-      thuongNongTvbh: 'x',
       ghiChu: 'Cắt giảm LCD, đèn tam cấp, đèn nội thất khoang giường'
     },
     {
@@ -216,12 +149,6 @@ export default function PriceListSection({
       dongCoQuyCach: 'Yuchai/Weichai',
       namSx: 2026,
       giaCongBo: 3839000000,
-      giaToiThieu: 3809000000,
-      khuyenMai: 'x',
-      hoaHongQuanLy: 'x',
-      hoaHongTvbh: '18.000.000 (nhận từ nhà máy)',
-      thuongNongQuanLy: 'x',
-      thuongNongTvbh: 'x',
       ghiChu: ''
     },
     {
@@ -232,12 +159,6 @@ export default function PriceListSection({
       dongCoQuyCach: 'Yuchai/Weichai',
       namSx: 2026,
       giaCongBo: 3709000000,
-      giaToiThieu: 3679000000,
-      khuyenMai: 'x',
-      hoaHongQuanLy: 'x',
-      hoaHongTvbh: '18.000.000 (nhận từ nhà máy)',
-      thuongNongQuanLy: 'x',
-      thuongNongTvbh: 'x',
       ghiChu: 'Cắt giảm LCD, đèn tam cấp, đèn nội thất khoang giường'
     },
     {
@@ -248,12 +169,6 @@ export default function PriceListSection({
       dongCoQuyCach: 'Yuchai/Weichai',
       namSx: 2026,
       giaCongBo: 3989000000,
-      giaToiThieu: 3959000000,
-      khuyenMai: 'x',
-      hoaHongQuanLy: 'x',
-      hoaHongTvbh: '18.000.000 (nhận từ nhà máy)',
-      thuongNongQuanLy: 'x',
-      thuongNongTvbh: 'x',
       ghiChu: ''
     },
     {
@@ -264,12 +179,6 @@ export default function PriceListSection({
       dongCoQuyCach: 'Yuchai',
       namSx: 2026,
       giaCongBo: 3809000000,
-      giaToiThieu: 3779000000,
-      khuyenMai: 'x',
-      hoaHongQuanLy: 'x',
-      hoaHongTvbh: '18.000.000 (nhận từ nhà máy)',
-      thuongNongQuanLy: 'x',
-      thuongNongTvbh: 'x',
       ghiChu: 'Cắt giảm LCD, đèn tam cấp, đèn nội thất khoang giường'
     },
     {
@@ -280,12 +189,6 @@ export default function PriceListSection({
       dongCoQuyCach: 'Yuchai/Weichai',
       namSx: 2026,
       giaCongBo: 4039000000,
-      giaToiThieu: 4009000000,
-      khuyenMai: 'x',
-      hoaHongQuanLy: 'x',
-      hoaHongTvbh: '18.000.000 (nhận từ nhà máy)',
-      thuongNongQuanLy: 'x',
-      thuongNongTvbh: 'x',
       ghiChu: ''
     },
     {
@@ -296,12 +199,6 @@ export default function PriceListSection({
       dongCoQuyCach: 'Yuchai/Weichai',
       namSx: 2026,
       giaCongBo: 3859000000,
-      giaToiThieu: 3829000000,
-      khuyenMai: 'x',
-      hoaHongQuanLy: 'x',
-      hoaHongTvbh: '18.000.000 (nhận từ nhà máy)',
-      thuongNongQuanLy: 'x',
-      thuongNongTvbh: 'x',
       ghiChu: 'Cắt giảm LCD, đèn tam cấp, đèn nội thất khoang giường'
     },
 
@@ -314,12 +211,6 @@ export default function PriceListSection({
       dongCoQuyCach: '-',
       namSx: 2026,
       giaCongBo: 480000000,
-      giaToiThieu: 480000000,
-      khuyenMai: 7000000,
-      hoaHongQuanLy: 1000000,
-      hoaHongTvbh: 4000000,
-      thuongNongQuanLy: 'x',
-      thuongNongTvbh: 'x',
       ghiChu: ''
     },
     {
@@ -330,12 +221,6 @@ export default function PriceListSection({
       dongCoQuyCach: '-',
       namSx: 2026,
       giaCongBo: 530000000,
-      giaToiThieu: 530000000,
-      khuyenMai: 1000000,
-      hoaHongQuanLy: 1000000,
-      hoaHongTvbh: 4000000,
-      thuongNongQuanLy: 'x',
-      thuongNongTvbh: 'x',
       ghiChu: ''
     },
     {
@@ -346,12 +231,6 @@ export default function PriceListSection({
       dongCoQuyCach: '-',
       namSx: 2026,
       giaCongBo: 336000000,
-      giaToiThieu: 336000000,
-      khuyenMai: 1000000,
-      hoaHongQuanLy: 1000000,
-      hoaHongTvbh: 4000000,
-      thuongNongQuanLy: 'x',
-      thuongNongTvbh: 'x',
       ghiChu: ''
     },
     {
@@ -362,12 +241,6 @@ export default function PriceListSection({
       dongCoQuyCach: 'Tôn đen',
       namSx: 2026,
       giaCongBo: 352000000,
-      giaToiThieu: 352000000,
-      khuyenMai: 1000000,
-      hoaHongQuanLy: 1000000,
-      hoaHongTvbh: 4000000,
-      thuongNongQuanLy: 'x',
-      thuongNongTvbh: 'x',
       ghiChu: ''
     },
     {
@@ -378,12 +251,6 @@ export default function PriceListSection({
       dongCoQuyCach: 'Inox 430',
       namSx: 2026,
       giaCongBo: 377000000,
-      giaToiThieu: 377000000,
-      khuyenMai: 1000000,
-      hoaHongQuanLy: 1000000,
-      hoaHongTvbh: 4000000,
-      thuongNongQuanLy: 'x',
-      thuongNongTvbh: 'x',
       ghiChu: ''
     },
     {
@@ -394,12 +261,6 @@ export default function PriceListSection({
       dongCoQuyCach: 'Inox 430',
       namSx: 2026,
       giaCongBo: 377000000,
-      giaToiThieu: 377000000,
-      khuyenMai: 1000000,
-      hoaHongQuanLy: 1000000,
-      hoaHongTvbh: 4000000,
-      thuongNongQuanLy: 'x',
-      thuongNongTvbh: 'x',
       ghiChu: ''
     },
     {
@@ -410,12 +271,6 @@ export default function PriceListSection({
       dongCoQuyCach: 'Bửng tôn đen, vách Inox 430',
       namSx: 2026,
       giaCongBo: 369000000,
-      giaToiThieu: 369000000,
-      khuyenMai: 1000000,
-      hoaHongQuanLy: 1000000,
-      hoaHongTvbh: 4000000,
-      thuongNongQuanLy: 'x',
-      thuongNongTvbh: 'x',
       ghiChu: ''
     },
     {
@@ -426,12 +281,6 @@ export default function PriceListSection({
       dongCoQuyCach: 'Bửng tôn đen, vách Inox 430',
       namSx: 2026,
       giaCongBo: 373000000,
-      giaToiThieu: 373000000,
-      khuyenMai: 1000000,
-      hoaHongQuanLy: 1000000,
-      hoaHongTvbh: 4000000,
-      thuongNongQuanLy: 'x',
-      thuongNongTvbh: 'x',
       ghiChu: ''
     },
     {
@@ -442,12 +291,6 @@ export default function PriceListSection({
       dongCoQuyCach: '-',
       namSx: 2026,
       giaCongBo: 389000000,
-      giaToiThieu: 389000000,
-      khuyenMai: 1000000,
-      hoaHongQuanLy: 1000000,
-      hoaHongTvbh: 4000000,
-      thuongNongQuanLy: 'x',
-      thuongNongTvbh: 'x',
       ghiChu: ''
     },
     {
@@ -458,12 +301,6 @@ export default function PriceListSection({
       dongCoQuyCach: 'Tôn đen',
       namSx: 2026,
       giaCongBo: 406000000,
-      giaToiThieu: 406000000,
-      khuyenMai: 1000000,
-      hoaHongQuanLy: 1000000,
-      hoaHongTvbh: 4000000,
-      thuongNongQuanLy: 'x',
-      thuongNongTvbh: 'x',
       ghiChu: ''
     },
     {
@@ -474,12 +311,6 @@ export default function PriceListSection({
       dongCoQuyCach: 'Inox 430',
       namSx: 2026,
       giaCongBo: 431500000,
-      giaToiThieu: 431500000,
-      khuyenMai: 1000000,
-      hoaHongQuanLy: 1000000,
-      hoaHongTvbh: 4000000,
-      thuongNongQuanLy: 'x',
-      thuongNongTvbh: 'x',
       ghiChu: ''
     },
     {
@@ -490,12 +321,6 @@ export default function PriceListSection({
       dongCoQuyCach: 'Inox 430',
       namSx: 2026,
       giaCongBo: 431500000,
-      giaToiThieu: 431500000,
-      khuyenMai: 1000000,
-      hoaHongQuanLy: 1000000,
-      hoaHongTvbh: 4000000,
-      thuongNongQuanLy: 'x',
-      thuongNongTvbh: 'x',
       ghiChu: ''
     },
     {
@@ -506,12 +331,6 @@ export default function PriceListSection({
       dongCoQuyCach: 'Bửng tôn đen, vách Inox 430',
       namSx: 2026,
       giaCongBo: 424000000,
-      giaToiThieu: 424000000,
-      khuyenMai: 1000000,
-      hoaHongQuanLy: 1000000,
-      hoaHongTvbh: 4000000,
-      thuongNongQuanLy: 'x',
-      thuongNongTvbh: 'x',
       ghiChu: ''
     },
     {
@@ -522,32 +341,9 @@ export default function PriceListSection({
       dongCoQuyCach: 'Bửng tôn đen, vách Inox 430',
       namSx: 2026,
       giaCongBo: 429000000,
-      giaToiThieu: 429000000,
-      khuyenMai: 1000000,
-      hoaHongQuanLy: 1000000,
-      hoaHongTvbh: 4000000,
-      thuongNongQuanLy: 'x',
-      thuongNongTvbh: 'x',
       ghiChu: ''
     }
   ];
-
-  // Format helper for numbers with localized dots
-  const formatValue = (val: number | string, isSensitive: boolean = false) => {
-    if (isSensitive && !isAdminUnlocked) {
-      return (
-        <span className="inline-flex items-center gap-1 text-neutral-400 dark:text-neutral-600 italic font-medium bg-neutral-100 dark:bg-neutral-800/50 px-1.5 py-0.5 rounded text-[10px]">
-          <Lock size={10} className="shrink-0" />
-          {isVi ? 'Bảo mật' : 'Locked'}
-        </span>
-      );
-    }
-    if (typeof val === 'string') {
-      if (val === 'x') return <span className="text-neutral-400">-</span>;
-      return <span className="font-sans text-[11px] font-medium text-neutral-700 dark:text-neutral-300">{val}</span>;
-    }
-    return new Intl.NumberFormat('vi-VN').format(val);
-  };
 
   // Filter and search
   const filteredData = pricingData.filter(item => {

@@ -23,6 +23,7 @@ export default function App() {
   const [activeCategory, setActiveCategory] = useState<string>('all');
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [activeHeroIdx, setActiveHeroIdx] = useState(0);
   
   // Premium Layout States
   const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
@@ -74,6 +75,14 @@ export default function App() {
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Cinematic Hero background slideshow interval
+  useEffect(() => {
+    const slideInterval = setInterval(() => {
+      setActiveHeroIdx((prev) => (prev + 1) % 3);
+    }, 6000);
+    return () => clearInterval(slideInterval);
   }, []);
 
   // 15-second automatic lead capture popup timer
@@ -207,6 +216,17 @@ export default function App() {
     setFormSubmitSuccess(false);
   };
 
+  const getMonthlyInstallment = (priceStr: string) => {
+    const cleanNum = parseInt(priceStr.replace(/[^0-9]/g, ''), 10);
+    if (isNaN(cleanNum) || cleanNum === 0) return isVi ? 'Góp từ 4.5 Tr/th' : 'From 4.5M/mo';
+    const loanAmount = cleanNum * 0.8;
+    const principalPerMonth = loanAmount / 84;
+    const avgInterestPerMonth = (loanAmount * 0.08) / 12;
+    const totalPerMonth = principalPerMonth + avgInterestPerMonth;
+    const millionVnd = (totalPerMonth / 1000000).toFixed(1);
+    return isVi ? `Góp từ ${millionVnd} Tr/th` : `From ${millionVnd}M/mo`;
+  };
+
   // Theme variable bindings for beautiful light/dark luxury design
   const themeBg = isDarkMode ? 'bg-[#0d0d0e]' : 'bg-[#F8F9FA]';
   const themeText = isDarkMode ? 'text-neutral-100' : 'text-[#111111]';
@@ -283,10 +303,10 @@ export default function App() {
 
       {/* 2. Primary Sticky Header (Glassmorphic) */}
       <header 
-        className={`sticky top-0 z-40 transition-all duration-300 px-4 glass-header border-b ${
+        className={`sticky top-0 z-40 transition-all duration-300 px-4 border-b ${
           scrolled 
-            ? `${themeNavBg}/85 shadow-lg shadow-black/5 ${themeBorder}` 
-            : `${themeNavBg}/70 ${themeBorder}`
+            ? `${themeNavBg}/95 shadow-md shadow-black/5 ${themeBorder} backdrop-blur-md` 
+            : 'bg-transparent border-transparent'
         }`} 
         id="main-header"
       >
@@ -298,7 +318,7 @@ export default function App() {
               <img 
                 src="https://sf-static.upanhlaylink.com/img/image_20260702ae8302499ae0feaebd8b1cd9e606c614.jpg" 
                 alt="Kim Long Motor Logo" 
-                className="h-11 w-auto object-contain rounded-lg border border-neutral-200/50"
+                className="h-11 w-auto object-contain rounded-lg border border-neutral-200/50 shadow-sm"
                 referrerPolicy="no-referrer"
               />
               <span className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></span>
@@ -312,23 +332,25 @@ export default function App() {
                   TI TOÀN
                 </span>
               </div>
-              <span className={`text-[9px] font-mono tracking-wider uppercase ${isDarkMode ? 'text-neutral-500' : 'text-neutral-500'}`}>
+              <span className={`text-[9px] font-mono tracking-wider uppercase transition-colors duration-300 ${scrolled ? 'text-neutral-500' : 'text-neutral-300'}`}>
                 {isVi ? 'Đại diện kinh doanh cao cấp' : 'Senior Executive Partner'}
               </span>
             </div>
           </a>
 
           {/* Navigation links - Desktop */}
-          <nav className={`hidden lg:flex items-center space-x-7 text-xs uppercase tracking-widest font-bold ${isDarkMode ? 'text-neutral-400' : 'text-neutral-600'}`}>
-            <a href="#intro" className="hover:text-[#C8102E] transition-colors">{isVi ? 'Giới thiệu' : 'About'}</a>
-            <a href="#products" className="hover:text-[#C8102E] transition-colors">{isVi ? 'Sản phẩm' : 'Vehicles'}</a>
-            <a href="#pricing" className="hover:text-[#C8102E] transition-colors">{isVi ? 'Bảng giá' : 'Pricing'}</a>
-            <a href="#benefits" className="hover:text-[#C8102E] transition-colors">{isVi ? 'Ưu điểm' : 'Benefits'}</a>
-            <a href="#process" className="hover:text-[#C8102E] transition-colors">{isVi ? 'Quy trình' : 'Process'}</a>
-            <a href="#reviews" className="hover:text-[#C8102E] transition-colors">{isVi ? 'Đánh giá' : 'Reviews'}</a>
-            <a href="#news" className="hover:text-[#C8102E] transition-colors">{isVi ? 'Tin tức' : 'News'}</a>
-            <a href="#faq" className="hover:text-[#C8102E] transition-colors">{isVi ? 'Hỏi đáp' : 'FAQ'}</a>
-            <a href="#contact" className="hover:text-[#C8102E] transition-colors">{isVi ? 'Liên hệ' : 'Contact'}</a>
+          <nav className={`hidden lg:flex items-center space-x-7 text-xs uppercase tracking-widest font-bold transition-colors duration-300 ${
+            scrolled 
+              ? (isDarkMode ? 'text-neutral-300' : 'text-neutral-700') 
+              : 'text-white'
+          }`}>
+            <a href="#intro" className="hover:text-[#C8102E] transition-colors duration-200">{isVi ? 'Giới thiệu' : 'About'}</a>
+            <a href="#products" className="hover:text-[#C8102E] transition-colors duration-200">{isVi ? 'Sản phẩm' : 'Vehicles'}</a>
+            <a href="#pricing" className="hover:text-[#C8102E] transition-colors duration-200">{isVi ? 'Bảng giá' : 'Pricing'}</a>
+            <a href="#benefits" className="hover:text-[#C8102E] transition-colors duration-200">{isVi ? 'Ưu điểm' : 'Benefits'}</a>
+            <a href="#process" className="hover:text-[#C8102E] transition-colors duration-200">{isVi ? 'Quy trình' : 'Process'}</a>
+            <a href="#faq" className="hover:text-[#C8102E] transition-colors duration-200">{isVi ? 'Hỏi đáp' : 'FAQ'}</a>
+            <a href="#contact" className="hover:text-[#C8102E] transition-colors duration-200">{isVi ? 'Liên hệ' : 'Contact'}</a>
           </nav>
 
           {/* Header Action Button */}
@@ -343,7 +365,11 @@ export default function App() {
             </button>
             <a 
               href="tel:0799600789"
-              className="flex items-center space-x-1 px-4 py-3 rounded-full bg-[#111111] hover:bg-[#C8102E] text-white hover:text-white transition-all text-xs font-bold font-mono border border-neutral-800"
+              className={`flex items-center space-x-1 px-4 py-3 rounded-full transition-all text-xs font-bold font-mono border ${
+                scrolled
+                  ? 'bg-[#111111] hover:bg-[#C8102E] text-white border-neutral-800'
+                  : 'bg-white/10 hover:bg-[#C8102E] text-white border-white/20 backdrop-blur-sm'
+              }`}
             >
               <Phone size={13} />
               <span>{isVi ? '☎ Gọi ngay' : 'Call'}</span>
@@ -353,7 +379,11 @@ export default function App() {
           {/* Mobile hamburger menu toggle */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden p-2 text-neutral-500 hover:text-black rounded-xl cursor-pointer"
+            className={`lg:hidden p-2 rounded-xl cursor-pointer transition-colors ${
+              scrolled 
+                ? (isDarkMode ? 'text-neutral-300 hover:text-white' : 'text-neutral-700 hover:text-black') 
+                : 'text-white hover:text-neutral-200'
+            }`}
           >
             {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
@@ -368,8 +398,6 @@ export default function App() {
               <a href="#pricing" onClick={() => setMobileMenuOpen(false)} className="p-2 hover:text-[#C8102E]">{isVi ? 'Bảng giá' : 'Pricing'}</a>
               <a href="#benefits" onClick={() => setMobileMenuOpen(false)} className="p-2 hover:text-[#C8102E]">{isVi ? 'Lợi ích' : 'Benefits'}</a>
               <a href="#process" onClick={() => setMobileMenuOpen(false)} className="p-2 hover:text-[#C8102E]">{isVi ? 'Quy trình' : 'Process'}</a>
-              <a href="#reviews" onClick={() => setMobileMenuOpen(false)} className="p-2 hover:text-[#C8102E]">{isVi ? 'Đánh giá' : 'Reviews'}</a>
-              <a href="#news" onClick={() => setMobileMenuOpen(false)} className="p-2 hover:text-[#C8102E]">{isVi ? 'Tin tức' : 'News'}</a>
               <a href="#faq" onClick={() => setMobileMenuOpen(false)} className="p-2 hover:text-[#C8102E]">{isVi ? 'Hỏi đáp' : 'FAQ'}</a>
               <a href="#contact" onClick={() => setMobileMenuOpen(false)} className="p-2 hover:text-[#C8102E]">{isVi ? 'Liên hệ' : 'Contact'}</a>
             </div>
@@ -396,98 +424,17 @@ export default function App() {
       <section className="relative min-h-[92vh] flex items-center justify-center overflow-hidden px-4" id="hero">
         
         {/* Background Visual Podium */}
-        <div className="absolute inset-0 bg-[#060608] z-0"></div>
+        <div className="absolute inset-0 bg-[#050507] z-0"></div>
         <div 
-          className="absolute inset-0 bg-cover bg-center opacity-40 mix-blend-luminosity scale-102 transition-all duration-1000" 
-          style={{ backgroundImage: "url('https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?auto=format&fit=crop&q=80&w=1600')" }}
+          className="absolute inset-0 bg-cover bg-center transition-all duration-1000 opacity-100 scale-102" 
+          style={{ backgroundImage: "url('https://sf-static.upanhlaylink.com/img/image_20260702c23aa2a16e7ed50e4786c31085026f59.jpg')" }}
         ></div>
         
-        {/* Dark Elegant Overlays */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent z-1"></div>
-        <div className="absolute inset-0 bg-radial-gradient-to-c from-transparent via-black/50 to-black z-1"></div>
+        {/* Soft elegant transition overlay to preserve maximum image clarity and transition nicely */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#050507] via-transparent to-transparent opacity-60 z-1"></div>
         
         {/* Decorative Luxury Lighting Accents */}
-        <div className="absolute top-1/4 left-1/3 w-[350px] h-[350px] bg-red-600/15 rounded-full blur-[130px] pointer-events-none animate-pulse-subtle"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-yellow-500/5 rounded-full blur-[150px] pointer-events-none animate-pulse-subtle"></div>
-
-        <div className="max-w-5xl mx-auto text-center relative z-10 space-y-8 py-16">
-          
-          <div className="inline-flex items-center space-x-2 bg-neutral-950/70 border border-neutral-800/80 px-4 py-2 rounded-full backdrop-blur-md">
-            <span className="w-2 h-2 rounded-full bg-[#C8102E] animate-ping"></span>
-            <span className="text-[9px] font-mono text-neutral-400 uppercase tracking-widest">
-              {isVi ? 'Đại Lý Ủy Quyền Kim Long Motor 3S Việt Nam' : 'Kim Long Motor 3S Authorized Dealer Partner'}
-            </span>
-          </div>
-
-          <div className="space-y-4">
-            <h1 className="text-4xl sm:text-7xl md:text-8xl font-black tracking-tight text-white uppercase font-poppins leading-none">
-              Ti Toàn <br className="sm:hidden" />
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-white via-neutral-100 to-[#D6B25E] font-extrabold">
-                | Kim Long Motor
-              </span>
-            </h1>
-
-            <p className="text-neutral-300 text-sm sm:text-xl max-w-3xl mx-auto leading-relaxed font-sans font-light">
-              {isVi 
-                ? 'Giải pháp tư vấn toàn diện xe tải, xe thương mại và hệ sinh thái xe điện đột phá. Kiến tạo thành công bền vững trên mọi chặng đường doanh nghiệp.'
-                : 'Comprehensive commercial vehicle & electric fleet consultation. Driving sustainable logistic success on every route of your enterprise.'
-              }
-            </p>
-          </div>
-
-          {/* Action Call To Actions */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-6 max-w-xl mx-auto">
-            <button
-              onClick={() => openBookingModal('', 'quote')}
-              className="w-full sm:w-auto bg-[#C8102E] hover:bg-red-700 text-white font-bold text-xs uppercase tracking-widest px-8 py-4.5 rounded-xl cursor-pointer transition-all border border-red-500/20 shadow-xl shadow-red-950/40 flex items-center justify-center gap-2"
-              id="hero-cta-quote"
-            >
-              <Percent size={14} />
-              <span>{isVi ? 'Nhận báo giá ngay' : 'Get Quote Now'}</span>
-            </button>
-            <button
-              onClick={() => openBookingModal('', 'test-drive')}
-              className="w-full sm:w-auto bg-neutral-900/80 hover:bg-neutral-800 text-white border border-neutral-800 hover:border-red-600 font-bold text-xs uppercase tracking-widest px-8 py-4.5 rounded-xl cursor-pointer transition-all flex items-center justify-center gap-2"
-              id="hero-cta-test-drive"
-            >
-              <Calendar size={14} className="text-red-500 animate-pulse" />
-              <span>{isVi ? 'Đăng ký lái thử' : 'Book Test Drive'}</span>
-            </button>
-            <a
-              href="https://zalo.me/0799600789"
-              target="_blank"
-              referrerPolicy="no-referrer"
-              className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs uppercase tracking-widest px-8 py-4.5 rounded-xl cursor-pointer transition-all flex items-center justify-center gap-2"
-              id="hero-cta-zalo"
-            >
-              <MessageSquare size={14} />
-              <span>{isVi ? 'Liên hệ Zalo' : 'Zalo Chat'}</span>
-            </a>
-          </div>
-
-          {/* Floating Trust stats badges on hero bottom */}
-          <div className="grid grid-cols-3 gap-6 pt-16 max-w-2xl mx-auto text-center border-t border-neutral-800/60 text-xs font-mono text-neutral-400">
-            <div>
-              <p className="text-white text-xl sm:text-2xl font-black font-poppins text-[#D6B25E]">500+</p>
-              <p className="text-[9px] mt-1.5 uppercase tracking-widest">{isVi ? 'Khách Hàng Phục Vụ' : 'Happy Partners'}</p>
-            </div>
-            <div>
-              <p className="text-white text-xl sm:text-2xl font-black font-poppins text-red-500">450+</p>
-              <p className="text-[9px] mt-1.5 uppercase tracking-widest">{isVi ? 'Xe Đã Bàn Giao' : 'Fleets Delivered'}</p>
-            </div>
-            <div>
-              <p className="text-white text-xl sm:text-2xl font-black font-poppins text-[#D6B25E]">24/7</p>
-              <p className="text-[9px] mt-1.5 uppercase tracking-widest">{isVi ? 'Bảo Dưỡng Lưu Động' : 'Mobile Service'}</p>
-            </div>
-          </div>
-
-        </div>
-
-        {/* Elegant down arrow pointer */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center animate-bounce">
-          <span className="text-[9px] font-mono text-neutral-500 uppercase tracking-widest mb-1.5">Scroll</span>
-          <ChevronDown size={14} className="text-neutral-500" />
-        </div>
+        <div className="absolute top-1/4 left-1/3 w-[350px] h-[350px] bg-red-600/5 rounded-full blur-[130px] pointer-events-none"></div>
       </section>
 
       {/* 4. Section Giới thiệu (About Ti Toàn Portrait) */}
@@ -579,6 +526,110 @@ export default function App() {
         </div>
       </section>
 
+      {/* 4.5. Vehicle Categories Section */}
+      <section className={`py-24 ${isDarkMode ? 'bg-[#0f0f10]' : 'bg-[#F8F9FB]'} border-b ${themeBorder} px-4`} id="categories">
+        <div className="max-w-7xl mx-auto space-y-12">
+          
+          <div className="text-center space-y-3">
+            <span className="text-[#C8102E] text-xs font-mono uppercase tracking-widest font-black block">
+              {isVi ? 'Phân Khúc Vận Tải' : 'Automotive Segments'}
+            </span>
+            <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight font-poppins uppercase text-[#111827] dark:text-white">
+              {isVi ? 'Danh Mục Dòng Xe Chuyên Nghiệp' : 'Premium Vehicle Categories'}
+            </h2>
+            <p className="text-neutral-500 text-xs sm:text-sm max-w-xl mx-auto">
+              {isVi 
+                ? 'Lựa chọn phân khúc xe thương mại phù hợp tối ưu với mô hình Logistics của bạn.'
+                : 'Select the commercial vehicle class engineered to elevate your shipping logistics business.'
+              }
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              {
+                id: 'electric',
+                titleVi: 'Vận Tải Điện Xanh EV',
+                titleEn: 'Electric Green Fleet',
+                descVi: 'Tương lai logistics đô thị 100% điện năng, tiết kiệm 40% nhiên liệu, 0 khí thải.',
+                descEn: 'The future of city shipping. 100% electric cargo, 40% fuel save, zero emissions.',
+                image: 'https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&q=80&w=600',
+                badgeVi: 'Xu Hướng Mới',
+                badgeEn: 'Eco Future'
+              },
+              {
+                id: 'light',
+                titleVi: 'Xe Tải Nhẹ Đô Thị',
+                titleEn: 'Light Commercial Trucks',
+                descVi: 'Được thiết kế linh hoạt, di chuyển dễ dàng trong phố giờ cao điểm, tối ưu tải trọng.',
+                descEn: 'Engineered for street agility, optimal payloads, and easy high-traffic downtown access.',
+                image: 'https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?auto=format&fit=crop&q=80&w=600',
+                badgeVi: 'Bán Chạy Nhất',
+                badgeEn: 'Top Seller'
+              },
+              {
+                id: 'heavy',
+                titleVi: 'Vận Tải Trung & Nặng',
+                titleEn: 'Medium & Heavy Duty',
+                descVi: 'Khung gầm siêu chịu lực, động cơ Weichai dũng mãnh, vượt mọi cung đường xa lộ xuyên Việt.',
+                descEn: 'Reinforced heavy chassis, commanding Weichai engines for trans-national highway freight.',
+                image: 'https://images.unsplash.com/photo-1516594798947-e65505dbb29d?auto=format&fit=crop&q=80&w=600',
+                badgeVi: 'Hiệu Suất Vượt Trội',
+                badgeEn: 'Maximum Power'
+              },
+              {
+                id: 'bus',
+                titleVi: 'Xe Bus & Minibus',
+                titleEn: 'Buses & Coach Fleet',
+                descVi: 'Cung điện di động sang trọng, giường nằm massage đa điểm, tiêu chuẩn khách sạn 5 sao.',
+                descEn: 'Luxurious mobile palaces, individual massage berths, 5-star passenger hospitality.',
+                image: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&q=80&w=600',
+                badgeVi: 'Đẳng Cấp Thượng Lưu',
+                badgeEn: 'Palace Coach'
+              }
+            ].map((cat) => (
+              <div
+                key={cat.id}
+                onClick={() => {
+                  setActiveCategory(cat.id);
+                  document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="bg-white dark:bg-neutral-900 border border-neutral-200/80 dark:border-neutral-800 rounded-[20px] shadow-sm hover:shadow-xl transition-all duration-500 cursor-pointer overflow-hidden group hover:-translate-y-1.5 flex flex-col justify-between"
+              >
+                <div className="relative aspect-[16/10] overflow-hidden">
+                  <img
+                    src={cat.image}
+                    alt={cat.titleVi}
+                    className="w-full h-full object-cover group-hover:scale-106 transition-transform duration-700 ease-out"
+                    referrerPolicy="no-referrer"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                  <span className="absolute top-3 left-3 bg-[#C8102E] text-white text-[8px] font-mono uppercase tracking-widest px-2.5 py-0.5 rounded-full font-bold shadow-md">
+                    {isVi ? cat.badgeVi : cat.badgeEn}
+                  </span>
+                </div>
+                
+                <div className="p-6 space-y-2 flex-1 flex flex-col justify-between">
+                  <div>
+                    <h3 className="text-base font-black tracking-tight text-[#111827] dark:text-white uppercase font-poppins group-hover:text-[#C8102E] transition-colors">
+                      {isVi ? cat.titleVi : cat.titleEn}
+                    </h3>
+                    <p className="text-xs text-neutral-500 dark:text-neutral-400 leading-relaxed mt-2 line-clamp-3 font-light">
+                      {isVi ? cat.descVi : cat.descEn}
+                    </p>
+                  </div>
+                  <div className="flex items-center text-xs text-[#C8102E] font-bold gap-1 mt-4 group-hover:translate-x-1.5 transition-transform duration-300">
+                    <span>{isVi ? 'Khám phá dòng xe' : 'Explore Fleet'}</span>
+                    <ChevronRight size={14} />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+        </div>
+      </section>
+
       {/* 5. Product Catalog Section */}
       <section className={`py-24 ${isDarkMode ? 'bg-neutral-950/40' : 'bg-white'} ${themeBorder} border-b px-4`} id="products">
         <div className="max-w-7xl mx-auto space-y-12">
@@ -647,69 +698,114 @@ export default function App() {
 
           {/* Products Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredProducts.map((p) => (
-              <div 
-                key={p.id}
-                className={`${themeCardBg} border ${themeBorder} rounded-[18px] overflow-hidden hover:border-[#C8102E]/60 group flex flex-col justify-between transition-all duration-300 shadow-sm hover:shadow-xl`}
-              >
-                {/* Image panel */}
-                <div className="relative aspect-[16/10] overflow-hidden bg-neutral-900 border-b border-neutral-100 dark:border-neutral-900">
-                  <img 
-                    src={p.image} 
-                    alt={p.name} 
-                    className="w-full h-full object-cover group-hover:scale-104 transition-transform duration-500 ease-out"
-                    referrerPolicy="no-referrer"
-                  />
-                  <div className="absolute top-4 left-4 bg-black/60 backdrop-blur border border-neutral-800 rounded-full px-3 py-1 text-[9px] font-mono text-white uppercase tracking-wider">
-                    {isVi ? p.categoryVi : p.categoryEn}
-                  </div>
-                </div>
-
-                {/* Card details */}
-                <div className="p-6 space-y-4 flex-1 flex flex-col justify-between">
-                  <div className="space-y-2">
-                    <h3 className="text-xl font-bold tracking-tight group-hover:text-[#C8102E] transition-colors font-poppins">
-                      {p.name}
-                    </h3>
-                    <p className="text-[#C8102E] font-black font-mono text-base">
-                      {isVi ? p.priceVi : p.priceEn}
-                    </p>
-                    <p className="text-xs text-neutral-500 dark:text-neutral-400 leading-relaxed min-h-[48px] line-clamp-3">
-                      {isVi ? p.shortDescVi : p.shortDescEn}
-                    </p>
-                  </div>
-
-                  {/* Core specs grid */}
-                  <div className="grid grid-cols-2 gap-2 text-[10px] font-mono text-neutral-500 dark:text-neutral-400 bg-neutral-50 dark:bg-neutral-900/40 p-3 rounded-xl border border-neutral-100 dark:border-neutral-850">
-                    <div>
-                      <span className="text-neutral-400 block uppercase font-bold text-[8px]">{isVi ? 'TẢI TRỌNG:' : 'PAYLOAD:'}</span>
-                      <span className="font-extrabold text-neutral-800 dark:text-neutral-200">{p.payload}</span>
+            {filteredProducts.map((p) => {
+              const isElectric = p.category === 'electric';
+              const isPopular = p.id === 'gk48ev' || p.id === 'kiman9-199';
+              
+              return (
+                <div 
+                  key={p.id}
+                  className={`${themeCardBg} border ${themeBorder} rounded-[20px] overflow-hidden hover:border-[#D4AF37]/70 group flex flex-col justify-between transition-all duration-500 shadow-sm hover:shadow-2xl hover:-translate-y-1 relative`}
+                >
+                  {/* Image panel */}
+                  <div className="relative aspect-[16/10] overflow-hidden bg-neutral-950 border-b border-neutral-100 dark:border-neutral-900">
+                    <img 
+                      src={p.image} 
+                      alt={p.name} 
+                      className="w-full h-full object-cover group-hover:scale-106 transition-transform duration-700 ease-out"
+                      referrerPolicy="no-referrer"
+                    />
+                    
+                    {/* Dark gradient overlay on image bottom */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-80"></div>
+                    
+                    {/* Glassmorphic Category badge */}
+                    <div className="absolute top-4 left-4 bg-black/60 backdrop-blur-md border border-neutral-800 rounded-full px-3 py-1 text-[9px] font-mono text-white uppercase tracking-widest font-bold">
+                      {isVi ? p.categoryVi : p.categoryEn}
                     </div>
-                    <div>
-                      <span className="text-neutral-400 block uppercase font-bold text-[8px]">{isVi ? 'ĐỘNG CƠ:' : 'ENGINE:'}</span>
-                      <span className="font-extrabold text-neutral-800 dark:text-neutral-200 truncate block">{p.power}</span>
+
+                    {/* Elite Luxury Status tags */}
+                    {isElectric && (
+                      <div className="absolute top-4 right-4 bg-emerald-600/90 backdrop-blur-md text-white rounded-full px-2.5 py-0.5 text-[8px] font-bold tracking-widest uppercase flex items-center gap-1">
+                        <span className="w-1.5 h-1.5 bg-white rounded-full animate-ping"></span>
+                        <span>{isVi ? 'Vận Tải Xanh' : 'EV Eco'}</span>
+                      </div>
+                    )}
+                    
+                    {!isElectric && isPopular && (
+                      <div className="absolute top-4 right-4 bg-[#D4AF37] text-black rounded-full px-2.5 py-0.5 text-[8px] font-black tracking-widest uppercase flex items-center gap-1 shadow-md">
+                        <Star size={8} fill="currentColor" />
+                        <span>{isVi ? 'Bán Chạy' : 'Best Seller'}</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Card details */}
+                  <div className="p-6 space-y-4 flex-1 flex flex-col justify-between">
+                    <div className="space-y-2">
+                      <div className="flex justify-between items-start gap-2">
+                        <h3 className="text-lg font-black tracking-tight group-hover:text-[#C8102E] transition-colors font-poppins text-neutral-900 dark:text-white uppercase leading-tight">
+                          {p.name}
+                        </h3>
+                        {/* 5 Star Rating overlay */}
+                        <div className="flex text-[#D4AF37] shrink-0 mt-1">
+                          <Star size={10} fill="currentColor" />
+                          <Star size={10} fill="currentColor" />
+                          <Star size={10} fill="currentColor" />
+                          <Star size={10} fill="currentColor" />
+                          <Star size={10} fill="currentColor" />
+                        </div>
+                      </div>
+
+                      <div className="flex flex-wrap items-center justify-between gap-2 pt-1 border-b border-neutral-100 dark:border-neutral-900/60 pb-2.5">
+                        <span className="text-[#C8102E] font-black font-price text-lg">
+                          {isVi ? p.priceVi : p.priceEn}
+                        </span>
+                        {p.id === 'gk48ev' && (
+                          <span className="text-[10px] text-emerald-500 font-mono font-bold uppercase">{isVi ? 'Tặng 7tr' : 'Promo'}</span>
+                        )}
+                        <span className="text-[10px] font-mono text-[#D4AF37] font-bold bg-[#D4AF37]/5 dark:bg-[#D4AF37]/10 px-2.5 py-1 rounded border border-[#D4AF37]/20">
+                          {getMonthlyInstallment(p.priceVi)}
+                        </span>
+                      </div>
+
+                      <p className="text-xs text-neutral-500 dark:text-neutral-400 leading-relaxed min-h-[48px] line-clamp-3">
+                        {isVi ? p.shortDescVi : p.shortDescEn}
+                      </p>
+                    </div>
+
+                    {/* Core specs grid */}
+                    <div className="grid grid-cols-2 gap-2 text-[10px] font-mono text-neutral-500 dark:text-neutral-400 bg-neutral-50 dark:bg-neutral-900/40 p-3 rounded-xl border border-neutral-100 dark:border-neutral-850">
+                      <div>
+                        <span className="text-neutral-400 dark:text-neutral-500 block uppercase font-bold text-[8px]">{isVi ? 'TẢI TRỌNG:' : 'PAYLOAD:'}</span>
+                        <span className="font-extrabold text-neutral-800 dark:text-neutral-200">{p.payload}</span>
+                      </div>
+                      <div>
+                        <span className="text-neutral-400 dark:text-neutral-500 block uppercase font-bold text-[8px]">{isVi ? 'ĐỘNG CƠ:' : 'ENGINE:'}</span>
+                        <span className="font-extrabold text-neutral-800 dark:text-neutral-200 truncate block">{p.power}</span>
+                      </div>
+                    </div>
+
+                    {/* Grid of buttons with exactly 20px rounded */}
+                    <div className="grid grid-cols-2 gap-3 pt-2">
+                      <button
+                        onClick={() => setSelectedProductId(p.id)}
+                        className={`text-center text-xs font-bold border ${themeBorder} hover:border-[#D4AF37] py-3 rounded-xl cursor-pointer hover:text-white hover:bg-neutral-900 dark:hover:bg-neutral-800 transition-all font-sans ${isDarkMode ? 'text-neutral-300' : 'text-neutral-700'}`}
+                      >
+                        {isVi ? 'Xem chi tiết' : 'Details Studio'}
+                      </button>
+                      <button
+                        onClick={() => openBookingModal(p.name, 'quote')}
+                        className="text-center text-xs font-bold bg-[#C8102E] hover:bg-red-700 py-3 rounded-xl text-white cursor-pointer transition-colors shadow-md shadow-red-900/10 font-sans"
+                      >
+                        {isVi ? 'Báo giá lăn bánh' : 'Get Quote'}
+                      </button>
                     </div>
                   </div>
 
-                  {/* Grid of buttons with exactly 18px rounded (or 12px nested radius) */}
-                  <div className="grid grid-cols-2 gap-3 pt-2">
-                    <button
-                      onClick={() => setSelectedProductId(p.id)}
-                      className={`text-center text-xs font-bold border ${themeBorder} hover:border-[#C8102E]/60 py-3 rounded-xl cursor-pointer hover:text-[#C8102E] bg-neutral-50 dark:bg-neutral-900/40 transition-colors ${isDarkMode ? 'text-neutral-300' : 'text-neutral-700'}`}
-                    >
-                      {isVi ? 'Xem chi tiết' : 'Details Studio'}
-                    </button>
-                    <button
-                      onClick={() => openBookingModal(p.name, 'quote')}
-                      className="text-center text-xs font-bold bg-[#C8102E] hover:bg-red-700 py-3 rounded-xl text-white cursor-pointer transition-colors shadow-md shadow-red-900/10"
-                    >
-                      {isVi ? 'Báo giá lăn bánh' : 'Get Quote'}
-                    </button>
-                  </div>
                 </div>
-
-              </div>
-            ))}
+              );
+            })}
           </div>
 
         </div>
@@ -806,199 +902,25 @@ export default function App() {
             {BENEFITS.map((b) => (
               <div 
                 key={b.id}
-                className={`${themeCardBg} p-6 border ${themeBorder} rounded-[18px] hover:border-[#C8102E]/30 transition-all space-y-4 shadow-sm hover:shadow-lg`}
+                className={`${themeCardBg} p-8 border ${themeBorder} rounded-[20px] hover:border-[#D4AF37]/60 transition-all duration-300 space-y-5 shadow-sm hover:shadow-2xl hover:-translate-y-1`}
               >
-                {/* Dynamically assign icons */}
-                <div className="w-12 h-12 rounded-xl bg-red-500/10 dark:bg-red-500/5 border border-red-500/20 flex items-center justify-center text-[#C8102E]">
-                  {b.iconName === 'UserCheck' && <UserCheck size={24} />}
-                  {b.iconName === 'Percent' && <Percent size={24} />}
-                  {b.iconName === 'Truck' && <Truck size={24} />}
-                  {b.iconName === 'FileText' && <FileText size={24} />}
-                  {b.iconName === 'ShieldCheck' && <ShieldCheck size={24} />}
-                  {b.iconName === 'Wrench' && <Wrench size={24} />}
+                {/* Dynamically assign icons with luxurious background */}
+                <div className="w-14 h-14 rounded-2xl bg-red-500/10 dark:bg-red-500/5 border border-red-500/15 flex items-center justify-center text-[#C8102E] shadow-inner">
+                  {b.iconName === 'UserCheck' && <UserCheck size={26} className="text-[#C8102E]" />}
+                  {b.iconName === 'Percent' && <Percent size={26} className="text-[#C8102E]" />}
+                  {b.iconName === 'Truck' && <Truck size={26} className="text-[#C8102E]" />}
+                  {b.iconName === 'FileText' && <FileText size={26} className="text-[#C8102E]" />}
+                  {b.iconName === 'ShieldCheck' && <ShieldCheck size={26} className="text-[#C8102E]" />}
+                  {b.iconName === 'Wrench' && <Wrench size={26} className="text-[#C8102E]" />}
                 </div>
 
-                <div className="space-y-1.5">
-                  <h3 className="text-lg font-bold tracking-tight font-poppins text-neutral-800 dark:text-neutral-100">
+                <div className="space-y-2">
+                  <h3 className="text-lg font-black tracking-tight font-poppins text-neutral-900 dark:text-neutral-100 uppercase">
                     {isVi ? b.titleVi : b.titleEn}
                   </h3>
-                  <p className="text-xs sm:text-sm text-neutral-400 leading-relaxed font-sans font-light">
+                  <p className="text-xs sm:text-sm text-neutral-500 dark:text-neutral-400 leading-relaxed font-sans font-light">
                     {isVi ? b.descVi : b.descEn}
                   </p>
-                </div>
-              </div>
-            ))}
-          </div>
-
-        </div>
-      </section>
-
-      {/* 9. Đánh giá khách hàng (Carousel Reviews) */}
-      <section className={`py-24 ${isDarkMode ? 'bg-neutral-950/40' : 'bg-[#fcfdfe]'} ${themeBorder} border-b px-4`} id="reviews">
-        <div className="max-w-7xl mx-auto space-y-12">
-          
-          <div className="text-center space-y-3">
-            <span className="text-[#C8102E] text-xs font-mono uppercase tracking-widest font-black block">
-              {isVi ? 'Niềm tin từ đối tác' : 'Real Partner Voices'}
-            </span>
-            <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight font-poppins uppercase">
-              {isVi ? 'Bàn Giao Xe Thực Tế & Đánh Giá' : 'Customer Stories & Handover Ceremonies'}
-            </h2>
-            <p className="text-neutral-500 text-xs sm:text-sm max-w-xl mx-auto">
-              {isVi 
-                ? 'Những khoảnh khắc bàn giao ý nghĩa cùng phản hồi chân thực từ các bác tài và chủ doanh nghiệp.'
-                : 'Watch true testimonials and road handover ceremonies from logistics firms nationwide.'
-              }
-            </p>
-          </div>
-
-          {/* Interactive slider of testimonials */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {REVIEWS.map((r, idx) => (
-              <div 
-                key={r.id}
-                className={`${themeCardBg} border ${themeBorder} rounded-[18px] overflow-hidden flex flex-col justify-between group hover:border-neutral-400 transition-all duration-300 shadow-sm`}
-              >
-                {/* Handover Delivery Photo with Video Play Trigger simulation */}
-                {r.handoverImage && (
-                  <div className="relative aspect-[16/9] bg-neutral-950 overflow-hidden">
-                    <img 
-                      src={r.handoverImage} 
-                      alt="Delivery Handover" 
-                      className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-500" 
-                      referrerPolicy="no-referrer"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-neutral-900 to-transparent opacity-60"></div>
-                    
-                    {/* Handover badge */}
-                    <span className="absolute bottom-3 left-4 text-[9px] bg-red-600 text-white font-mono font-bold px-2.5 py-0.5 rounded-full uppercase">
-                      {isVi ? 'Bàn giao thực tế' : 'Handover Spot'}
-                    </span>
-
-                    {/* Simulate video review button if video review exists */}
-                    <button 
-                      onClick={() => setVideoReviewId(r.id)}
-                      className="absolute inset-0 m-auto w-12 h-12 rounded-full bg-red-600/90 hover:bg-red-600 border border-red-500/20 text-white flex items-center justify-center cursor-pointer transition-transform group-hover:scale-110 shadow-lg"
-                      title={isVi ? 'Xem video review' : 'Watch Review Video'}
-                    >
-                      <Video size={18} fill="currentColor" />
-                    </button>
-                  </div>
-                )}
-
-                {/* Body Content */}
-                <div className="p-6 space-y-4 flex-1 flex flex-col justify-between">
-                  <div className="space-y-3">
-                    {/* Stars */}
-                    <div className="flex text-yellow-500">
-                      {[...Array(r.rating)].map((_, i) => (
-                        <Star key={i} size={14} fill="currentColor" />
-                      ))}
-                    </div>
-
-                    <p className="text-xs sm:text-sm text-neutral-500 dark:text-neutral-300 leading-relaxed italic font-sans font-light">
-                      "{isVi ? r.commentVi : r.commentEn}"
-                    </p>
-                  </div>
-
-                  {/* Profile info with mini avatar */}
-                  <div className="flex items-center space-x-3 pt-4 border-t border-neutral-100 dark:border-neutral-850">
-                    <img 
-                      src={r.avatar} 
-                      alt={r.name} 
-                      className="w-10 h-10 rounded-full object-cover border border-neutral-200 dark:border-neutral-800"
-                      referrerPolicy="no-referrer"
-                    />
-                    <div>
-                      <h4 className="font-bold text-sm font-poppins">{r.name}</h4>
-                      <p className="text-[10px] text-neutral-400 font-medium">{isVi ? r.roleVi : r.roleEn}</p>
-                      <span className="text-[9px] text-[#C8102E] font-mono font-bold">{isVi ? 'Hợp đồng' : 'Model'}: {r.vehicleModel}</span>
-                    </div>
-                  </div>
-                </div>
-
-              </div>
-            ))}
-          </div>
-
-        </div>
-      </section>
-
-      {/* 10. Tin tức (News & Experience) */}
-      <section className={`py-24 ${themeBorder} border-b px-4`} id="news">
-        <div className="max-w-7xl mx-auto space-y-12">
-          
-          <div className="text-center space-y-3">
-            <span className="text-[#C8102E] text-xs font-mono uppercase tracking-widest font-black block">
-              {isVi ? 'Kiến thức bổ ích' : 'Automotive Library'}
-            </span>
-            <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight font-poppins uppercase">
-              {isVi ? 'Tin Tức Hoạt Động & Cẩm Nang Xe' : 'News & Experience Guides'}
-            </h2>
-            <p className="text-neutral-500 text-xs sm:text-sm max-w-xl mx-auto">
-              {isVi 
-                ? 'Cập nhật tin tức khuyến mãi mới nhất, kinh nghiệm lái xe tải an toàn và chính sách pháp lý vận tải.'
-                : 'Staying synchronized with operational company discounts and professional commercial trucking advice.'
-              }
-            </p>
-          </div>
-
-          {/* News Category tabs */}
-          <div className="flex items-center justify-center space-x-2 overflow-x-auto py-2 border-b border-neutral-200 dark:border-neutral-900">
-            {[
-              { val: 'all', vi: 'Tất cả', en: 'All' },
-              { val: 'installment', vi: 'Chính sách trả góp', en: 'Financing' },
-              { val: 'knowledge', vi: 'Kiến thức kỹ thuật', en: 'Technical knowledge' },
-              { val: 'promotion', vi: 'Thông tin khuyến mãi', en: 'Promotional deals' }
-            ].map(tab => (
-              <button
-                key={tab.val}
-                onClick={() => setNewsCategory(tab.val)}
-                className={`text-xs px-4 py-2 rounded-xl transition-all cursor-pointer font-bold whitespace-nowrap ${
-                  newsCategory === tab.val 
-                    ? 'bg-[#C8102E] text-white' 
-                    : `text-neutral-400 hover:text-black dark:hover:text-white`
-                }`}
-              >
-                {isVi ? tab.vi : tab.en}
-              </button>
-            ))}
-          </div>
-
-          {/* News articles grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {filteredNews.map((n) => (
-              <div 
-                key={n.id}
-                className={`${themeCardBg} border ${themeBorder} rounded-[18px] overflow-hidden hover:border-[#C8102E]/30 transition-all flex flex-col justify-between group shadow-sm`}
-              >
-                <div className="relative aspect-[16/10] overflow-hidden bg-neutral-900">
-                  <img src={n.image} alt={n.titleVi} className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-300" referrerPolicy="no-referrer" />
-                  <span className="absolute top-4 left-4 bg-red-600 text-white font-mono text-[9px] font-bold px-2 py-0.5 rounded-full uppercase">
-                    {isVi ? n.categoryVi : n.categoryEn}
-                  </span>
-                </div>
-
-                <div className="p-6 space-y-4 flex-1 flex flex-col justify-between">
-                  <div className="space-y-2.5">
-                    <span className="text-[10px] text-neutral-400 font-mono font-bold block">
-                      {n.date} | By {n.author}
-                    </span>
-                    <h3 className="text-base font-bold leading-snug group-hover:text-[#C8102E] transition-colors line-clamp-2 font-poppins">
-                      {isVi ? n.titleVi : n.titleEn}
-                    </h3>
-                    <p className="text-xs text-neutral-400 leading-relaxed line-clamp-3">
-                      {isVi ? n.summaryVi : n.summaryEn}
-                    </p>
-                  </div>
-
-                  <button 
-                    onClick={() => openBookingModal('', 'general')}
-                    className="inline-flex items-center text-xs text-[#C8102E] hover:text-red-500 font-bold gap-1 cursor-pointer pt-2"
-                  >
-                    <span>{isVi ? 'Đọc tiếp chi tiết' : 'Read Full Article'}</span>
-                    <ChevronRight size={14} />
-                  </button>
                 </div>
               </div>
             ))}
