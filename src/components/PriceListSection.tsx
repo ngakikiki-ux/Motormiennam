@@ -441,50 +441,6 @@ export default function PriceListSection({
 
       <div className="max-w-7xl mx-auto space-y-12">
         
-        {/* UPPER ANNOUNCEMENT BAR */}
-        <div className={`p-6 sm:p-8 rounded-[20px] ${cardBg} border shadow-xl relative overflow-hidden text-left space-y-4`}>
-          <div className="absolute top-0 left-0 w-full h-[6px] bg-[#C8102E]"></div>
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div className="space-y-1">
-              <span className="text-[#C8102E] text-[10px] font-mono uppercase tracking-wider font-extrabold bg-[#C8102E]/10 px-2.5 py-1 rounded-full border border-[#C8102E]/20">
-                SỐ: 2606-41/TBKD
-              </span>
-              <h2 className="text-2xl sm:text-3xl font-black text-neutral-900 dark:text-white uppercase font-poppins tracking-tight">
-                {isVi ? 'BẢNG GIÁ CHÍNH THỨC & KHUYẾN MÃI' : 'OFFICIAL COMMERCIAL PRICING & PROMOTIONS'}
-              </h2>
-              <p className="text-neutral-500 dark:text-neutral-400 text-xs font-light max-w-3xl leading-relaxed">
-                {isVi 
-                  ? 'Giá bán niêm yết công bố từ hãng. Đại diện thương mại Ti Toàn cam kết báo giá lăn bánh trọn gói cùng chiết khấu đặc biệt hấp dẫn cho quý doanh nghiệp.'
-                  : 'Official MSRP commercial pricing catalog. Rep Ti Toan guarantees the lowest corporate on-road budgets and flexible financing models.'
-                }
-              </p>
-            </div>
-            
-            <div className="flex items-center gap-3 shrink-0 bg-neutral-100 dark:bg-neutral-900 px-4 py-3 rounded-xl border border-neutral-200/50 dark:border-neutral-800">
-              <Calendar size={18} className="text-[#C8102E]" />
-              <div className="text-left font-mono">
-                <p className="text-[10px] text-neutral-400 uppercase tracking-widest">{isVi ? 'Áp dụng từ ngày' : 'Effective Date'}</p>
-                <p className="text-xs font-bold text-neutral-800 dark:text-neutral-200">18/06/2026</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="border-t border-neutral-100 dark:border-neutral-900 pt-4 flex flex-wrap items-center gap-x-6 gap-y-2 text-[11px] font-mono text-neutral-400">
-            <span className="flex items-center gap-1.5">
-              <CheckCircle size={12} className="text-emerald-500" />
-              {isVi ? 'Đã bao gồm thuế giá trị gia tăng (VAT)' : 'Price includes standard VAT tax'}
-            </span>
-            <span className="flex items-center gap-1.5">
-              <CheckCircle size={12} className="text-emerald-500" />
-              {isVi ? 'Áp dụng trên Toàn quốc' : 'Effective nationwide'}
-            </span>
-            <span className="flex items-center gap-1.5">
-              <Sparkles size={12} className="text-amber-500" />
-              {isVi ? 'Đại diện phân phối: TI TOÀN (0799.600.789)' : 'Authorized Representative: TI TOAN'}
-            </span>
-          </div>
-        </div>
-
         {/* MAIN INTERACTIVE GRID */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           
@@ -521,12 +477,12 @@ export default function PriceListSection({
                   <select
                     value={filterType}
                     onChange={(e) => setFilterType(e.target.value)}
-                    className="w-full text-xs bg-neutral-50 dark:bg-neutral-900 border border-neutral-200/60 dark:border-neutral-800 rounded-lg p-2.5 focus:outline-none focus:border-[#C8102E]"
+                    className="w-full text-xs bg-white text-gray-900 border border-gray-300 rounded-xl p-2.5 focus:outline-none focus:border-[#C8102E] transition-colors cursor-pointer shadow-sm"
                   >
-                    <option value="all">{isVi ? 'Tất cả phân khúc' : 'All classes'}</option>
-                    <option value="bus-ghe">{isVi ? 'Xe Bus Ghế' : 'Coach Bus'}</option>
-                    <option value="bus-giuong">{isVi ? 'Xe Bus Giường Nằm' : 'Sleeper Bus'}</option>
-                    <option value="tai">{isVi ? 'Xe Tải / Xe Van' : 'Truck & Cargo Vans'}</option>
+                    <option value="all" className="bg-white text-gray-900">{isVi ? 'Tất cả phân khúc' : 'All classes'}</option>
+                    <option value="bus-ghe" className="bg-white text-gray-900">{isVi ? 'Xe Bus Ghế' : 'Coach Bus'}</option>
+                    <option value="bus-giuong" className="bg-white text-gray-900">{isVi ? 'Xe Bus Giường Nằm' : 'Sleeper Bus'}</option>
+                    <option value="tai" className="bg-white text-gray-900">{isVi ? 'Xe Tải / Xe Van' : 'Truck & Cargo Vans'}</option>
                   </select>
                 </div>
 
@@ -536,13 +492,13 @@ export default function PriceListSection({
                   <select
                     value={filterPrice}
                     onChange={(e) => setFilterPrice(e.target.value)}
-                    className="w-full text-xs bg-neutral-50 dark:bg-neutral-900 border border-neutral-200/60 dark:border-neutral-800 rounded-lg p-2.5 focus:outline-none focus:border-[#C8102E]"
+                    className="w-full text-xs bg-white text-gray-900 border border-gray-300 rounded-xl p-2.5 focus:outline-none focus:border-[#C8102E] transition-colors cursor-pointer shadow-sm"
                   >
-                    <option value="all">{isVi ? 'Tất cả khoảng giá' : 'All prices'}</option>
-                    <option value="under-500m">{isVi ? 'Dưới 500 Triệu' : 'Under 500M VND'}</option>
-                    <option value="500m-1b">{isVi ? '500 Triệu - 1 Tỷ' : '500M - 1B VND'}</option>
-                    <option value="1b-3b">{isVi ? '1 Tỷ - 3 Tỷ' : '1B - 3B VND'}</option>
-                    <option value="above-3b">{isVi ? 'Trên 3 Tỷ' : 'Above 3B VND'}</option>
+                    <option value="all" className="bg-white text-gray-900">{isVi ? 'Tất cả khoảng giá' : 'All prices'}</option>
+                    <option value="under-500m" className="bg-white text-gray-900">{isVi ? 'Dưới 500 Triệu' : 'Under 500M VND'}</option>
+                    <option value="500m-1b" className="bg-white text-gray-900">{isVi ? '500 Triệu - 1 Tỷ' : '500M - 1B VND'}</option>
+                    <option value="1b-3b" className="bg-white text-gray-900">{isVi ? '1 Tỷ - 3 Tỷ' : '1B - 3B VND'}</option>
+                    <option value="above-3b" className="bg-white text-gray-900">{isVi ? 'Trên 3 Tỷ' : 'Above 3B VND'}</option>
                   </select>
                 </div>
 
@@ -552,13 +508,13 @@ export default function PriceListSection({
                   <select
                     value={filterPayload}
                     onChange={(e) => setFilterPayload(e.target.value)}
-                    className="w-full text-xs bg-neutral-50 dark:bg-neutral-900 border border-neutral-200/60 dark:border-neutral-800 rounded-lg p-2.5 focus:outline-none focus:border-[#C8102E]"
+                    className="w-full text-xs bg-white text-gray-900 border border-gray-300 rounded-xl p-2.5 focus:outline-none focus:border-[#C8102E] transition-colors cursor-pointer shadow-sm"
                   >
-                    <option value="all">{isVi ? 'Tất cả tải trọng' : 'All sizes'}</option>
-                    <option value="under-2t">{isVi ? 'Tải nhẹ dưới 2 Tấn' : 'Light duty < 2 Tons'}</option>
-                    <option value="above-2t">{isVi ? 'Vận tải nặng / Xe khách' : 'Heavy freight / Bus'}</option>
-                    <option value="bus-29">{isVi ? 'Dòng 29 chỗ' : '29 Seats Coach'}</option>
-                    <option value="bus-giuong">{isVi ? 'Khoang Giường Nằm' : 'Luxury Sleeper'}</option>
+                    <option value="all" className="bg-white text-gray-900">{isVi ? 'Tất cả tải trọng' : 'All sizes'}</option>
+                    <option value="under-2t" className="bg-white text-gray-900">{isVi ? 'Tải nhẹ dưới 2 Tấn' : 'Light duty < 2 Tons'}</option>
+                    <option value="above-2t" className="bg-white text-gray-900">{isVi ? 'Vận tải nặng / Xe khách' : 'Heavy freight / Bus'}</option>
+                    <option value="bus-29" className="bg-white text-gray-900">{isVi ? 'Dòng 29 chỗ' : '29 Seats Coach'}</option>
+                    <option value="bus-giuong" className="bg-white text-gray-900">{isVi ? 'Khoang Giường Nằm' : 'Luxury Sleeper'}</option>
                   </select>
                 </div>
 
@@ -568,11 +524,11 @@ export default function PriceListSection({
                   <select
                     value={filterFuel}
                     onChange={(e) => setFilterFuel(e.target.value)}
-                    className="w-full text-xs bg-neutral-50 dark:bg-neutral-900 border border-neutral-200/60 dark:border-neutral-800 rounded-lg p-2.5 focus:outline-none focus:border-[#C8102E]"
+                    className="w-full text-xs bg-white text-gray-900 border border-gray-300 rounded-xl p-2.5 focus:outline-none focus:border-[#C8102E] transition-colors cursor-pointer shadow-sm"
                   >
-                    <option value="all">{isVi ? 'Tất cả nhiên liệu' : 'All fuels'}</option>
-                    <option value="electric">{isVi ? '100% Động Cơ Điện (EV)' : '100% Electric EV'}</option>
-                    <option value="diesel">{isVi ? 'Động Cơ Diesel' : 'Diesel Fuel'}</option>
+                    <option value="all" className="bg-white text-gray-900">{isVi ? 'Tất cả nhiên liệu' : 'All fuels'}</option>
+                    <option value="electric" className="bg-white text-gray-900">{isVi ? '100% Động Cơ Điện (EV)' : '100% Electric EV'}</option>
+                    <option value="diesel" className="bg-white text-gray-900">{isVi ? 'Động Cơ Diesel' : 'Diesel Fuel'}</option>
                   </select>
                 </div>
 
@@ -631,13 +587,19 @@ export default function PriceListSection({
                           <span className="text-[10px] text-neutral-400 font-mono">Đời {row.namSx}</span>
                         </div>
                         
-                        <div>
-                          <h3 className="text-base font-black tracking-tight text-neutral-900 dark:text-white uppercase font-poppins inline-block mr-2">
+                        <div className="space-y-1.5">
+                          <h3 className="text-lg sm:text-2xl font-black tracking-tight text-[#C8102E] dark:text-red-500 uppercase font-poppins block">
                             {row.maLoai}
                           </h3>
-                          <span className="text-xs text-neutral-500 dark:text-neutral-400">
-                            ({row.loaiXe} &bull; <span className="font-bold text-[#D4AF37]">{row.phienBan}</span>)
-                          </span>
+                          <div className="flex flex-wrap items-center gap-2 text-xs text-neutral-600 dark:text-neutral-300">
+                            <span className="font-semibold bg-neutral-100 dark:bg-neutral-800 px-2.5 py-1 rounded text-neutral-800 dark:text-neutral-200">
+                              {row.loaiXe}
+                            </span>
+                            <span className="text-neutral-300 dark:text-neutral-700">&bull;</span>
+                            <span className="font-bold text-[#D4AF37] bg-[#D4AF37]/5 dark:bg-[#D4AF37]/10 px-2.5 py-1 rounded border border-[#D4AF37]/20 uppercase tracking-wider text-[11px]">
+                              {row.phienBan}
+                            </span>
+                          </div>
                         </div>
 
                         <div className="text-[11px] text-neutral-500 dark:text-neutral-400 flex flex-wrap gap-x-4 gap-y-1">

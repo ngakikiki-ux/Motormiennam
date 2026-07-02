@@ -11,7 +11,6 @@ import { PRODUCTS, BENEFITS, BUYING_STEPS, REVIEWS, NEWS, FAQS } from './data';
 import { Product, NewsItem, ReviewItem, FAQItem, Language } from './types';
 
 // Component Imports
-import ShowroomChatbot from './components/ShowroomChatbot';
 import LoanCalculator from './components/LoanCalculator';
 import LeadDashboard from './components/LeadDashboard';
 import SEOManager from './components/SEOManager';
@@ -344,10 +343,7 @@ export default function App() {
               ? (isDarkMode ? 'text-neutral-300' : 'text-neutral-700') 
               : 'text-white'
           }`}>
-            <a href="#intro" className="hover:text-[#C8102E] transition-colors duration-200">{isVi ? 'Giới thiệu' : 'About'}</a>
             <a href="#pricing" className="hover:text-[#C8102E] transition-colors duration-200">{isVi ? 'Bảng giá' : 'Pricing'}</a>
-            <a href="#benefits" className="hover:text-[#C8102E] transition-colors duration-200">{isVi ? 'Ưu điểm' : 'Benefits'}</a>
-            <a href="#process" className="hover:text-[#C8102E] transition-colors duration-200">{isVi ? 'Quy trình' : 'Process'}</a>
             <a href="#faq" className="hover:text-[#C8102E] transition-colors duration-200">{isVi ? 'Hỏi đáp' : 'FAQ'}</a>
             <a href="#contact" className="hover:text-[#C8102E] transition-colors duration-200">{isVi ? 'Liên hệ' : 'Contact'}</a>
           </nav>
@@ -391,11 +387,8 @@ export default function App() {
         {/* Mobile Navigation Dropdown Menu */}
         {mobileMenuOpen && (
           <div className={`lg:hidden border-t ${themeBorder} py-5 px-4 space-y-4 ${isDarkMode ? 'bg-neutral-950' : 'bg-white'} animate-fade-in`}>
-            <div className="grid grid-cols-2 gap-3 text-xs uppercase tracking-widest font-bold text-neutral-500">
-              <a href="#intro" onClick={() => setMobileMenuOpen(false)} className="p-2 hover:text-[#C8102E]">{isVi ? 'Giới thiệu' : 'About'}</a>
+            <div className="grid grid-cols-1 gap-3 text-xs uppercase tracking-widest font-bold text-neutral-500 text-center">
               <a href="#pricing" onClick={() => setMobileMenuOpen(false)} className="p-2 hover:text-[#C8102E]">{isVi ? 'Bảng giá' : 'Pricing'}</a>
-              <a href="#benefits" onClick={() => setMobileMenuOpen(false)} className="p-2 hover:text-[#C8102E]">{isVi ? 'Lợi ích' : 'Benefits'}</a>
-              <a href="#process" onClick={() => setMobileMenuOpen(false)} className="p-2 hover:text-[#C8102E]">{isVi ? 'Quy trình' : 'Process'}</a>
               <a href="#faq" onClick={() => setMobileMenuOpen(false)} className="p-2 hover:text-[#C8102E]">{isVi ? 'Hỏi đáp' : 'FAQ'}</a>
               <a href="#contact" onClick={() => setMobileMenuOpen(false)} className="p-2 hover:text-[#C8102E]">{isVi ? 'Liên hệ' : 'Contact'}</a>
             </div>
@@ -434,203 +427,7 @@ export default function App() {
         {/* Decorative Luxury Lighting Accents */}
         <div className="absolute top-1/4 left-1/3 w-[350px] h-[350px] bg-red-600/5 rounded-full blur-[130px] pointer-events-none"></div>
 
-
       </section>
-
-      {/* 4. Section Giới thiệu (About Ti Toàn Portrait) */}
-      <section className={`py-24 ${themeBorder} border-b px-4`} id="intro">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
-          
-          {/* Avatar Area with double border glass card */}
-          <div className="lg:col-span-5 flex justify-center relative">
-            <div className="absolute -top-6 -left-6 w-24 h-24 bg-red-600/10 rounded-full blur-2xl"></div>
-            <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-yellow-500/5 rounded-full blur-2xl"></div>
-            
-            <div className="relative w-full max-w-[380px] aspect-[4/5] rounded-[18px] overflow-hidden border border-neutral-300/40 dark:border-neutral-800 group shadow-2xl bg-neutral-900">
-              <img 
-                src="https://sf-static.upanhlaylink.com/img/image_20260702824efeefac71b16619dbdac9a7abe1ec.jpg" 
-                alt="Ti Toàn - Kim Long Motor Advisor" 
-                className="w-full h-full object-cover object-center transition-transform duration-700 hover:scale-103"
-                referrerPolicy="no-referrer"
-              />
-              
-              {/* Overlay shading */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
-              
-              <div className="absolute bottom-6 left-6 right-6 text-center bg-black/60 backdrop-blur-md border border-neutral-800 py-3 rounded-2xl">
-                <p className="text-[#C9A227] font-poppins font-bold text-lg tracking-wider uppercase">NGUYỄN QUỐC TOÀN</p>
-                <p className="text-[9px] font-mono text-neutral-300 mt-1 uppercase tracking-widest">
-                  {isVi ? 'Đại Diện Thương Mại Xuất Sắc' : 'Senior Commercial Agent'}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Biography and commitments */}
-          <div className="lg:col-span-7 space-y-8">
-            <div className="space-y-2">
-              <span className="text-[#D6001C] text-xs font-mono uppercase tracking-widest font-black block">
-                {isVi ? 'Chân dung thương hiệu' : 'Personal Brand Portrait'}
-              </span>
-              <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight font-poppins uppercase leading-tight">
-                {isVi ? 'Tận tâm - Uy tín - Đồng hành trọn đời' : 'Dedicated - Reliable - Lifelong Partner'}
-              </h2>
-            </div>
-
-            <p className="text-sm sm:text-base leading-relaxed text-neutral-500 dark:text-neutral-300 font-light">
-              {isVi 
-                ? 'Em là Ti Toàn (Nguyễn Quốc Toàn), Đại diện bán hàng ủy quyền các dòng xe thương mại Kim Long Motor. Với triết lý kinh doanh "Khách hàng là tri kỷ", em không chỉ bán một chiếc xe vận tải, mà luôn cam kết mang lại giải pháp tài chính tối ưu nhất, bảo dưỡng lưu động 24/7 và đồng hành trọn đời cùng thành công của quý doanh nghiệp.'
-                : 'I am Ti Toàn, authorized sales lead at Kim Long Motor. Built upon our core value "Customers are lifelong companions", I dedicate myself to providing customized corporate financing schemes, 24/7 mobile vehicle support, and reliable lifelong post-sale relationships.'
-              }
-            </p>
-
-            {/* Experience timeline steps inside about */}
-            <div className="space-y-4">
-              <h4 className="text-xs font-bold uppercase tracking-widest text-[#D6B25E] font-mono">{isVi ? 'Hành trình cam kết vàng:' : 'Hành trình cam kết vàng:'}</h4>
-              <div className="relative border-l-2 border-neutral-200 dark:border-neutral-800 pl-6 space-y-6">
-                {[
-                  { yr: 'Bước 1', title: isVi ? 'Khảo sát nhu cầu vận hành thực tế' : 'Accurate operational demand survey' },
-                  { yr: 'Bước 2', title: isVi ? 'Tính toán cấu hình tối ưu tài chính' : 'Financial configurations optimization' },
-                  { yr: 'Bước 3', title: isVi ? 'Duyệt vay trả góp 85% nhanh gọn trong 48h' : 'Fast 85% corporate credit approvals within 48h' },
-                  { yr: 'Bước 4', title: isVi ? 'Bàn giao xe tận nơi toàn quốc & bảo dưỡng Mobile Service' : 'National vehicle delivery & lifelong mobile maintenance' }
-                ].map((item, index) => (
-                  <div key={index} className="relative">
-                    <span className="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-[#C8102E] border-2 border-white dark:border-neutral-900"></span>
-                    <p className="text-[10px] font-mono text-[#D6B25E] font-bold uppercase">{item.yr}</p>
-                    <p className="font-bold text-sm mt-0.5">{item.title}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="pt-4 flex flex-wrap gap-4">
-              <button
-                onClick={() => openBookingModal('', 'general')}
-                className="bg-[#C8102E] hover:bg-red-700 text-white font-bold text-xs uppercase tracking-widest px-6 py-4 rounded-xl cursor-pointer transition-all flex items-center gap-2"
-              >
-                <span>{isVi ? 'Đặt lịch hẹn cùng Ti Toàn' : 'Consult with Ti Toàn'}</span>
-                <ArrowRight size={14} />
-              </button>
-              <a 
-                href="https://zalo.me/0799600789"
-                target="_blank"
-                referrerPolicy="no-referrer"
-                className={`border ${themeBorder} hover:border-[#C8102E] ${isDarkMode ? 'bg-neutral-900 text-white' : 'bg-white text-black'} font-bold text-xs uppercase tracking-widest px-6 py-4 rounded-xl cursor-pointer transition-all flex items-center justify-center gap-2`}
-              >
-                <MessageSquare size={14} className="text-blue-500" />
-                <span>Zalo</span>
-              </a>
-            </div>
-          </div>
-
-        </div>
-      </section>
-
-      {/* 4.5. Vehicle Categories Section */}
-      <section className={`py-24 ${isDarkMode ? 'bg-[#0f0f10]' : 'bg-[#F8F9FB]'} border-b ${themeBorder} px-4`} id="categories">
-        <div className="max-w-7xl mx-auto space-y-12">
-          
-          <div className="text-center space-y-3">
-            <span className="text-[#C8102E] text-xs font-mono uppercase tracking-widest font-black block">
-              {isVi ? 'Phân Khúc Vận Tải' : 'Automotive Segments'}
-            </span>
-            <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight font-poppins uppercase text-[#111827] dark:text-white">
-              {isVi ? 'Danh Mục Dòng Xe Chuyên Nghiệp' : 'Premium Vehicle Categories'}
-            </h2>
-            <p className="text-neutral-500 text-xs sm:text-sm max-w-xl mx-auto">
-              {isVi 
-                ? 'Lựa chọn phân khúc xe thương mại phù hợp tối ưu với mô hình Logistics của bạn.'
-                : 'Select the commercial vehicle class engineered to elevate your shipping logistics business.'
-              }
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              {
-                id: 'electric',
-                titleVi: 'Vận Tải Điện Xanh EV',
-                titleEn: 'Electric Green Fleet',
-                descVi: 'Tương lai logistics đô thị 100% điện năng, tiết kiệm 40% nhiên liệu, 0 khí thải.',
-                descEn: 'The future of city shipping. 100% electric cargo, 40% fuel save, zero emissions.',
-                image: 'https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&q=80&w=600',
-                badgeVi: 'Xu Hướng Mới',
-                badgeEn: 'Eco Future'
-              },
-              {
-                id: 'light',
-                titleVi: 'Xe Tải Nhẹ Đô Thị',
-                titleEn: 'Light Commercial Trucks',
-                descVi: 'Được thiết kế linh hoạt, di chuyển dễ dàng trong phố giờ cao điểm, tối ưu tải trọng.',
-                descEn: 'Engineered for street agility, optimal payloads, and easy high-traffic downtown access.',
-                image: 'https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?auto=format&fit=crop&q=80&w=600',
-                badgeVi: 'Bán Chạy Nhất',
-                badgeEn: 'Top Seller'
-              },
-              {
-                id: 'heavy',
-                titleVi: 'Vận Tải Trung & Nặng',
-                titleEn: 'Medium & Heavy Duty',
-                descVi: 'Khung gầm siêu chịu lực, động cơ Weichai dũng mãnh, vượt mọi cung đường xa lộ xuyên Việt.',
-                descEn: 'Reinforced heavy chassis, commanding Weichai engines for trans-national highway freight.',
-                image: 'https://images.unsplash.com/photo-1516594798947-e65505dbb29d?auto=format&fit=crop&q=80&w=600',
-                badgeVi: 'Hiệu Suất Vượt Trội',
-                badgeEn: 'Maximum Power'
-              },
-              {
-                id: 'bus',
-                titleVi: 'Xe Bus & Minibus',
-                titleEn: 'Buses & Coach Fleet',
-                descVi: 'Cung điện di động sang trọng, giường nằm massage đa điểm, tiêu chuẩn khách sạn 5 sao.',
-                descEn: 'Luxurious mobile palaces, individual massage berths, 5-star passenger hospitality.',
-                image: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&q=80&w=600',
-                badgeVi: 'Đẳng Cấp Thượng Lưu',
-                badgeEn: 'Palace Coach'
-              }
-            ].map((cat) => (
-              <div
-                key={cat.id}
-                onClick={() => {
-                  setActiveCategory(cat.id);
-                  document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' });
-                }}
-                className="bg-white dark:bg-neutral-900 border border-neutral-200/80 dark:border-neutral-800 rounded-[20px] shadow-sm hover:shadow-xl transition-all duration-500 cursor-pointer overflow-hidden group hover:-translate-y-1.5 flex flex-col justify-between"
-              >
-                <div className="relative aspect-[16/10] overflow-hidden">
-                  <img
-                    src={cat.image}
-                    alt={cat.titleVi}
-                    className="w-full h-full object-cover group-hover:scale-106 transition-transform duration-700 ease-out"
-                    referrerPolicy="no-referrer"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-                  <span className="absolute top-3 left-3 bg-[#C8102E] text-white text-[8px] font-mono uppercase tracking-widest px-2.5 py-0.5 rounded-full font-bold shadow-md">
-                    {isVi ? cat.badgeVi : cat.badgeEn}
-                  </span>
-                </div>
-                
-                <div className="p-6 space-y-2 flex-1 flex flex-col justify-between">
-                  <div>
-                    <h3 className="text-base font-black tracking-tight text-[#111827] dark:text-white uppercase font-poppins group-hover:text-[#C8102E] transition-colors">
-                      {isVi ? cat.titleVi : cat.titleEn}
-                    </h3>
-                    <p className="text-xs text-neutral-500 dark:text-neutral-400 leading-relaxed mt-2 line-clamp-3 font-light">
-                      {isVi ? cat.descVi : cat.descEn}
-                    </p>
-                  </div>
-                  <div className="flex items-center text-xs text-[#C8102E] font-bold gap-1 mt-4 group-hover:translate-x-1.5 transition-transform duration-300">
-                    <span>{isVi ? 'Khám phá dòng xe' : 'Explore Fleet'}</span>
-                    <ChevronRight size={14} />
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-        </div>
-      </section>
-
-
 
       {/* Pricing Matrix Section */}
       <PriceListSection
@@ -650,105 +447,6 @@ export default function App() {
           onOpenBookingForm={openBookingModal}
         />
       )}
-
-      {/* 7. Buying Process Section (Timeline) */}
-      <section className={`py-24 ${isDarkMode ? 'bg-black' : 'bg-neutral-50'} ${themeBorder} border-b px-4`} id="process">
-        <div className="max-w-7xl mx-auto space-y-12">
-          
-          <div className="text-center space-y-3">
-            <span className="text-[#C8102E] text-xs font-mono uppercase tracking-widest font-black block">
-              {isVi ? 'Đơn giản - Chuyên nghiệp' : 'Seamless Timelines'}
-            </span>
-            <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight font-poppins uppercase">
-              {isVi ? 'Quy Trình Mua Xe 6 Bước Trọn Gói' : '6-Step Premium Purchase Journey'}
-            </h2>
-            <p className="text-neutral-500 text-xs sm:text-sm max-w-xl mx-auto">
-              {isVi 
-                ? 'Hành trình tinh giản 6 bước đồng hành cùng Ti Toàn từ lúc đặt cọc tới lúc nhận xe lăn bánh tại nhà.'
-                : 'A seamless 6-step roadmap engineered to make commercial fleet acquisitions fast and worry-free.'
-              }
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-6 relative">
-            {BUYING_STEPS.map((s, idx) => (
-              <div 
-                key={s.step}
-                className={`${themeCardBg} border ${themeBorder} rounded-[18px] p-5 text-center relative flex flex-col justify-between min-h-[200px] group hover:border-[#C8102E]/40 transition-all shadow-sm hover:shadow-md`}
-              >
-                {/* Step indicator circle */}
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#C8102E] text-white font-extrabold font-mono text-[10px] w-6 h-6 rounded-full flex items-center justify-center border-2 border-white shadow">
-                  {s.step}
-                </div>
-
-                <div className="space-y-2 mt-4">
-                  <h3 className="text-sm font-extrabold tracking-tight pt-1 font-poppins">
-                    {isVi ? s.titleVi : s.titleEn}
-                  </h3>
-                  <p className="text-[11px] text-neutral-400 leading-relaxed font-sans">
-                    {isVi ? s.descVi : s.descEn}
-                  </p>
-                </div>
-                
-                <span className="text-[9px] font-mono text-neutral-400 group-hover:text-[#C8102E] uppercase tracking-widest block pt-2 transition-colors">
-                  Step 0{s.step}
-                </span>
-              </div>
-            ))}
-          </div>
-
-        </div>
-      </section>
-
-      {/* 8. Advantages / Lợi ích Grid (Benefits 6 cards) */}
-      <section className={`py-24 ${themeBorder} border-b px-4`} id="benefits">
-        <div className="max-w-7xl mx-auto space-y-12">
-          
-          <div className="text-center space-y-3">
-            <span className="text-[#C8102E] text-xs font-mono uppercase tracking-widest font-black block">
-              {isVi ? 'Giá trị vượt trội' : 'Distinctive Corporate Standards'}
-            </span>
-            <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight font-poppins uppercase">
-              {isVi ? 'Đặc Quyền Khách Hàng Của Ti Toàn' : 'Your Golden Service Benefits'}
-            </h2>
-            <p className="text-neutral-500 text-xs sm:text-sm max-w-xl mx-auto">
-              {isVi 
-                ? '6 ưu thế cốt lõi đem lại trải nghiệm hài lòng đẳng cấp, giải phóng hoàn toàn gánh nặng thủ tục.'
-                : '6 distinct service pillars designed to streamline fleet additions, insurance, and long-term operations.'
-              }
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {BENEFITS.map((b) => (
-              <div 
-                key={b.id}
-                className={`${themeCardBg} p-8 border ${themeBorder} rounded-[20px] hover:border-[#D4AF37]/60 transition-all duration-300 space-y-5 shadow-sm hover:shadow-2xl hover:-translate-y-1`}
-              >
-                {/* Dynamically assign icons with luxurious background */}
-                <div className="w-14 h-14 rounded-2xl bg-red-500/10 dark:bg-red-500/5 border border-red-500/15 flex items-center justify-center text-[#C8102E] shadow-inner">
-                  {b.iconName === 'UserCheck' && <UserCheck size={26} className="text-[#C8102E]" />}
-                  {b.iconName === 'Percent' && <Percent size={26} className="text-[#C8102E]" />}
-                  {b.iconName === 'Truck' && <Truck size={26} className="text-[#C8102E]" />}
-                  {b.iconName === 'FileText' && <FileText size={26} className="text-[#C8102E]" />}
-                  {b.iconName === 'ShieldCheck' && <ShieldCheck size={26} className="text-[#C8102E]" />}
-                  {b.iconName === 'Wrench' && <Wrench size={26} className="text-[#C8102E]" />}
-                </div>
-
-                <div className="space-y-2">
-                  <h3 className="text-lg font-black tracking-tight font-poppins text-neutral-900 dark:text-neutral-100 uppercase">
-                    {isVi ? b.titleVi : b.titleEn}
-                  </h3>
-                  <p className="text-xs sm:text-sm text-neutral-500 dark:text-neutral-400 leading-relaxed font-sans font-light">
-                    {isVi ? b.descVi : b.descEn}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-
-        </div>
-      </section>
 
       {/* 11. FAQ Section */}
       <section className={`py-24 ${isDarkMode ? 'bg-black' : 'bg-neutral-50'} ${themeBorder} border-b px-4`} id="faq">
@@ -774,15 +472,15 @@ export default function App() {
             <select
               value={faqCategory}
               onChange={(e) => setFaqCategory(e.target.value)}
-              className={`w-full sm:w-auto ${themeCardBg} border ${themeBorder} text-xs rounded-xl px-4 py-3 focus:outline-none focus:border-[#C8102E] transition-colors cursor-pointer font-bold`}
+              className="w-full sm:w-auto bg-white text-gray-900 border border-gray-300 text-xs rounded-xl px-4 py-3 focus:outline-none focus:border-[#C8102E] transition-colors cursor-pointer font-bold shadow-sm"
             >
-              <option value="all">-- {isVi ? 'Chọn tất cả chủ đề' : 'All FAQ categories'} ({FAQS.length}) --</option>
-              <option value="price">{isVi ? 'Giá xe & Ưu đãi' : 'Pricing & Incentives'}</option>
-              <option value="installment">{isVi ? 'Hồ sơ mua trả góp' : 'Financing & Loan papers'}</option>
-              <option value="warranty">{isVi ? 'Thời hạn bảo hành' : 'Factory warranties'}</option>
-              <option value="registration">{isVi ? 'Đăng ký đăng kiểm' : 'Registrations & License'}</option>
-              <option value="delivery">{isVi ? 'Giao nhận xe' : 'National deliveries'}</option>
-              <option value="maintenance">{isVi ? 'Kỹ thuật bảo dưỡng' : 'Maintenances'}</option>
+              <option value="all" className="bg-white text-gray-900">-- {isVi ? 'Chọn tất cả chủ đề' : 'All FAQ categories'} ({FAQS.length}) --</option>
+              <option value="price" className="bg-white text-gray-900">{isVi ? 'Giá xe & Ưu đãi' : 'Pricing & Incentives'}</option>
+              <option value="installment" className="bg-white text-gray-900">{isVi ? 'Hồ sơ mua trả góp' : 'Financing & Loan papers'}</option>
+              <option value="warranty" className="bg-white text-gray-900">{isVi ? 'Thời hạn bảo hành' : 'Factory warranties'}</option>
+              <option value="registration" className="bg-white text-gray-900">{isVi ? 'Đăng ký đăng kiểm' : 'Registrations & License'}</option>
+              <option value="delivery" className="bg-white text-gray-900">{isVi ? 'Giao nhận xe' : 'National deliveries'}</option>
+              <option value="maintenance" className="bg-white text-gray-900">{isVi ? 'Kỹ thuật bảo dưỡng' : 'Maintenances'}</option>
             </select>
 
             <div className={`relative w-full sm:max-w-xs ${themeCardBg} border ${themeBorder} rounded-xl overflow-hidden`}>
@@ -805,23 +503,25 @@ export default function App() {
               return (
                 <div 
                   key={faq.id}
-                  className={`${themeCardBg} border ${themeBorder} rounded-[18px] overflow-hidden transition-all duration-300 shadow-sm`}
+                  className="bg-white dark:bg-neutral-900 rounded-xl border border-gray-200 dark:border-neutral-800 shadow-sm"
                 >
                   <button
                     onClick={() => setExpandedFaqId(isExpanded ? null : faq.id)}
-                    className={`w-full flex items-center justify-between p-5 text-left text-sm sm:text-base font-bold cursor-pointer transition-colors font-poppins ${isExpanded ? 'text-[#C8102E] bg-neutral-50/50 dark:bg-neutral-900/20' : 'hover:text-[#C8102E]'}`}
+                    className={`w-full flex items-center justify-between p-5 text-left cursor-pointer transition-colors font-poppins ${isExpanded ? 'text-[#C8102E] bg-neutral-50/50 dark:bg-neutral-900/20' : 'hover:text-[#C8102E]'}`}
                   >
-                    <span className="pr-4">{isVi ? faq.questionVi : faq.questionEn}</span>
+                    <span className="pr-4 font-semibold text-gray-900 dark:text-white text-base sm:text-lg">
+                      {isVi ? faq.questionVi : faq.questionEn}
+                    </span>
                     <ChevronDown size={18} className={`text-neutral-400 shrink-0 transition-transform duration-300 ${isExpanded ? 'rotate-180 text-[#C8102E]' : ''}`} />
                   </button>
 
                   {isExpanded && (
-                    <div className="px-6 pb-6 pt-4 text-xs sm:text-sm text-neutral-800 dark:text-neutral-200 leading-relaxed border-t border-neutral-100 dark:border-neutral-800 animate-fade-in bg-red-500/[0.03] dark:bg-red-500/[0.06] border-l-4 border-l-[#C8102E]">
+                    <div className="px-6 pb-6 pt-4 border-t border-gray-200 dark:border-neutral-800 bg-[#FFF7F7] dark:bg-neutral-950/40 border-l-4 border-l-[#C8102E]">
                       <div className="flex items-start gap-3">
                         <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-[#C8102E] text-white text-[10px] font-black shrink-0 mt-0.5 shadow-sm">
                           A
                         </span>
-                        <p className="flex-1 font-sans font-bold text-neutral-900 dark:text-neutral-100 leading-relaxed">
+                        <p className="flex-1 font-sans text-gray-700 dark:text-gray-300 leading-7 text-base">
                           {isVi ? faq.answerVi : faq.answerEn}
                         </p>
                       </div>
@@ -969,7 +669,7 @@ export default function App() {
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                     placeholder={isVi ? "Ví dụ: Nguyễn Văn A" : "E.g., John Doe"}
-                    className={`w-full ${isDarkMode ? 'bg-neutral-900' : 'bg-neutral-50'} border ${themeBorder} rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#C8102E] transition-colors`}
+                    className={`w-full ${isDarkMode ? 'bg-neutral-900 text-white' : 'bg-neutral-50 text-gray-900'} border ${themeBorder} rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#C8102E] transition-colors`}
                   />
                 </div>
                 <div>
@@ -981,7 +681,7 @@ export default function App() {
                     value={phoneNumber}
                     onChange={(e) => setPhoneNumber(e.target.value)}
                     placeholder={isVi ? "Ví dụ: 0799600789" : "E.g., 0799600789"}
-                    className={`w-full ${isDarkMode ? 'bg-neutral-900' : 'bg-neutral-50'} border ${themeBorder} rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#C8102E] transition-colors font-mono`}
+                    className={`w-full ${isDarkMode ? 'bg-neutral-900 text-white' : 'bg-neutral-50 text-gray-900'} border ${themeBorder} rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#C8102E] transition-colors font-mono`}
                   />
                 </div>
               </div>
@@ -995,7 +695,7 @@ export default function App() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="company@gmail.com"
-                    className={`w-full ${isDarkMode ? 'bg-neutral-900' : 'bg-neutral-50'} border ${themeBorder} rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#C8102E] transition-colors font-mono`}
+                    className={`w-full ${isDarkMode ? 'bg-neutral-900 text-white' : 'bg-neutral-50 text-gray-900'} border ${themeBorder} rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#C8102E] transition-colors font-mono`}
                   />
                 </div>
                 <div>
@@ -1004,11 +704,11 @@ export default function App() {
                     id="form-product-select"
                     value={bookingVehicle}
                     onChange={(e) => setBookingVehicle(e.target.value)}
-                    className={`w-full ${isDarkMode ? 'bg-neutral-900' : 'bg-neutral-50'} border ${themeBorder} rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#C8102E] transition-colors cursor-pointer font-bold`}
+                    className="w-full bg-white text-gray-900 border border-gray-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#C8102E] transition-colors cursor-pointer font-bold shadow-sm"
                   >
-                    <option value="">-- {isVi ? 'Chọn mẫu xe' : 'Select vehicle'} --</option>
+                    <option value="" className="bg-white text-gray-900">-- {isVi ? 'Chọn mẫu xe' : 'Select vehicle'} --</option>
                     {PRODUCTS.map(p => (
-                      <option key={p.id} value={p.name}>{p.name}</option>
+                      <option key={p.id} value={p.name} className="bg-white text-gray-900">{p.name}</option>
                     ))}
                   </select>
                 </div>
@@ -1047,7 +747,7 @@ export default function App() {
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
                   placeholder={isVi ? "Ví dụ: Hỏi thủ tục trả góp 85% cho doanh nghiệp, lăn bánh về Cần Thơ..." : "E.g., I need 85% company credit details, on-road delivery back to Can Tho..."}
-                  className={`w-full ${isDarkMode ? 'bg-neutral-900' : 'bg-neutral-50'} border ${themeBorder} rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#C8102E] transition-colors resize-none`}
+                  className={`w-full ${isDarkMode ? 'bg-neutral-900 text-white' : 'bg-neutral-50 text-gray-900'} border ${themeBorder} rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#C8102E] transition-colors resize-none`}
                 ></textarea>
               </div>
 
@@ -1107,11 +807,9 @@ export default function App() {
           <div className="md:col-span-3 space-y-4">
             <h4 className="font-bold text-xs uppercase tracking-widest text-neutral-400 font-mono">{isVi ? 'Liên kết nhanh' : 'Quick navigation'}</h4>
             <ul className="space-y-2.5 text-neutral-400 font-medium">
-              <li><a href="#intro" className="hover:text-[#C8102E] transition-colors">{isVi ? 'Giới thiệu Ti Toàn' : 'About Agent'}</a></li>
-              <li><a href="#products" className="hover:text-[#C8102E] transition-colors">{isVi ? 'Dòng xe Kim Long' : 'Fleet Showcase'}</a></li>
-              <li><a href="#benefits" className="hover:text-[#C8102E] transition-colors">{isVi ? 'Đặc quyền đối tác' : 'Service Benefits'}</a></li>
-              <li><a href="#process" className="hover:text-[#C8102E] transition-colors">{isVi ? 'Quy trình giao xe' : 'Delivery Steps'}</a></li>
-              <li><a href="#reviews" className="hover:text-[#C8102E] transition-colors">{isVi ? 'Khách hàng nói gì' : 'Genuine Reviews'}</a></li>
+              <li><a href="#pricing" className="hover:text-[#C8102E] transition-colors">{isVi ? 'Bảng giá dòng xe' : 'Price List'}</a></li>
+              <li><a href="#faq" className="hover:text-[#C8102E] transition-colors">{isVi ? 'Câu hỏi thường gặp' : 'FAQ Hub'}</a></li>
+              <li><a href="#contact" className="hover:text-[#C8102E] transition-colors">{isVi ? 'Liên hệ & Bản đồ' : 'Contact & Showroom'}</a></li>
             </ul>
           </div>
 
@@ -1176,13 +874,13 @@ export default function App() {
         </a>
 
         <a 
-          href="#products" 
+          href="#pricing" 
           className="flex flex-col items-center text-[9px] font-bold text-neutral-400 hover:text-[#C8102E]"
         >
           <div className="w-9 h-9 rounded-full bg-red-500/10 dark:bg-red-500/5 flex items-center justify-center text-[#C8102E] mb-1">
             <span>🚛</span>
           </div>
-          <span>{isVi ? 'Xe' : 'Vehicles'}</span>
+          <span>{isVi ? 'Bảng giá' : 'Pricing'}</span>
         </a>
 
         <a 
@@ -1208,13 +906,13 @@ export default function App() {
         </a>
 
         <a 
-          href="#intro" 
+          href="#contact" 
           className="flex flex-col items-center text-[9px] font-bold text-neutral-400 hover:text-[#C8102E]"
         >
           <div className="w-9 h-9 rounded-full bg-yellow-500/10 flex items-center justify-center text-yellow-500 mb-1">
             <span>👤</span>
           </div>
-          <span>{isVi ? 'Tôi' : 'About'}</span>
+          <span>{isVi ? 'Liên hệ' : 'Contact'}</span>
         </a>
       </div>
 
@@ -1293,7 +991,7 @@ export default function App() {
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                     placeholder={isVi ? "Nguyễn Văn A..." : "John Doe..."}
-                    className={`w-full ${isDarkMode ? 'bg-neutral-900' : 'bg-neutral-50'} border ${themeBorder} rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#C8102E]`}
+                    className={`w-full ${isDarkMode ? 'bg-neutral-900 text-white' : 'bg-neutral-50 text-gray-900'} border ${themeBorder} rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#C8102E]`}
                   />
                 </div>
 
@@ -1305,7 +1003,7 @@ export default function App() {
                     value={phoneNumber}
                     onChange={(e) => setPhoneNumber(e.target.value)}
                     placeholder="0799..."
-                    className={`w-full ${isDarkMode ? 'bg-neutral-900' : 'bg-neutral-50'} border ${themeBorder} rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#C8102E] font-mono`}
+                    className={`w-full ${isDarkMode ? 'bg-neutral-900 text-white' : 'bg-neutral-50 text-gray-900'} border ${themeBorder} rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#C8102E] font-mono`}
                   />
                 </div>
 
@@ -1314,12 +1012,12 @@ export default function App() {
                   <select
                     value={bookingVehicle}
                     onChange={(e) => setBookingVehicle(e.target.value)}
-                    className={`w-full ${isDarkMode ? 'bg-neutral-900' : 'bg-neutral-50'} border ${themeBorder} rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#C8102E] font-bold`}
+                    className="w-full bg-white text-gray-900 border border-gray-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#C8102E] font-bold shadow-sm cursor-pointer"
                     required
                   >
-                    <option value="">-- {isVi ? 'Chọn dòng xe' : 'Select model'} --</option>
+                    <option value="" className="bg-white text-gray-900">-- {isVi ? 'Chọn dòng xe' : 'Select model'} --</option>
                     {PRODUCTS.map(p => (
-                      <option key={p.id} value={p.name}>{p.name}</option>
+                      <option key={p.id} value={p.name} className="bg-white text-gray-900">{p.name}</option>
                     ))}
                   </select>
                 </div>
@@ -1383,7 +1081,7 @@ export default function App() {
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                     placeholder={isVi ? "Ví dụ: Nguyễn Văn A" : "E.g., John Doe"}
-                    className={`w-full ${isDarkMode ? 'bg-neutral-900' : 'bg-neutral-50'} border ${themeBorder} rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#C8102E]`}
+                    className={`w-full ${isDarkMode ? 'bg-neutral-900 text-white' : 'bg-neutral-50 text-gray-900'} border ${themeBorder} rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#C8102E]`}
                   />
                 </div>
 
@@ -1395,7 +1093,7 @@ export default function App() {
                     value={phoneNumber}
                     onChange={(e) => setPhoneNumber(e.target.value)}
                     placeholder="0799..."
-                    className={`w-full ${isDarkMode ? 'bg-neutral-900' : 'bg-neutral-50'} border ${themeBorder} rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#C8102E] font-mono`}
+                    className={`w-full ${isDarkMode ? 'bg-neutral-900 text-white' : 'bg-neutral-50 text-gray-900'} border ${themeBorder} rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#C8102E] font-mono`}
                   />
                 </div>
 
@@ -1404,12 +1102,12 @@ export default function App() {
                   <select
                     value={bookingVehicle}
                     onChange={(e) => setBookingVehicle(e.target.value)}
-                    className={`w-full ${isDarkMode ? 'bg-neutral-900' : 'bg-neutral-50'} border ${themeBorder} rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#C8102E] font-bold`}
+                    className="w-full bg-white text-gray-900 border border-gray-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#C8102E] font-bold shadow-sm cursor-pointer"
                     required
                   >
-                    <option value="">-- {isVi ? 'Chọn dòng xe' : 'Select model'} --</option>
+                    <option value="" className="bg-white text-gray-900">-- {isVi ? 'Chọn dòng xe' : 'Select model'} --</option>
                     {PRODUCTS.map(p => (
-                      <option key={p.id} value={p.name}>{p.name}</option>
+                      <option key={p.id} value={p.name} className="bg-white text-gray-900">{p.name}</option>
                     ))}
                   </select>
                 </div>
@@ -1421,7 +1119,7 @@ export default function App() {
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
                     placeholder={isVi ? "Hỏi về ngân hàng, đăng ký sườn xe..." : "Inquire about bank paperwork, licenses..."}
-                    className={`w-full ${isDarkMode ? 'bg-neutral-900' : 'bg-neutral-50'} border ${themeBorder} rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#C8102E] resize-none`}
+                    className={`w-full ${isDarkMode ? 'bg-neutral-900 text-white' : 'bg-neutral-50 text-gray-900'} border ${themeBorder} rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#C8102E] resize-none`}
                   ></textarea>
                 </div>
 
@@ -1519,8 +1217,7 @@ export default function App() {
         </button>
       )}
 
-      {/* Floating AI showroom chatbot integration */}
-      <ShowroomChatbot language={language} />
+
 
       {/* Gated Administrative Sales Dashboard Modal */}
       {isAdminOpen && (

@@ -143,14 +143,14 @@ export default function LoanCalculator({ language, initialVehiclePrice = 8900000
                 id="calc-loan-percent"
                 value={loanPercent}
                 onChange={(e) => setLoanPercent(parseInt(e.target.value))}
-                className="w-full bg-neutral-950 border border-neutral-800 text-white rounded-xl px-4 py-3 focus:outline-none focus:border-red-600 transition-colors cursor-pointer"
+                className="w-full bg-white border border-gray-300 text-gray-900 rounded-xl px-4 py-3 focus:outline-none focus:border-red-600 transition-colors cursor-pointer shadow-sm"
               >
-                <option value={50}>50% ({isVi ? 'Trả trước' : 'Downpayment'} 50%)</option>
-                <option value={60}>60% ({isVi ? 'Trả trước' : 'Downpayment'} 40%)</option>
-                <option value={70}>70% ({isVi ? 'Trả trước' : 'Downpayment'} 30%)</option>
-                <option value={75}>75% ({isVi ? 'Trả trước' : 'Downpayment'} 25%)</option>
-                <option value={80}>80% ({isVi ? 'Trả trước' : 'Downpayment'} 20%)</option>
-                <option value={85}>85% ({isVi ? 'Trả trước' : 'Downpayment'} 15% - {isVi ? 'Tối đa' : 'Max'})</option>
+                <option value={50} className="bg-white text-gray-900">50% ({isVi ? 'Trả trước' : 'Downpayment'} 50%)</option>
+                <option value={60} className="bg-white text-gray-900">60% ({isVi ? 'Trả trước' : 'Downpayment'} 40%)</option>
+                <option value={70} className="bg-white text-gray-900">70% ({isVi ? 'Trả trước' : 'Downpayment'} 30%)</option>
+                <option value={75} className="bg-white text-gray-900">75% ({isVi ? 'Trả trước' : 'Downpayment'} 25%)</option>
+                <option value={80} className="bg-white text-gray-900">80% ({isVi ? 'Trả trước' : 'Downpayment'} 20%)</option>
+                <option value={85} className="bg-white text-gray-900">85% ({isVi ? 'Trả trước' : 'Downpayment'} 15% - {isVi ? 'Tối đa' : 'Max'})</option>
               </select>
             </div>
 
@@ -164,10 +164,10 @@ export default function LoanCalculator({ language, initialVehiclePrice = 8900000
                 id="calc-loan-duration"
                 value={durationYears}
                 onChange={(e) => setDurationYears(parseInt(e.target.value))}
-                className="w-full bg-neutral-950 border border-neutral-800 text-white rounded-xl px-4 py-3 focus:outline-none focus:border-red-600 transition-colors cursor-pointer"
+                className="w-full bg-white border border-gray-300 text-gray-900 rounded-xl px-4 py-3 focus:outline-none focus:border-red-600 transition-colors cursor-pointer shadow-sm"
               >
                 {[1, 2, 3, 4, 5, 6, 7].map(yr => (
-                  <option key={yr} value={yr}>{yr} {isVi ? 'Năm' : 'Years'} ({yr * 12} {isVi ? 'Tháng' : 'Months'})</option>
+                  <option key={yr} value={yr} className="bg-white text-gray-900">{yr} {isVi ? 'Năm' : 'Years'} ({yr * 12} {isVi ? 'Tháng' : 'Months'})</option>
                 ))}
               </select>
             </div>
