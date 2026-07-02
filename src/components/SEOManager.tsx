@@ -16,23 +16,36 @@ export default function SEOManager({ language, activeProductId, activeProduct }:
   useEffect(() => {
     let title = '';
     let description = '';
+    let ogTitle = '';
+    let ogDescription = '';
 
     if (activeProduct) {
       title = isVi 
-        ? `${activeProduct.name} - Giá xe & Thông số kỹ thuật | Kim Long Motor` 
-        : `${activeProduct.name} - Price & Tech Specs | Kim Long Motor`;
+        ? `${activeProduct.name} - Giá xe & Thông số kỹ thuật | Kim Long Motor Miền Nam` 
+        : `${activeProduct.name} - Price & Tech Specs | Kim Long Motor Southern`;
       
       description = isVi
         ? `Chi tiết xe thương mại ${activeProduct.name}. Tải trọng ${activeProduct.payload}, công suất ${activeProduct.power}. Hỗ trợ trả góp 85%, giao xe tận nơi. Liên hệ Ti Toàn ngay.`
         : `Detailed specs of commercial ${activeProduct.name}. Payload ${activeProduct.payload}, power ${activeProduct.power}. 85% financing support, home delivery. Contact Ti Toàn now.`;
+      
+      ogTitle = title;
+      ogDescription = description;
     } else {
       title = isVi
-        ? 'Kim Long Motor - Tư vấn xe tải, Xe điện & Trả góp'
-        : 'Kim Long Motor - Commercial Truck & EV Consultant';
+        ? 'Kim Long Motor Miền Nam'
+        : 'Kim Long Motor Southern';
       
       description = isVi
-        ? 'Đại diện thương mại Kim Long Motor chuyên tư vấn mua bán xe tải điện EV-300, xe tải nhẹ, trung, nặng, xe đầu kéo, minibus, xe bus. Cam kết giá tốt, hỗ trợ vay 85% nhanh chóng.'
-        : 'Official sales executive at Kim Long Motor. Specialized in EV-300 electric trucks, light, medium, heavy trucks, minibus & coach. Best prices & 85% bank installment support.';
+        ? 'Đại lý xe điện Kim Long Motor Miền Nam'
+        : 'Kim Long Motor Southern EV Dealership';
+      
+      ogTitle = isVi 
+        ? 'Kim Long Motor Miền Nam' 
+        : 'Kim Long Motor Southern';
+      
+      ogDescription = isVi 
+        ? 'Website chính thức Kim Long Motor Miền Nam' 
+        : 'Official Website of Kim Long Motor Southern';
     }
 
     document.title = title;
@@ -48,8 +61,8 @@ export default function SEOManager({ language, activeProductId, activeProduct }:
 
     // Update Open Graph tags for premium SEO
     const ogTags = [
-      { property: 'og:title', content: title },
-      { property: 'og:description', content: description },
+      { property: 'og:title', content: ogTitle },
+      { property: 'og:description', content: ogDescription },
       { property: 'og:type', content: 'website' },
       { property: 'og:image', content: activeProduct?.image || 'https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?auto=format&fit=crop&q=80&w=800' }
     ];
