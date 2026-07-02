@@ -988,15 +988,22 @@ export default function App() {
                 >
                   <button
                     onClick={() => setExpandedFaqId(isExpanded ? null : faq.id)}
-                    className="w-full flex items-center justify-between p-5 text-left text-sm sm:text-base font-bold cursor-pointer hover:text-[#C8102E] transition-colors font-poppins"
+                    className={`w-full flex items-center justify-between p-5 text-left text-sm sm:text-base font-bold cursor-pointer transition-colors font-poppins ${isExpanded ? 'text-[#C8102E] bg-neutral-50/50 dark:bg-neutral-900/20' : 'hover:text-[#C8102E]'}`}
                   >
                     <span className="pr-4">{isVi ? faq.questionVi : faq.questionEn}</span>
                     <ChevronDown size={18} className={`text-neutral-400 shrink-0 transition-transform duration-300 ${isExpanded ? 'rotate-180 text-[#C8102E]' : ''}`} />
                   </button>
 
                   {isExpanded && (
-                    <div className="px-5 pb-5 pt-1 text-xs sm:text-sm text-neutral-500 dark:text-neutral-300 leading-relaxed border-t border-neutral-100 dark:border-neutral-800 animate-fade-in bg-neutral-50/50 dark:bg-neutral-900/10">
-                      {isVi ? faq.answerVi : faq.answerEn}
+                    <div className="px-6 pb-6 pt-4 text-xs sm:text-sm text-neutral-800 dark:text-neutral-200 leading-relaxed border-t border-neutral-100 dark:border-neutral-800 animate-fade-in bg-red-500/[0.03] dark:bg-red-500/[0.06] border-l-4 border-l-[#C8102E]">
+                      <div className="flex items-start gap-3">
+                        <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-[#C8102E] text-white text-[10px] font-black shrink-0 mt-0.5 shadow-sm">
+                          A
+                        </span>
+                        <p className="flex-1 font-sans font-bold text-neutral-900 dark:text-neutral-100 leading-relaxed">
+                          {isVi ? faq.answerVi : faq.answerEn}
+                        </p>
+                      </div>
                     </div>
                   )}
                 </div>

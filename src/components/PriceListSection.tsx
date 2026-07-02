@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { 
-  Phone, MessageSquare, Download, CheckCircle, Lock, Unlock, 
-  Search, Calendar, FileText, Sparkles, Filter, ShieldAlert,
-  HelpCircle, Eye, EyeOff
+  Phone, MessageSquare, Download, CheckCircle, Search, Calendar, 
+  FileText, Sparkles, Filter, ShieldAlert, ChevronRight, HelpCircle, 
+  Flame, DollarSign, Fuel, Award
 } from 'lucide-react';
 
 export interface VehiclePriceItem {
@@ -32,7 +32,10 @@ export default function PriceListSection({
   onOpenAdminLogin
 }: PriceListSectionProps) {
   const isVi = language === 'vi';
-  const [activeFilter, setActiveFilter] = useState<'all' | 'bus-ghe' | 'bus-giuong' | 'tai'>('all');
+  const [filterType, setFilterType] = useState<string>('all');
+  const [filterPrice, setFilterPrice] = useState<string>('all');
+  const [filterFuel, setFilterFuel] = useState<string>('all');
+  const [filterPayload, setFilterPayload] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [showNotification, setShowNotification] = useState<string | null>(null);
 
@@ -44,7 +47,7 @@ export default function PriceListSection({
       loaiXe: 'Mini bus',
       maLoai: 'KIM LONG X9',
       phienBan: '16 chỗ',
-      dongCoQuyCach: 'DK5E',
+      dongCoQuyCach: 'DK5E Diesel',
       namSx: 2026,
       giaCongBo: 719000000,
       ghiChu: ''
@@ -54,7 +57,7 @@ export default function PriceListSection({
       loaiXe: 'Bus 29 ghế (12m)',
       maLoai: 'KIM LONG 29 N29',
       phienBan: 'Tiêu chuẩn',
-      dongCoQuyCach: 'Yuchai/Weichai',
+      dongCoQuyCach: 'Yuchai/Weichai Diesel',
       namSx: 2026,
       giaCongBo: 3440000000,
       ghiChu: ''
@@ -64,7 +67,7 @@ export default function PriceListSection({
       loaiXe: 'Bus 29 ghế (12m)',
       maLoai: 'KIM LONG 29 N29',
       phienBan: 'Đưa đón',
-      dongCoQuyCach: 'Yuchai/Weichai',
+      dongCoQuyCach: 'Yuchai/Weichai Diesel',
       namSx: 2026,
       giaCongBo: 2960000000,
       ghiChu: ''
@@ -74,7 +77,7 @@ export default function PriceListSection({
       loaiXe: 'Bus 29 ghế (9m2)',
       maLoai: 'KIM LONG 29 N29',
       phienBan: 'Tiêu chuẩn',
-      dongCoQuyCach: 'Yuchai',
+      dongCoQuyCach: 'Yuchai Diesel',
       namSx: 2026,
       giaCongBo: 1990000000,
       ghiChu: 'Không có phiên bản đưa đón'
@@ -84,7 +87,7 @@ export default function PriceListSection({
       loaiXe: 'Bus 29 ghế (9m2)',
       maLoai: 'KIM LONG 29 N35',
       phienBan: 'Tiêu chuẩn',
-      dongCoQuyCach: 'Yuchai',
+      dongCoQuyCach: 'Yuchai Diesel',
       namSx: 2026,
       giaCongBo: 2010000000,
       ghiChu: 'Không có phiên bản đưa đón'
@@ -94,9 +97,9 @@ export default function PriceListSection({
       loaiXe: 'Bus 29 ghế (9m2)',
       maLoai: 'KIM LONG 29 N24',
       phienBan: 'Tiêu chuẩn',
-      dongCoQuyCach: 'Yuchai',
+      dongCoQuyCach: 'Yuchai Diesel',
       namSx: 2026,
-      giaCongBo: 'liên hệ PMH',
+      giaCongBo: 'Liên hệ',
       ghiChu: 'Không có phiên bản đưa đón'
     },
     {
@@ -104,7 +107,7 @@ export default function PriceListSection({
       loaiXe: 'Bus 47 ghế (12m)',
       maLoai: 'KIM LONG 99 N47',
       phienBan: 'Tiêu chuẩn',
-      dongCoQuyCach: 'Yuchai/Weichai',
+      dongCoQuyCach: 'Yuchai/Weichai Diesel',
       namSx: 2026,
       giaCongBo: 2960000000,
       ghiChu: ''
@@ -114,7 +117,7 @@ export default function PriceListSection({
       loaiXe: 'Bus 47 ghế (12m)',
       maLoai: 'KIM LONG 99 N47',
       phienBan: 'Đưa đón',
-      dongCoQuyCach: 'Yuchai/Weichai',
+      dongCoQuyCach: 'Yuchai/Weichai Diesel',
       namSx: 2026,
       giaCongBo: 2610000000,
       ghiChu: ''
@@ -126,7 +129,7 @@ export default function PriceListSection({
       loaiXe: 'Bus 34 giường',
       maLoai: 'KIM LONG 99 G34',
       phienBan: 'Cao cấp',
-      dongCoQuyCach: 'Yuchai/Weichai',
+      dongCoQuyCach: 'Yuchai/Weichai Diesel',
       namSx: 2026,
       giaCongBo: 3739000000,
       ghiChu: ''
@@ -136,7 +139,7 @@ export default function PriceListSection({
       loaiXe: 'Bus 34 giường',
       maLoai: 'KIM LONG 99 G34',
       phienBan: 'Tiêu chuẩn',
-      dongCoQuyCach: 'Yuchai/Weichai',
+      dongCoQuyCach: 'Yuchai/Weichai Diesel',
       namSx: 2026,
       giaCongBo: 3609000000,
       ghiChu: 'Cắt giảm LCD, đèn tam cấp, đèn nội thất khoang giường'
@@ -146,7 +149,7 @@ export default function PriceListSection({
       loaiXe: 'Bus 32 giường + WC',
       maLoai: 'KIM LONG 99 G32 + WC',
       phienBan: 'Cao cấp',
-      dongCoQuyCach: 'Yuchai/Weichai',
+      dongCoQuyCach: 'Yuchai/Weichai Diesel',
       namSx: 2026,
       giaCongBo: 3839000000,
       ghiChu: ''
@@ -156,7 +159,7 @@ export default function PriceListSection({
       loaiXe: 'Bus 32 giường + WC',
       maLoai: 'KIM LONG 99 G32 + WC',
       phienBan: 'Tiêu chuẩn',
-      dongCoQuyCach: 'Yuchai/Weichai',
+      dongCoQuyCach: 'Yuchai/Weichai Diesel',
       namSx: 2026,
       giaCongBo: 3709000000,
       ghiChu: 'Cắt giảm LCD, đèn tam cấp, đèn nội thất khoang giường'
@@ -166,7 +169,7 @@ export default function PriceListSection({
       loaiXe: 'Bus 24 giường',
       maLoai: 'KIM LONG 99 G24',
       phienBan: 'Cao cấp',
-      dongCoQuyCach: 'Yuchai/Weichai',
+      dongCoQuyCach: 'Yuchai/Weichai Diesel',
       namSx: 2026,
       giaCongBo: 3989000000,
       ghiChu: ''
@@ -176,7 +179,7 @@ export default function PriceListSection({
       loaiXe: 'Bus 24 giường',
       maLoai: 'KIM LONG 99 G24',
       phienBan: 'Tiêu chuẩn',
-      dongCoQuyCach: 'Yuchai',
+      dongCoQuyCach: 'Yuchai Diesel',
       namSx: 2026,
       giaCongBo: 3809000000,
       ghiChu: 'Cắt giảm LCD, đèn tam cấp, đèn nội thất khoang giường'
@@ -186,7 +189,7 @@ export default function PriceListSection({
       loaiXe: 'Bus 22 giường + WC',
       maLoai: 'KIM LONG 99 G22 + WC',
       phienBan: 'Cao cấp',
-      dongCoQuyCach: 'Yuchai/Weichai',
+      dongCoQuyCach: 'Yuchai/Weichai Diesel',
       namSx: 2026,
       giaCongBo: 4039000000,
       ghiChu: ''
@@ -196,7 +199,7 @@ export default function PriceListSection({
       loaiXe: 'Bus 22 giường + WC',
       maLoai: 'KIM LONG 99 G22 + WC',
       phienBan: 'Tiêu chuẩn',
-      dongCoQuyCach: 'Yuchai/Weichai',
+      dongCoQuyCach: 'Yuchai/Weichai Diesel',
       namSx: 2026,
       giaCongBo: 3859000000,
       ghiChu: 'Cắt giảm LCD, đèn tam cấp, đèn nội thất khoang giường'
@@ -206,9 +209,9 @@ export default function PriceListSection({
     {
       dong: 'TẢI',
       loaiXe: 'GK48EV',
-      maLoai: 'GK48EV',
+      maLoai: 'GK48EV Van điện',
       phienBan: 'VAN EV',
-      dongCoQuyCach: '-',
+      dongCoQuyCach: 'Pin LFP 100% Điện',
       namSx: 2026,
       giaCongBo: 480000000,
       ghiChu: ''
@@ -218,7 +221,7 @@ export default function PriceListSection({
       loaiXe: 'KIM LONG X9 VAN',
       maLoai: 'KIM LONG X9 VAN',
       phienBan: 'VAN',
-      dongCoQuyCach: '-',
+      dongCoQuyCach: 'DK5E Diesel',
       namSx: 2026,
       giaCongBo: 530000000,
       ghiChu: ''
@@ -228,7 +231,7 @@ export default function PriceListSection({
       loaiXe: 'KIMAN9 (1.99T)',
       maLoai: 'KIMAN9 (1.99T)',
       phienBan: 'CHASSIS',
-      dongCoQuyCach: '-',
+      dongCoQuyCach: 'Động cơ phun điện tử EURO 5',
       namSx: 2026,
       giaCongBo: 336000000,
       ghiChu: ''
@@ -238,7 +241,7 @@ export default function PriceListSection({
       loaiXe: 'KIMAN9 (1.99T)',
       maLoai: 'KIMAN9 (1.99T)',
       phienBan: 'THÙNG LỬNG',
-      dongCoQuyCach: 'Tôn đen',
+      dongCoQuyCach: 'Bửng sắt tôn đen dập nguội',
       namSx: 2026,
       giaCongBo: 352000000,
       ghiChu: ''
@@ -248,7 +251,7 @@ export default function PriceListSection({
       loaiXe: 'KIMAN9 (1.99T)',
       maLoai: 'KIMAN9 (1.99T)',
       phienBan: 'THÙNG KÍN 1 CỬA HÔNG',
-      dongCoQuyCach: 'Inox 430',
+      dongCoQuyCach: 'Vách Inox 430 dập sóng',
       namSx: 2026,
       giaCongBo: 377000000,
       ghiChu: ''
@@ -258,7 +261,7 @@ export default function PriceListSection({
       loaiXe: 'KIMAN9 (1.99T)',
       maLoai: 'KIMAN9 (1.99T)',
       phienBan: 'THÙNG KÍN',
-      dongCoQuyCach: 'Inox 430',
+      dongCoQuyCach: 'Vách Inox 430 tiêu chuẩn',
       namSx: 2026,
       giaCongBo: 377000000,
       ghiChu: ''
@@ -268,7 +271,7 @@ export default function PriceListSection({
       loaiXe: 'KIMAN9 (1.99T)',
       maLoai: 'KIMAN9 (1.99T)',
       phienBan: 'THÙNG MUI BẠT 3B',
-      dongCoQuyCach: 'Bửng tôn đen, vách Inox 430',
+      dongCoQuyCach: 'Bửng sắt dập, vách Inox 430',
       namSx: 2026,
       giaCongBo: 369000000,
       ghiChu: ''
@@ -278,7 +281,7 @@ export default function PriceListSection({
       loaiXe: 'KIMAN9 (1.99T)',
       maLoai: 'KIMAN9 (1.99T)',
       phienBan: 'THÙNG MUI BẠT 5B',
-      dongCoQuyCach: 'Bửng tôn đen, vách Inox 430',
+      dongCoQuyCach: 'Bửng sắt dập, vách Inox 430',
       namSx: 2026,
       giaCongBo: 373000000,
       ghiChu: ''
@@ -288,7 +291,7 @@ export default function PriceListSection({
       loaiXe: 'KIMAN9 (2.49T)',
       maLoai: 'KIMAN9 (2.49T)',
       phienBan: 'CHASSIS',
-      dongCoQuyCach: '-',
+      dongCoQuyCach: 'Động cơ phun điện tử EURO 5',
       namSx: 2026,
       giaCongBo: 389000000,
       ghiChu: ''
@@ -298,7 +301,7 @@ export default function PriceListSection({
       loaiXe: 'KIMAN9 (2.49T)',
       maLoai: 'KIMAN9 (2.49T)',
       phienBan: 'THÙNG LỬNG',
-      dongCoQuyCach: 'Tôn đen',
+      dongCoQuyCach: 'Bửng sắt tôn đen dập nguội',
       namSx: 2026,
       giaCongBo: 406000000,
       ghiChu: ''
@@ -308,7 +311,7 @@ export default function PriceListSection({
       loaiXe: 'KIMAN9 (2.49T)',
       maLoai: 'KIMAN9 (2.49T)',
       phienBan: 'THÙNG KÍN 1 CỬA HÔNG',
-      dongCoQuyCach: 'Inox 430',
+      dongCoQuyCach: 'Vách Inox 430 dập sóng',
       namSx: 2026,
       giaCongBo: 431500000,
       ghiChu: ''
@@ -318,7 +321,7 @@ export default function PriceListSection({
       loaiXe: 'KIMAN9 (2.49T)',
       maLoai: 'KIMAN9 (2.49T)',
       phienBan: 'THÙNG KÍN',
-      dongCoQuyCach: 'Inox 430',
+      dongCoQuyCach: 'Vách Inox 430 tiêu chuẩn',
       namSx: 2026,
       giaCongBo: 431500000,
       ghiChu: ''
@@ -328,7 +331,7 @@ export default function PriceListSection({
       loaiXe: 'KIMAN9 (2.49T)',
       maLoai: 'KIMAN9 (2.49T)',
       phienBan: 'THÙNG MUI BẠT 3B',
-      dongCoQuyCach: 'Bửng tôn đen, vách Inox 430',
+      dongCoQuyCach: 'Bửng sắt dập, vách Inox 430',
       namSx: 2026,
       giaCongBo: 424000000,
       ghiChu: ''
@@ -338,21 +341,48 @@ export default function PriceListSection({
       loaiXe: 'KIMAN9 (2.49T)',
       maLoai: 'KIMAN9 (2.49T)',
       phienBan: 'THÙNG MUI BẠT 5B',
-      dongCoQuyCach: 'Bửng tôn đen, vách Inox 430',
+      dongCoQuyCach: 'Bửng sắt dập, vách Inox 430',
       namSx: 2026,
       giaCongBo: 429000000,
       ghiChu: ''
     }
   ];
 
-  // Filter and search
+  // Advanced pricing filter calculations
   const filteredData = pricingData.filter(item => {
     // 1. Category Filter
-    if (activeFilter === 'bus-ghe' && item.dong !== 'BUS GHẾ') return false;
-    if (activeFilter === 'bus-giuong' && item.dong !== 'BUS GIƯỜNG') return false;
-    if (activeFilter === 'tai' && item.dong !== 'TẢI') return false;
+    if (filterType !== 'all') {
+      if (filterType === 'bus-ghe' && item.dong !== 'BUS GHẾ') return false;
+      if (filterType === 'bus-giuong' && item.dong !== 'BUS GIƯỜNG') return false;
+      if (filterType === 'tai' && item.dong !== 'TẢI') return false;
+    }
 
-    // 2. Search query
+    // 2. Price filter
+    const price = typeof item.giaCongBo === 'number' ? item.giaCongBo : 0;
+    if (filterPrice !== 'all') {
+      if (filterPrice === 'under-500m' && (price === 0 || price > 500000000)) return false;
+      if (filterPrice === '500m-1b' && (price < 500000000 || price > 1000000000)) return false;
+      if (filterPrice === '1b-3b' && (price < 1000000000 || price > 3000000000)) return false;
+      if (filterPrice === 'above-3b' && price < 3000000000) return false;
+    }
+
+    // 3. Fuel filter
+    if (filterFuel !== 'all') {
+      const isElec = item.maLoai.toLowerCase().includes('ev') || item.dongCoQuyCach.toLowerCase().includes('điện');
+      if (filterFuel === 'electric' && !isElec) return false;
+      if (filterFuel === 'diesel' && isElec) return false;
+    }
+
+    // 4. Capacity / Payload filter
+    if (filterPayload !== 'all') {
+      const isBus = item.dong.startsWith('BUS');
+      if (filterPayload === 'under-2t' && (!item.maLoai.includes('1.99T') && !item.phienBan.includes('VAN'))) return false;
+      if (filterPayload === 'above-2t' && (!item.maLoai.includes('2.49T') && !isBus)) return false;
+      if (filterPayload === 'bus-29' && (!item.loaiXe.includes('29'))) return false;
+      if (filterPayload === 'bus-giuong' && (!isBus || !item.loaiXe.includes('giường'))) return false;
+    }
+
+    // 5. Search query
     if (searchQuery) {
       const q = searchQuery.toLowerCase().trim();
       const matchLoaiXe = item.loaiXe.toLowerCase().includes(q);
@@ -363,6 +393,18 @@ export default function PriceListSection({
     }
     return true;
   });
+
+  // Calculate realistic monthly installment
+  const getCardInstallment = (priceVal: number | string) => {
+    const cleanNum = typeof priceVal === 'number' ? priceVal : 0;
+    if (cleanNum === 0) return isVi ? 'Từ 4.5 Tr/th' : 'From 4.5M/mo';
+    const loanAmount = cleanNum * 0.8;
+    const principalPerMonth = loanAmount / 84;
+    const avgInterestPerMonth = (loanAmount * 0.08) / 12;
+    const totalPerMonth = principalPerMonth + avgInterestPerMonth;
+    const millionVnd = (totalPerMonth / 1000000).toFixed(1);
+    return isVi ? `Trả góp từ ${millionVnd} Tr/tháng` : `Installment from ${millionVnd}M/mo`;
+  };
 
   // Simulated download
   const handleDownload = (type: 'pdf' | 'excel') => {
@@ -387,39 +429,39 @@ export default function PriceListSection({
   const cardBg = isDark ? 'bg-[#121214] border-neutral-850' : 'bg-white border-neutral-200/70';
 
   return (
-    <section className={`py-16 ${isDark ? 'bg-[#0d0d0f]' : 'bg-[#F2F4F7]'} px-4 relative scroll-mt-20`} id="pricing">
+    <section className={`py-24 ${isDark ? 'bg-[#0d0d0f]' : 'bg-[#F2F4F7]'} px-4 relative scroll-mt-20`} id="pricing">
       
       {/* Toast Notification */}
       {showNotification && (
-        <div className="fixed bottom-6 right-6 z-50 bg-neutral-900 text-white border-l-4 border-[#D6001C] rounded-r-xl px-5 py-4 shadow-2xl flex items-center space-x-3 animate-slide-in-right">
-          <div className="w-2 h-2 bg-[#D6001C] rounded-full animate-ping"></div>
+        <div className="fixed bottom-6 right-6 z-50 bg-neutral-900 text-white border-l-4 border-[#C8102E] rounded-r-xl px-5 py-4 shadow-2xl flex items-center space-x-3 animate-slide-in-right">
+          <div className="w-2 h-2 bg-[#C8102E] rounded-full animate-ping"></div>
           <span className="text-xs font-bold font-mono">{showNotification}</span>
         </div>
       )}
 
-      <div className="max-w-7xl mx-auto space-y-10">
+      <div className="max-w-7xl mx-auto space-y-12">
         
         {/* UPPER ANNOUNCEMENT BAR */}
         <div className={`p-6 sm:p-8 rounded-[20px] ${cardBg} border shadow-xl relative overflow-hidden text-left space-y-4`}>
-          <div className="absolute top-0 left-0 w-full h-[6px] bg-[#D6001C]"></div>
+          <div className="absolute top-0 left-0 w-full h-[6px] bg-[#C8102E]"></div>
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div className="space-y-1">
-              <span className="text-[#D6001C] text-[10px] font-mono uppercase tracking-wider font-extrabold bg-[#D6001C]/10 px-2.5 py-1 rounded-full border border-[#D6001C]/20">
+              <span className="text-[#C8102E] text-[10px] font-mono uppercase tracking-wider font-extrabold bg-[#C8102E]/10 px-2.5 py-1 rounded-full border border-[#C8102E]/20">
                 SỐ: 2606-41/TBKD
               </span>
-              <h2 className="text-2xl sm:text-3xl font-black text-neutral-900 dark:text-white uppercase font-sans tracking-tight">
+              <h2 className="text-2xl sm:text-3xl font-black text-neutral-900 dark:text-white uppercase font-poppins tracking-tight">
                 {isVi ? 'BẢNG GIÁ CHÍNH THỨC & KHUYẾN MÃI' : 'OFFICIAL COMMERCIAL PRICING & PROMOTIONS'}
               </h2>
               <p className="text-neutral-500 dark:text-neutral-400 text-xs font-light max-w-3xl leading-relaxed">
                 {isVi 
-                  ? 'Giá bán công bố, ưu đãi đặc biệt cho các dòng xe khách Kim Long Bus, xe tải nhẹ Kiman và xe tải điện Van chính hãng.'
-                  : 'Official retail prices and premium promotional campaigns for Kim Long Bus, Kiman Light Trucks and EV Vans.'
+                  ? 'Giá bán niêm yết công bố từ hãng. Đại diện thương mại Ti Toàn cam kết báo giá lăn bánh trọn gói cùng chiết khấu đặc biệt hấp dẫn cho quý doanh nghiệp.'
+                  : 'Official MSRP commercial pricing catalog. Rep Ti Toan guarantees the lowest corporate on-road budgets and flexible financing models.'
                 }
               </p>
             </div>
             
             <div className="flex items-center gap-3 shrink-0 bg-neutral-100 dark:bg-neutral-900 px-4 py-3 rounded-xl border border-neutral-200/50 dark:border-neutral-800">
-              <Calendar size={18} className="text-[#D6001C]" />
+              <Calendar size={18} className="text-[#C8102E]" />
               <div className="text-left font-mono">
                 <p className="text-[10px] text-neutral-400 uppercase tracking-widest">{isVi ? 'Áp dụng từ ngày' : 'Effective Date'}</p>
                 <p className="text-xs font-bold text-neutral-800 dark:text-neutral-200">18/06/2026</p>
@@ -446,175 +488,223 @@ export default function PriceListSection({
         {/* MAIN INTERACTIVE GRID */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           
-          {/* LEFT: Pricing Database Table */}
+          {/* LEFT: Pricing Database Cards Grid + Advanced Filters */}
           <div className="lg:col-span-9 space-y-6">
-            <div className={`p-5 sm:p-6 rounded-[20px] ${cardBg} border shadow-xl space-y-6 text-left`}>
-              
-              {/* Filter Controls & Search */}
-              <div className="flex flex-col gap-4 border-b pb-5 border-neutral-100 dark:border-neutral-900">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                  
-                  {/* Category Pills */}
-                  <div className="flex flex-wrap items-center gap-1.5">
-                    {[
-                      { key: 'all', vi: 'Tất cả', en: 'All' },
-                      { key: 'bus-ghe', vi: 'Bus Ghế', en: 'Coach Bus' },
-                      { key: 'bus-giuong', vi: 'Bus Giường', en: 'Sleeper Bus' },
-                      { key: 'tai', vi: 'Xe Tải / Van', en: 'Truck / Van' }
-                    ].map((tab) => (
-                      <button
-                        key={tab.key}
-                        onClick={() => setActiveFilter(tab.key as any)}
-                        className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all uppercase tracking-wider cursor-pointer ${
-                          activeFilter === tab.key
-                            ? 'bg-[#D6001C] text-white shadow-lg shadow-red-600/15'
-                            : `${isDark ? 'bg-neutral-900 hover:bg-neutral-850 text-neutral-400 hover:text-white' : 'bg-neutral-100 hover:bg-neutral-200 text-neutral-600'}`
-                        }`}
-                      >
-                        {isVi ? tab.vi : tab.en}
-                      </button>
-                    ))}
-                  </div>
+            
+            {/* ADVANCED MULTI-SELECT FILTER PANEL */}
+            <div className={`p-6 rounded-[20px] ${cardBg} border shadow-lg space-y-4 text-left`}>
+              <div className="flex items-center justify-between border-b pb-3 border-neutral-100 dark:border-neutral-900">
+                <div className="flex items-center gap-2">
+                  <Filter size={16} className="text-[#C8102E]" />
+                  <span className="text-xs font-bold uppercase tracking-wider font-poppins">{isVi ? 'Bộ Lọc Thông Minh' : 'Advanced Filters'}</span>
+                </div>
+                <button 
+                  onClick={() => {
+                    setFilterType('all');
+                    setFilterPrice('all');
+                    setFilterFuel('all');
+                    setFilterPayload('all');
+                    setSearchQuery('');
+                  }}
+                  className="text-[10px] font-mono text-neutral-400 hover:text-[#C8102E]"
+                >
+                  {isVi ? 'Đặt lại bộ lọc' : 'Reset filters'}
+                </button>
+              </div>
 
-                  <div className="text-[11px] font-mono text-neutral-400 flex items-center gap-1.5">
-                    <Sparkles size={14} className="text-amber-500 animate-pulse" />
-                    <span>{isVi ? 'Đại Lý Ủy Quyền Cấp 1' : 'Official Authorized Partner'}</span>
-                  </div>
+              {/* Grid of filters requested: Vehicle Type, Price, Payload, Fuel */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                
+                {/* 1. Vehicle Type */}
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-mono uppercase tracking-wider text-neutral-400 block">{isVi ? 'Dòng Xe:' : 'Vehicle Type:'}</label>
+                  <select
+                    value={filterType}
+                    onChange={(e) => setFilterType(e.target.value)}
+                    className="w-full text-xs bg-neutral-50 dark:bg-neutral-900 border border-neutral-200/60 dark:border-neutral-800 rounded-lg p-2.5 focus:outline-none focus:border-[#C8102E]"
+                  >
+                    <option value="all">{isVi ? 'Tất cả phân khúc' : 'All classes'}</option>
+                    <option value="bus-ghe">{isVi ? 'Xe Bus Ghế' : 'Coach Bus'}</option>
+                    <option value="bus-giuong">{isVi ? 'Xe Bus Giường Nằm' : 'Sleeper Bus'}</option>
+                    <option value="tai">{isVi ? 'Xe Tải / Xe Van' : 'Truck & Cargo Vans'}</option>
+                  </select>
                 </div>
 
-                {/* Live Search Input */}
-                <div className="relative">
-                  <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-400" />
-                  <input 
-                    type="text"
-                    placeholder={isVi ? "Gõ từ khóa tìm nhanh (ví dụ: G34, X9, Thùng Kín, Thùng Lửng, 16 chỗ...)" : "Instant database search (e.g. G24, Chassis, Van, 16 seats...)"}
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className={`w-full text-xs pl-10 pr-4 py-3 rounded-xl border focus:outline-none focus:border-[#D6001C] font-sans ${
-                      isDark 
-                        ? 'bg-neutral-900/60 border-neutral-800 text-white placeholder-neutral-500' 
-                        : 'bg-neutral-50 border-neutral-200 text-black placeholder-neutral-400'
-                    }`}
-                  />
+                {/* 2. Price Range */}
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-mono uppercase tracking-wider text-neutral-400 block">{isVi ? 'Mức Giá:' : 'Price Range:'}</label>
+                  <select
+                    value={filterPrice}
+                    onChange={(e) => setFilterPrice(e.target.value)}
+                    className="w-full text-xs bg-neutral-50 dark:bg-neutral-900 border border-neutral-200/60 dark:border-neutral-800 rounded-lg p-2.5 focus:outline-none focus:border-[#C8102E]"
+                  >
+                    <option value="all">{isVi ? 'Tất cả khoảng giá' : 'All prices'}</option>
+                    <option value="under-500m">{isVi ? 'Dưới 500 Triệu' : 'Under 500M VND'}</option>
+                    <option value="500m-1b">{isVi ? '500 Triệu - 1 Tỷ' : '500M - 1B VND'}</option>
+                    <option value="1b-3b">{isVi ? '1 Tỷ - 3 Tỷ' : '1B - 3B VND'}</option>
+                    <option value="above-3b">{isVi ? 'Trên 3 Tỷ' : 'Above 3B VND'}</option>
+                  </select>
                 </div>
+
+                {/* 3. Capacity / Payload */}
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-mono uppercase tracking-wider text-neutral-400 block">{isVi ? 'Tải Trọng / Ghế:' : 'Payload / Seats:'}</label>
+                  <select
+                    value={filterPayload}
+                    onChange={(e) => setFilterPayload(e.target.value)}
+                    className="w-full text-xs bg-neutral-50 dark:bg-neutral-900 border border-neutral-200/60 dark:border-neutral-800 rounded-lg p-2.5 focus:outline-none focus:border-[#C8102E]"
+                  >
+                    <option value="all">{isVi ? 'Tất cả tải trọng' : 'All sizes'}</option>
+                    <option value="under-2t">{isVi ? 'Tải nhẹ dưới 2 Tấn' : 'Light duty < 2 Tons'}</option>
+                    <option value="above-2t">{isVi ? 'Vận tải nặng / Xe khách' : 'Heavy freight / Bus'}</option>
+                    <option value="bus-29">{isVi ? 'Dòng 29 chỗ' : '29 Seats Coach'}</option>
+                    <option value="bus-giuong">{isVi ? 'Khoang Giường Nằm' : 'Luxury Sleeper'}</option>
+                  </select>
+                </div>
+
+                {/* 4. Fuel type */}
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-mono uppercase tracking-wider text-neutral-400 block">{isVi ? 'Nhiên Liệu:' : 'Fuel / Eco:'}</label>
+                  <select
+                    value={filterFuel}
+                    onChange={(e) => setFilterFuel(e.target.value)}
+                    className="w-full text-xs bg-neutral-50 dark:bg-neutral-900 border border-neutral-200/60 dark:border-neutral-800 rounded-lg p-2.5 focus:outline-none focus:border-[#C8102E]"
+                  >
+                    <option value="all">{isVi ? 'Tất cả nhiên liệu' : 'All fuels'}</option>
+                    <option value="electric">{isVi ? '100% Động Cơ Điện (EV)' : '100% Electric EV'}</option>
+                    <option value="diesel">{isVi ? 'Động Cơ Diesel' : 'Diesel Fuel'}</option>
+                  </select>
+                </div>
+
               </div>
 
-              {/* Responsive Table Container */}
-              <div className="overflow-x-auto rounded-xl border border-neutral-100 dark:border-neutral-850 shadow-inner">
-                <table className="w-full text-left border-collapse table-auto min-w-[750px]">
-                  <thead>
-                    <tr className="bg-neutral-900 text-white text-[10px] font-mono uppercase tracking-wider border-b border-neutral-850">
-                      <th className="py-4 px-4 font-bold text-left sticky left-0 bg-neutral-900 border-r border-neutral-850 w-[200px]">{isVi ? 'DÒNG XE' : 'VEHICLE MODEL'}</th>
-                      <th className="py-4 px-3 font-bold border-r border-neutral-850">{isVi ? 'PHIÊN BẢN' : 'VERSION'}</th>
-                      <th className="py-4 px-3 font-bold border-r border-neutral-850">{isVi ? 'QUY CÁCH / ĐỘNG CƠ' : 'SPECIFICATION'}</th>
-                      <th className="py-4 px-2 font-bold text-center border-r border-neutral-850 w-[60px]">{isVi ? 'NĂM' : 'YEAR'}</th>
-                      <th className="py-4 px-4 font-bold text-right border-r border-neutral-850 bg-[#D6001C]/10 text-[#FFD7D7] w-[160px]">{isVi ? 'GIÁ CÔNG BỐ (VAT)' : 'RETAIL PRICE (VAT)'}</th>
-                      <th className="py-4 px-3 font-bold text-center w-[120px]">{isVi ? 'LIÊN HỆ' : 'ACTION'}</th>
-                    </tr>
-                  </thead>
-
-                  <tbody className="text-[11px] font-mono">
-                    {filteredData.length === 0 ? (
-                      <tr>
-                        <td colSpan={6} className="py-12 text-center text-neutral-400 bg-neutral-50 dark:bg-neutral-900/30">
-                          <ShieldAlert className="mx-auto text-neutral-400 shrink-0 mb-2" size={24} />
-                          {isVi ? 'Không tìm thấy dòng xe phù hợp với từ khóa tra cứu.' : 'No vehicle specifications match your filters.'}
-                        </td>
-                      </tr>
-                    ) : (
-                      filteredData.map((row, index) => {
-                        const isEven = index % 2 === 0;
-                        const rowBg = isEven 
-                           ? (isDark ? 'bg-neutral-900/20' : 'bg-neutral-50/50') 
-                           : 'bg-transparent';
-                        
-                        // Parse values safely
-                        const numericGiaCongBo = typeof row.giaCongBo === 'number' ? row.giaCongBo : 0;
-
-                        return (
-                          <tr key={index} className={`${rowBg} hover:bg-[#D6001C]/5 transition-colors border-b ${isDark ? 'border-neutral-850' : 'border-neutral-200/50'}`}>
-                            {/* DÒNG XE / LOẠI XE */}
-                            <td className="py-3 px-4 font-bold text-neutral-900 dark:text-neutral-100 sticky left-0 bg-white dark:bg-[#121214] font-sans border-r dark:border-neutral-850 shadow-[2px_0_5px_rgba(0,0,0,0.03)] text-left">
-                              <div className="font-extrabold text-[12px] text-neutral-900 dark:text-white leading-tight">
-                                {row.maLoai}
-                              </div>
-                              <div className="text-[10px] text-neutral-400 dark:text-neutral-500 font-light mt-0.5">
-                                {row.loaiXe}
-                              </div>
-                            </td>
-
-                            {/* PHIÊN BẢN */}
-                            <td className="py-3 px-3 text-neutral-700 dark:text-neutral-300 font-sans text-xs border-r dark:border-neutral-850 font-medium text-left">
-                              {row.phienBan}
-                            </td>
-
-                            {/* QUY CÁCH / ĐỘNG CƠ */}
-                            <td className="py-3 px-3 text-neutral-500 dark:text-neutral-400 font-sans text-xs border-r dark:border-neutral-850 text-left">
-                              {row.dongCoQuyCach || '-'}
-                            </td>
-
-                            {/* NĂM */}
-                            <td className="py-3 px-2 text-center text-neutral-400 border-r dark:border-neutral-850">
-                              {row.namSx}
-                            </td>
-
-                            {/* GIÁ CÔNG BỐ */}
-                            <td className="py-3 px-4 text-right border-r dark:border-neutral-850 bg-[#D6001C]/5">
-                              <span className="font-price text-[#D6001C] text-[13px] tracking-tight font-black block">
-                                {numericGiaCongBo > 0 ? `${new Intl.NumberFormat('vi-VN').format(numericGiaCongBo)} đ` : (typeof row.giaCongBo === 'string' ? row.giaCongBo : (isVi ? 'Liên hệ' : 'Contact'))}
-                              </span>
-                              {numericGiaCongBo > 0 && (
-                                <span className="block text-[8px] text-neutral-400 dark:text-neutral-500 font-light font-sans">{isVi ? 'Đã gồm VAT' : 'VAT Incl.'}</span>
-                              )}
-                            </td>
-
-                            {/* HÀNH ĐỘNG */}
-                            <td className="py-3 px-3 text-center">
-                              <button 
-                                onClick={() => onOpenBooking(`${row.maLoai} ${row.phienBan}`, 'quote')}
-                                className="bg-[#D6001C] hover:bg-red-700 text-white font-bold py-1.5 px-3 rounded-lg text-[10px] uppercase tracking-wider transition-all duration-200 cursor-pointer shadow-sm hover:shadow-md w-full sm:w-auto"
-                              >
-                                {isVi ? 'Báo giá' : 'Quote'}
-                              </button>
-                            </td>
-                          </tr>
-                        );
-                      })
-                    )}
-                  </tbody>
-                </table>
+              {/* Text Search inside filters */}
+              <div className="relative pt-2">
+                <Search size={14} className="absolute left-3.5 top-[18px] text-neutral-400" />
+                <input 
+                  type="text"
+                  placeholder={isVi ? "Gõ tìm kiếm nhanh dòng xe, mã loại (X9, G34, N29, 34 giường, thùng kín...)" : "Instant database search..."}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className={`w-full text-xs pl-10 pr-4 py-2.5 rounded-lg border focus:outline-none focus:border-[#C8102E] font-sans ${
+                    isDark ? 'bg-neutral-900 border-neutral-800 text-white' : 'bg-neutral-50 border-neutral-200 text-black'
+                  }`}
+                />
               </div>
-
-              {/* TABLE NOTES - Clean Customer-Facing text */}
-              <div className="pt-6 border-t border-neutral-100 dark:border-neutral-900 text-[11px] font-sans text-neutral-500 dark:text-neutral-400 space-y-2.5 text-left leading-relaxed">
-                <p className="font-bold text-neutral-700 dark:text-neutral-300 uppercase tracking-wide">
-                  {isVi ? 'CHÍNH SÁCH ÁP DỤNG BẢNG GIÁ:' : 'PRICING TERMS & CONDITIONS:'}
-                </p>
-                <ul className="list-disc pl-5 space-y-1.5 font-light">
-                  <li>
-                    {isVi 
-                      ? 'Giá công bố ở trên đã bao gồm thuế giá trị gia tăng (VAT) 10% nhưng chưa bao gồm các lệ phí trước bạ, chi phí biển số, bảo hiểm, phí dịch vụ đăng ký, đăng kiểm trọn gói.' 
-                      : 'All listed MSRP prices include 10% VAT tax but exclude licensing, registration service fees, road tax, and insurance plans.'}
-                  </li>
-                  <li>
-                    {isVi 
-                      ? 'Các chương trình ưu đãi, quà tặng và gói phụ kiện kèm theo xe tùy thuộc vào chính sách kinh doanh cụ thể tại từng thời điểm đặt xe thực tế.' 
-                      : 'Promotional discounts, complimentary accessories, and custom packages are subject to specific retail campaigns at active order dates.'}
-                  </li>
-                  <li>
-                    {isVi 
-                      ? 'Hỗ trợ mua xe trả góp liên kết thông qua các tổ chức tài chính và ngân hàng đối tác uy tín với mức cho vay lên tới 85% giá trị xe, thủ tục hồ sơ nhanh chóng toàn quốc.' 
-                      : 'Comprehensive financing support via Tier 1 domestic banking partners with loan approvals up to 85% and rapid approval.'}
-                  </li>
-                  <li>
-                    {isVi 
-                      ? 'Đối với khách hàng mua xe theo lô phục vụ dự án lớn (Fleet): Vui lòng liên hệ trực tiếp Đại diện thương mại xuất sắc TI TOÀN để nhận cơ chế chính sách tốt nhất.' 
-                      : 'For high-volume fleet acquisitions and commercial tenders: please reach out directly to Commercial Representative Ti Toan to request specialized corporate pricing.'}
-                  </li>
-                </ul>
-              </div>
-
             </div>
+
+            {/* VEHICLE PRICING LIST */}
+            <div className="space-y-4">
+              {filteredData.length === 0 ? (
+                <div className={`p-12 text-center rounded-[20px] ${cardBg} border shadow-inner`}>
+                  <ShieldAlert className="mx-auto text-neutral-400 shrink-0 mb-3" size={32} />
+                  <p className="text-sm font-bold text-neutral-700 dark:text-neutral-300">
+                    {isVi ? 'Không tìm thấy cấu hình dòng xe phù hợp với bộ lọc.' : 'No models match selected options.'}
+                  </p>
+                  <p className="text-xs text-neutral-400 mt-1">{isVi ? 'Vui lòng đặt lại bộ lọc hoặc gõ từ khóa khác.' : 'Try resetting the filters.'}</p>
+                </div>
+              ) : (
+                filteredData.map((row, index) => {
+                  const isElectric = row.maLoai.toLowerCase().includes('ev') || row.dongCoQuyCach.toLowerCase().includes('điện');
+                  const numericPrice = typeof row.giaCongBo === 'number' ? row.giaCongBo : 0;
+                  
+                  return (
+                    <div 
+                      key={index} 
+                      className={`rounded-2xl border ${cardBg} p-5 shadow-sm hover:shadow-md transition-all duration-300 hover:border-[#C8102E]/30 text-left flex flex-col md:flex-row md:items-center justify-between gap-4`}
+                    >
+                      {/* Left: Model Name, Version & Segment badges */}
+                      <div className="flex-1 min-w-0 space-y-2">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="text-[9px] font-mono font-bold uppercase tracking-widest bg-neutral-100 dark:bg-neutral-900 text-neutral-500 dark:text-neutral-400 px-2 py-0.5 rounded">
+                            {row.dong}
+                          </span>
+                          {isElectric ? (
+                            <span className="text-[8px] font-mono font-bold uppercase tracking-widest bg-emerald-500/10 text-emerald-500 px-2 py-0.5 rounded border border-emerald-500/20">
+                              EV
+                            </span>
+                          ) : (
+                            <span className="text-[8px] font-mono font-bold uppercase tracking-widest bg-amber-500/10 text-amber-500 px-2 py-0.5 rounded border border-amber-500/20">
+                              Diesel
+                            </span>
+                          )}
+                          <span className="text-[10px] text-neutral-400 font-mono">Đời {row.namSx}</span>
+                        </div>
+                        
+                        <div>
+                          <h3 className="text-base font-black tracking-tight text-neutral-900 dark:text-white uppercase font-poppins inline-block mr-2">
+                            {row.maLoai}
+                          </h3>
+                          <span className="text-xs text-neutral-500 dark:text-neutral-400">
+                            ({row.loaiXe} &bull; <span className="font-bold text-[#D4AF37]">{row.phienBan}</span>)
+                          </span>
+                        </div>
+
+                        <div className="text-[11px] text-neutral-500 dark:text-neutral-400 flex flex-wrap gap-x-4 gap-y-1">
+                          <span className="flex items-center gap-1.5">
+                            <span className="font-bold text-neutral-400 uppercase text-[8px]">{isVi ? 'Động cơ/Quy cách:' : 'Engine/Spec:'}</span>
+                            <span className="font-semibold text-neutral-700 dark:text-neutral-300">{row.dongCoQuyCach}</span>
+                          </span>
+                          {row.ghiChu && (
+                            <span className="text-red-500 font-medium italic">
+                              * {row.ghiChu}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Right: Installment & Pricing & Button */}
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-4 shrink-0 border-t md:border-t-0 pt-3 md:pt-0 border-neutral-100 dark:border-neutral-900">
+                        {/* Installment Badge */}
+                        <div className="text-left sm:text-right space-y-1">
+                          <span className="text-[9px] font-mono font-bold text-amber-600 dark:text-amber-500 bg-amber-500/5 dark:bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/10 block w-fit sm:ml-auto">
+                            {getCardInstallment(row.giaCongBo)}
+                          </span>
+                          <span className="text-[8px] text-neutral-400 block uppercase font-bold tracking-wider">{isVi ? 'GIÁ CÔNG BỐ (VAT):' : 'MSRP (VAT):'}</span>
+                          <span className="text-[#C8102E] font-black font-poppins text-lg block leading-none">
+                            {numericPrice > 0 ? `${new Intl.NumberFormat('vi-VN').format(numericPrice)} VNĐ` : (isVi ? 'Liên hệ' : 'Contact')}
+                          </span>
+                        </div>
+
+                        {/* CTA button */}
+                        <button 
+                          onClick={() => onOpenBooking(`${row.maLoai} ${row.phienBan}`, 'quote')}
+                          className="bg-[#C8102E] hover:bg-red-700 text-white font-bold py-3 px-5 rounded-xl text-xs uppercase tracking-wider transition-all duration-200 cursor-pointer shadow-md shadow-red-900/10 flex items-center justify-center gap-1.5"
+                        >
+                          <span>{isVi ? 'Nhận báo giá' : 'Get Quote'}</span>
+                          <ChevronRight size={14} />
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })
+              )}
+            </div>
+
+            {/* TABLE NOTES - Clean Customer-Facing text */}
+            <div className={`p-6 rounded-[20px] ${cardBg} border shadow-sm text-[11px] font-sans text-neutral-500 dark:text-neutral-400 space-y-2.5 text-left leading-relaxed`}>
+              <p className="font-bold text-neutral-700 dark:text-neutral-300 uppercase tracking-wide">
+                {isVi ? 'CHÍNH SÁCH ÁP DỤNG BẢNG GIÁ:' : 'PRICING TERMS & CONDITIONS:'}
+              </p>
+              <ul className="list-disc pl-5 space-y-1.5 font-light">
+                <li>
+                  {isVi 
+                    ? 'Giá niêm yết công bố ở trên đã bao gồm thuế giá trị gia tăng (VAT) 10% nhưng chưa bao gồm các lệ phí lăn bánh lăn bánh như lệ phí trước bạ, chi phí biển số, bảo hiểm, phí dịch vụ đăng ký, đăng kiểm.' 
+                    : 'All listed MSRP prices include 10% VAT tax but exclude licensing, registration service fees, road tax, and insurance plans.'}
+                </li>
+                <li>
+                  {isVi 
+                    ? 'Các chương trình khuyến mãi giảm giá trực tiếp, hỗ trợ lệ phí trước bạ và quà tặng kèm theo xe tùy thuộc vào chính sách bán hàng cụ thể tại từng thời điểm ký hợp đồng.' 
+                    : 'Promotional discounts, tax subsidies, and complimentary packages are subject to specific retail campaigns at active contract dates.'}
+                </li>
+                <li>
+                  {isVi 
+                    ? 'Đại diện thương mại Ti Toàn cam kết đồng hành, liên kết với hệ thống các ngân hàng thương mại uy tín toàn quốc để hỗ trợ hạn mức cho vay trả góp lên tới 85% giá trị xe.' 
+                    : 'Representative Ti Toan partners with leading commercial banks nationwide to secure customized installment loans up to 85% of vehicle value.'}
+                </li>
+              </ul>
+            </div>
+
           </div>
 
           {/* RIGHT: High-converting interactive Sidebar (3 cols wide) */}
@@ -679,7 +769,7 @@ export default function PriceListSection({
               </h3>
               <p className="text-[11px] text-neutral-500 dark:text-neutral-400 font-sans leading-relaxed font-light">
                 {isVi 
-                  ? 'Bản phân phối chính thức cho đại lý và đối tác, đầy đủ dấu đỏ phụ trách kinh doanh.' 
+                  ? 'Bản phân phối chính thức cho đại lý và đối tác, đầy đủ dấu đỏ phụ trách kinh doanh từ tổng công ty.' 
                   : 'Get the exact duplicate of the legal factory notification signed by Business Director.'}
               </p>
 
