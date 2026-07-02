@@ -1,0 +1,6 @@
+{
+  "name": "Ti Toàn | Kim Long Motor",
+  "description": "Website thương hiệu cá nhân của Ti Toàn - Đại diện thương mại Kim Long Motor. Chuyên tư vấn mua bán các dòng xe tải điện, xe tải nhẹ, trung, nặng, xe đầu kéo, minibus và xe bus chất lượng cao với giải pháp trả góp tối ưu.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
