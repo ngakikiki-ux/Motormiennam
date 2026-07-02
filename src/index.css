@@ -1,12 +1,19 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
 @import "tailwindcss";
 
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-poppins: "Poppins", sans-serif;
+  --font-poppins: "Plus Jakarta Sans", sans-serif;
+  --font-heading: "Plus Jakarta Sans", sans-serif;
 }
 
 @layer utilities {
+  /* Price typography utility */
+  .font-price {
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-weight: 800;
+  }
+
   /* Scrollbar Hide and Custom scrollbars */
   .scrollbar-none::-webkit-scrollbar {
     display: none;
@@ -91,3 +98,20 @@ body, div, header, section, footer, h1, h2, h3, h4, p, span, button, a, table, t
 .skeleton {
   animation: skeletonPulse 1.5s ease-in-out infinite;
 }
+
+/* Global Typography Overrides */
+body {
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Plus Jakarta Sans", sans-serif !important;
+  font-weight: 700 !important;
+}
+
+button, .btn {
+  font-family: "Inter", sans-serif !important;
+  font-weight: 600 !important;
+}
+

@@ -705,16 +705,14 @@ export default function PriceListSection({
 
               {/* Responsive Table Container */}
               <div className="overflow-x-auto rounded-xl border border-neutral-100 dark:border-neutral-850 shadow-inner">
-                <table className="w-full text-left border-collapse table-auto min-w-[850px]">
+                <table className="w-full text-left border-collapse table-auto min-w-[750px]">
                   <thead>
                     <tr className="bg-neutral-900 text-white text-[10px] font-mono uppercase tracking-wider border-b border-neutral-850">
                       <th className="py-4 px-4 font-bold text-left sticky left-0 bg-neutral-900 border-r border-neutral-850 w-[200px]">{isVi ? 'DÒNG XE' : 'VEHICLE MODEL'}</th>
                       <th className="py-4 px-3 font-bold border-r border-neutral-850">{isVi ? 'PHIÊN BẢN' : 'VERSION'}</th>
                       <th className="py-4 px-3 font-bold border-r border-neutral-850">{isVi ? 'QUY CÁCH / ĐỘNG CƠ' : 'SPECIFICATION'}</th>
                       <th className="py-4 px-2 font-bold text-center border-r border-neutral-850 w-[60px]">{isVi ? 'NĂM' : 'YEAR'}</th>
-                      <th className="py-4 px-4 font-bold text-right border-r border-neutral-850 w-[140px]">{isVi ? 'GIÁ CÔNG BỐ (VAT)' : 'RETAIL PRICE (VAT)'}</th>
-                      <th className="py-4 px-3 font-bold text-center border-r border-neutral-850 w-[120px]">{isVi ? 'KHUYẾN MÃI' : 'PROMOTION'}</th>
-                      <th className="py-4 px-4 font-bold text-right border-r border-neutral-850 bg-[#D6001C]/10 text-[#FFD7D7] w-[160px]">{isVi ? 'GIÁ ƯU ĐÃI (QUAN TRỌNG)' : 'SPECIAL NET PRICE'}</th>
+                      <th className="py-4 px-4 font-bold text-right border-r border-neutral-850 bg-[#D6001C]/10 text-[#FFD7D7] w-[160px]">{isVi ? 'GIÁ CÔNG BỐ (VAT)' : 'RETAIL PRICE (VAT)'}</th>
                       <th className="py-4 px-3 font-bold text-center w-[120px]">{isVi ? 'LIÊN HỆ' : 'ACTION'}</th>
                     </tr>
                   </thead>
@@ -722,7 +720,7 @@ export default function PriceListSection({
                   <tbody className="text-[11px] font-mono">
                     {filteredData.length === 0 ? (
                       <tr>
-                        <td colSpan={8} className="py-12 text-center text-neutral-400 bg-neutral-50 dark:bg-neutral-900/30">
+                        <td colSpan={6} className="py-12 text-center text-neutral-400 bg-neutral-50 dark:bg-neutral-900/30">
                           <ShieldAlert className="mx-auto text-neutral-400 shrink-0 mb-2" size={24} />
                           {isVi ? 'Không tìm thấy dòng xe phù hợp với từ khóa tra cứu.' : 'No vehicle specifications match your filters.'}
                         </td>
@@ -731,14 +729,11 @@ export default function PriceListSection({
                       filteredData.map((row, index) => {
                         const isEven = index % 2 === 0;
                         const rowBg = isEven 
-                          ? (isDark ? 'bg-neutral-900/20' : 'bg-neutral-50/50') 
-                          : 'bg-transparent';
+                           ? (isDark ? 'bg-neutral-900/20' : 'bg-neutral-50/50') 
+                           : 'bg-transparent';
                         
                         // Parse values safely
                         const numericGiaCongBo = typeof row.giaCongBo === 'number' ? row.giaCongBo : 0;
-                        const numericKhuyenMai = typeof row.khuyenMai === 'number' ? row.khuyenMai : 0;
-                        const netPriceVal = numericGiaCongBo - numericKhuyenMai;
-                        const hasPromo = numericKhuyenMai > 0;
 
                         return (
                           <tr key={index} className={`${rowBg} hover:bg-[#D6001C]/5 transition-colors border-b ${isDark ? 'border-neutral-850' : 'border-neutral-200/50'}`}>
@@ -768,42 +763,12 @@ export default function PriceListSection({
                             </td>
 
                             {/* GIÁ CÔNG BỐ */}
-                            <td className="py-3 px-4 text-right border-r dark:border-neutral-850">
-                              {hasPromo ? (
-                                <span className="line-through text-neutral-400 dark:text-neutral-500 text-[11px] block">
-                                  {new Intl.NumberFormat('vi-VN').format(numericGiaCongBo)} đ
-                                </span>
-                              ) : (
-                                <span className="font-bold text-neutral-800 dark:text-neutral-200 text-xs">
-                                  {numericGiaCongBo > 0 ? `${new Intl.NumberFormat('vi-VN').format(numericGiaCongBo)} đ` : (typeof row.giaCongBo === 'string' ? row.giaCongBo : '-')}
-                                </span>
-                              )}
-                            </td>
-
-                            {/* KHUYẾN MÃI */}
-                            <td className="py-3 px-3 text-center border-r dark:border-neutral-850">
-                              {hasPromo ? (
-                                <span className="inline-block bg-emerald-500/10 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-extrabold text-[10px] px-2 py-0.5 rounded border border-emerald-500/20">
-                                  -{new Intl.NumberFormat('vi-VN').format(numericKhuyenMai)}đ
-                                </span>
-                              ) : (
-                                <span className="text-neutral-400">-</span>
-                              )}
-                            </td>
-
-                            {/* GIÁ ƯU ĐÃI (CRITICAL!) */}
-                            <td className="py-3 px-4 text-right font-black text-[#D6001C] text-sm border-r dark:border-neutral-850 bg-[#D6001C]/5">
-                              {netPriceVal > 0 ? (
-                                <>
-                                  <div className="font-bold text-[13px] text-[#D6001C] tracking-tight">
-                                    {new Intl.NumberFormat('vi-VN').format(netPriceVal)} đ
-                                  </div>
-                                  <span className="block text-[8px] text-neutral-400 dark:text-neutral-500 font-light font-sans">{isVi ? 'Đã gồm VAT' : 'VAT Incl.'}</span>
-                                </>
-                              ) : (
-                                <div className="font-bold text-[11px] text-neutral-500 tracking-tight">
-                                  {typeof row.giaCongBo === 'string' ? row.giaCongBo : (isVi ? 'Liên hệ' : 'Contact')}
-                                </div>
+                            <td className="py-3 px-4 text-right border-r dark:border-neutral-850 bg-[#D6001C]/5">
+                              <span className="font-price text-[#D6001C] text-[13px] tracking-tight font-black block">
+                                {numericGiaCongBo > 0 ? `${new Intl.NumberFormat('vi-VN').format(numericGiaCongBo)} đ` : (typeof row.giaCongBo === 'string' ? row.giaCongBo : (isVi ? 'Liên hệ' : 'Contact'))}
+                              </span>
+                              {numericGiaCongBo > 0 && (
+                                <span className="block text-[8px] text-neutral-400 dark:text-neutral-500 font-light font-sans">{isVi ? 'Đã gồm VAT' : 'VAT Incl.'}</span>
                               )}
                             </td>
 

@@ -211,19 +211,19 @@ export default function LoanCalculator({ language, initialVehiclePrice = 8900000
           <div className="bg-neutral-950 border border-neutral-800 rounded-xl p-5 space-y-4">
             <div className="border-b border-neutral-800 pb-3">
               <span className="text-xs text-neutral-400 uppercase tracking-wider">{isVi ? 'Khoản tự có ban đầu' : 'Initial Downpayment (Min)'}</span>
-              <p className="text-2xl font-bold text-white font-mono mt-0.5">{formatCurrency(results.upfrontAmount)}</p>
+              <p className="text-2xl font-price text-white mt-0.5">{formatCurrency(results.upfrontAmount)}</p>
               <p className="text-[10px] text-neutral-500">{(100 - loanPercent)}% {isVi ? 'giá trị xe cần chuẩn bị trước' : 'of vehicle price to prepare'}</p>
             </div>
 
             <div className="border-b border-neutral-800 pb-3">
               <span className="text-xs text-neutral-400 uppercase tracking-wider">{isVi ? 'Số tiền Ngân hàng hỗ trợ vay' : 'Bank Funded Amount'}</span>
-              <p className="text-xl font-bold text-red-500 font-mono mt-0.5">{formatCurrency(results.loanAmount)}</p>
+              <p className="text-xl font-price text-red-500 mt-0.5">{formatCurrency(results.loanAmount)}</p>
               <p className="text-[10px] text-neutral-500">{loanPercent}% {isVi ? 'giá trị xe trả góp' : 'of vehicle price funded'}</p>
             </div>
 
             <div>
               <span className="text-xs text-neutral-400 uppercase tracking-wider">{isVi ? 'Trả tháng đầu tiên (Ước tính)' : 'First Month Est. Payment'}</span>
-              <p className="text-2xl font-bold text-yellow-500 font-mono mt-0.5">{formatCurrency(results.firstMonthTotal)}</p>
+              <p className="text-2xl font-price text-yellow-500 mt-0.5">{formatCurrency(results.firstMonthTotal)}</p>
               <div className="flex justify-between text-[11px] text-neutral-400 mt-1 font-mono">
                 <span>Gốc: {formatCurrency(results.monthlyPrincipal)}</span>
                 <span>Lãi: {formatCurrency(results.firstMonthInterest)}</span>
