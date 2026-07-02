@@ -686,69 +686,19 @@ export default function App() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-neutral-500 mb-1.5 font-mono">{isVi ? 'Địa chỉ Email (Nếu có)' : 'Email (Optional)'}</label>
-                  <input
-                    id="form-email"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="company@gmail.com"
-                    className={`w-full ${isDarkMode ? 'bg-neutral-900 text-white' : 'bg-neutral-50 text-gray-900'} border ${themeBorder} rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#C8102E] transition-colors font-mono`}
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-neutral-500 mb-1.5 font-mono">{isVi ? 'Dòng xe quan tâm *' : 'Vehicle model *'}</label>
-                  <select
-                    id="form-product-select"
-                    value={bookingVehicle}
-                    onChange={(e) => setBookingVehicle(e.target.value)}
-                    className="w-full bg-white text-gray-900 border border-gray-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#C8102E] transition-colors cursor-pointer font-bold shadow-sm"
-                  >
-                    <option value="" className="bg-white text-gray-900">-- {isVi ? 'Chọn mẫu xe' : 'Select vehicle'} --</option>
-                    {PRODUCTS.map(p => (
-                      <option key={p.id} value={p.name} className="bg-white text-gray-900">{p.name}</option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-neutral-500 mb-1.5 font-mono">{isVi ? 'Nhu cầu dịch vụ' : 'Requested Service'}</label>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                  {[
-                    { val: 'quote', lbl: isVi ? 'Nhận báo giá' : 'Get Quote' },
-                    { val: 'test-drive', lbl: isVi ? 'Đăng ký lái thử' : 'Test Drive' },
-                    { val: 'installment', lbl: isVi ? 'Tính trả góp' : 'Financing' },
-                    { val: 'general', lbl: isVi ? 'Tư vấn chung' : 'General' }
-                  ].map(serv => (
-                    <button
-                      key={serv.val}
-                      type="button"
-                      onClick={() => setBookingType(serv.val as any)}
-                      className={`text-xs py-2.5 rounded-xl border text-center font-bold transition-all cursor-pointer ${
-                        bookingType === serv.val 
-                          ? 'bg-[#C8102E] text-white border-[#C8102E]' 
-                          : `border-neutral-200 dark:border-neutral-800 text-neutral-400 bg-neutral-100 dark:bg-neutral-900 hover:border-[#C8102E]/40`
-                      }`}
-                    >
-                      {serv.lbl}
-                    </button>
+                <label className="block text-xs font-bold uppercase tracking-wider text-neutral-500 mb-1.5 font-mono">{isVi ? 'Dòng xe quan tâm *' : 'Vehicle model *'}</label>
+                <select
+                  id="form-product-select"
+                  value={bookingVehicle}
+                  onChange={(e) => setBookingVehicle(e.target.value)}
+                  className="w-full bg-white text-gray-900 border border-gray-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#C8102E] transition-colors cursor-pointer font-bold shadow-sm"
+                >
+                  <option value="" className="bg-white text-gray-900">-- {isVi ? 'Chọn mẫu xe' : 'Select vehicle'} --</option>
+                  {PRODUCTS.map(p => (
+                    <option key={p.id} value={p.name} className="bg-white text-gray-900">{p.name}</option>
                   ))}
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-neutral-500 mb-1.5 font-mono">{isVi ? 'Ghi chú yêu cầu thêm' : 'Inquiries Notes (Optional)'}</label>
-                <textarea
-                  id="form-notes"
-                  rows={3}
-                  value={notes}
-                  onChange={(e) => setNotes(e.target.value)}
-                  placeholder={isVi ? "Ví dụ: Hỏi thủ tục trả góp 85% cho doanh nghiệp, lăn bánh về Cần Thơ..." : "E.g., I need 85% company credit details, on-road delivery back to Can Tho..."}
-                  className={`w-full ${isDarkMode ? 'bg-neutral-900 text-white' : 'bg-neutral-50 text-gray-900'} border ${themeBorder} rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#C8102E] transition-colors resize-none`}
-                ></textarea>
+                </select>
               </div>
 
               {formSubmitSuccess && (
@@ -1110,17 +1060,6 @@ export default function App() {
                       <option key={p.id} value={p.name} className="bg-white text-gray-900">{p.name}</option>
                     ))}
                   </select>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-neutral-500 mb-1 font-mono">{isVi ? 'Ghi chú thắc mắc' : 'Notes & Inquiries'}</label>
-                  <textarea
-                    rows={2}
-                    value={notes}
-                    onChange={(e) => setNotes(e.target.value)}
-                    placeholder={isVi ? "Hỏi về ngân hàng, đăng ký sườn xe..." : "Inquire about bank paperwork, licenses..."}
-                    className={`w-full ${isDarkMode ? 'bg-neutral-900 text-white' : 'bg-neutral-50 text-gray-900'} border ${themeBorder} rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#C8102E] resize-none`}
-                  ></textarea>
                 </div>
 
                 {formSubmitSuccess && (

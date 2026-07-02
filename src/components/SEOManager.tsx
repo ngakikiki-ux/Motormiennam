@@ -19,16 +19,16 @@ export default function SEOManager({ language, activeProductId, activeProduct }:
 
     if (activeProduct) {
       title = isVi 
-        ? `${activeProduct.name} - Giá xe & Thông số kỹ thuật | Ti Toàn Kim Long Motor` 
-        : `${activeProduct.name} - Price & Tech Specs | Ti Toàn Kim Long Motor`;
+        ? `${activeProduct.name} - Giá xe & Thông số kỹ thuật | Kim Long Motor` 
+        : `${activeProduct.name} - Price & Tech Specs | Kim Long Motor`;
       
       description = isVi
         ? `Chi tiết xe thương mại ${activeProduct.name}. Tải trọng ${activeProduct.payload}, công suất ${activeProduct.power}. Hỗ trợ trả góp 85%, giao xe tận nơi. Liên hệ Ti Toàn ngay.`
         : `Detailed specs of commercial ${activeProduct.name}. Payload ${activeProduct.payload}, power ${activeProduct.power}. 85% financing support, home delivery. Contact Ti Toàn now.`;
     } else {
       title = isVi
-        ? 'Ti Toàn | Kim Long Motor - Tư vấn xe tải, Xe điện & Trả góp'
-        : 'Ti Toàn | Kim Long Motor - Commercial Truck & EV Consultant';
+        ? 'Kim Long Motor - Tư vấn xe tải, Xe điện & Trả góp'
+        : 'Kim Long Motor - Commercial Truck & EV Consultant';
       
       description = isVi
         ? 'Đại diện thương mại Kim Long Motor chuyên tư vấn mua bán xe tải điện EV-300, xe tải nhẹ, trung, nặng, xe đầu kéo, minibus, xe bus. Cam kết giá tốt, hỗ trợ vay 85% nhanh chóng.'
