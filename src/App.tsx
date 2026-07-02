@@ -345,7 +345,6 @@ export default function App() {
               : 'text-white'
           }`}>
             <a href="#intro" className="hover:text-[#C8102E] transition-colors duration-200">{isVi ? 'Giới thiệu' : 'About'}</a>
-            <a href="#products" className="hover:text-[#C8102E] transition-colors duration-200">{isVi ? 'Sản phẩm' : 'Vehicles'}</a>
             <a href="#pricing" className="hover:text-[#C8102E] transition-colors duration-200">{isVi ? 'Bảng giá' : 'Pricing'}</a>
             <a href="#benefits" className="hover:text-[#C8102E] transition-colors duration-200">{isVi ? 'Ưu điểm' : 'Benefits'}</a>
             <a href="#process" className="hover:text-[#C8102E] transition-colors duration-200">{isVi ? 'Quy trình' : 'Process'}</a>
@@ -394,7 +393,6 @@ export default function App() {
           <div className={`lg:hidden border-t ${themeBorder} py-5 px-4 space-y-4 ${isDarkMode ? 'bg-neutral-950' : 'bg-white'} animate-fade-in`}>
             <div className="grid grid-cols-2 gap-3 text-xs uppercase tracking-widest font-bold text-neutral-500">
               <a href="#intro" onClick={() => setMobileMenuOpen(false)} className="p-2 hover:text-[#C8102E]">{isVi ? 'Giới thiệu' : 'About'}</a>
-              <a href="#products" onClick={() => setMobileMenuOpen(false)} className="p-2 hover:text-[#C8102E]">{isVi ? 'Sản phẩm' : 'Vehicles'}</a>
               <a href="#pricing" onClick={() => setMobileMenuOpen(false)} className="p-2 hover:text-[#C8102E]">{isVi ? 'Bảng giá' : 'Pricing'}</a>
               <a href="#benefits" onClick={() => setMobileMenuOpen(false)} className="p-2 hover:text-[#C8102E]">{isVi ? 'Lợi ích' : 'Benefits'}</a>
               <a href="#process" onClick={() => setMobileMenuOpen(false)} className="p-2 hover:text-[#C8102E]">{isVi ? 'Quy trình' : 'Process'}</a>
@@ -435,6 +433,8 @@ export default function App() {
         
         {/* Decorative Luxury Lighting Accents */}
         <div className="absolute top-1/4 left-1/3 w-[350px] h-[350px] bg-red-600/5 rounded-full blur-[130px] pointer-events-none"></div>
+
+
       </section>
 
       {/* 4. Section Giới thiệu (About Ti Toàn Portrait) */}
@@ -630,186 +630,7 @@ export default function App() {
         </div>
       </section>
 
-      {/* 5. Product Catalog Section */}
-      <section className={`py-24 ${isDarkMode ? 'bg-neutral-950/40' : 'bg-white'} ${themeBorder} border-b px-4`} id="products">
-        <div className="max-w-7xl mx-auto space-y-12">
-          
-          <div className="text-center space-y-3">
-            <span className="text-[#C8102E] text-xs font-mono uppercase tracking-widest font-black block">
-              {isVi ? 'Đội xe tinh hoa' : 'Elite Showroom Portfolio'}
-            </span>
-            <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight font-poppins uppercase">
-              {isVi ? 'Bảng giá & Các Dòng Xe Kim Long' : 'Kim Long Fleet Pricing & Lineup'}
-            </h2>
-            <p className="text-neutral-500 text-xs sm:text-sm max-w-xl mx-auto">
-              {isVi 
-                ? 'Tìm kiếm dòng xe tải điện xanh đô thị, xe tải nhẹ, trung, nặng, minibus và xe bus chất lượng cao.'
-                : 'Search premium electric cargo trucks, light commercial vehicles, minibus, and passenger coach buses.'
-              }
-            </p>
-          </div>
 
-          {/* Search bar inside Catalog */}
-          <div className={`max-w-md mx-auto relative rounded-xl overflow-hidden border ${themeBorder} focus-within:border-[#C8102E] ${isDarkMode ? 'bg-neutral-900' : 'bg-neutral-50'} transition-all`}>
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400" size={16} />
-            <input
-              id="catalog-search-input"
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder={isVi ? "Gõ tìm kiếm dòng xe, tải trọng..." : "Search commercial models..."}
-              className="w-full bg-transparent pl-12 pr-4 py-3.5 text-xs focus:outline-none placeholder-neutral-400 font-sans"
-            />
-          </div>
-
-          {/* Category Filter Tabs with count indicators */}
-          <div className="flex items-center justify-center space-x-2 overflow-x-auto py-2 scrollbar-none border-b border-neutral-200/50 dark:border-neutral-900">
-            {[
-              { val: 'all', vi: 'Tất cả', en: 'All' },
-              { val: 'electric', vi: 'Xe điện', en: 'Electric' },
-              { val: 'light', vi: 'Xe tải nhẹ', en: 'Light Trucks' },
-              { val: 'medium', vi: 'Xe tải trung', en: 'Medium' },
-              { val: 'heavy', vi: 'Xe tải nặng', en: 'Heavy' },
-              { val: 'minibus', vi: 'Minibus', en: 'Minibus' },
-              { val: 'bus', vi: 'Xe bus', en: 'Coach' }
-            ].map((tab) => {
-              const count = tab.val === 'all' 
-                ? PRODUCTS.length 
-                : PRODUCTS.filter(p => p.category === tab.val).length;
-              
-              return (
-                <button
-                  key={tab.val}
-                  onClick={() => setActiveCategory(tab.val)}
-                  className={`text-xs px-4 py-2.5 rounded-full border transition-all whitespace-nowrap cursor-pointer flex items-center gap-1.5 font-bold ${
-                    activeCategory === tab.val 
-                      ? 'bg-[#C8102E] border-[#C8102E] text-white' 
-                      : `${themeBorder} text-neutral-500 hover:text-black dark:hover:text-white`
-                  }`}
-                >
-                  <span>{isVi ? tab.vi : tab.en}</span>
-                  <span className={`text-[9px] font-mono px-1.5 py-0.2 rounded-full ${activeCategory === tab.val ? 'bg-white/20 text-white' : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-400'}`}>
-                    {count}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Products Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredProducts.map((p) => {
-              const isElectric = p.category === 'electric';
-              const isPopular = p.id === 'gk48ev' || p.id === 'kiman9-199';
-              
-              return (
-                <div 
-                  key={p.id}
-                  className={`${themeCardBg} border ${themeBorder} rounded-[20px] overflow-hidden hover:border-[#D4AF37]/70 group flex flex-col justify-between transition-all duration-500 shadow-sm hover:shadow-2xl hover:-translate-y-1 relative`}
-                >
-                  {/* Image panel */}
-                  <div className="relative aspect-[16/10] overflow-hidden bg-neutral-950 border-b border-neutral-100 dark:border-neutral-900">
-                    <img 
-                      src={p.image} 
-                      alt={p.name} 
-                      className="w-full h-full object-cover group-hover:scale-106 transition-transform duration-700 ease-out"
-                      referrerPolicy="no-referrer"
-                    />
-                    
-                    {/* Dark gradient overlay on image bottom */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-80"></div>
-                    
-                    {/* Glassmorphic Category badge */}
-                    <div className="absolute top-4 left-4 bg-black/60 backdrop-blur-md border border-neutral-800 rounded-full px-3 py-1 text-[9px] font-mono text-white uppercase tracking-widest font-bold">
-                      {isVi ? p.categoryVi : p.categoryEn}
-                    </div>
-
-                    {/* Elite Luxury Status tags */}
-                    {isElectric && (
-                      <div className="absolute top-4 right-4 bg-emerald-600/90 backdrop-blur-md text-white rounded-full px-2.5 py-0.5 text-[8px] font-bold tracking-widest uppercase flex items-center gap-1">
-                        <span className="w-1.5 h-1.5 bg-white rounded-full animate-ping"></span>
-                        <span>{isVi ? 'Vận Tải Xanh' : 'EV Eco'}</span>
-                      </div>
-                    )}
-                    
-                    {!isElectric && isPopular && (
-                      <div className="absolute top-4 right-4 bg-[#D4AF37] text-black rounded-full px-2.5 py-0.5 text-[8px] font-black tracking-widest uppercase flex items-center gap-1 shadow-md">
-                        <Star size={8} fill="currentColor" />
-                        <span>{isVi ? 'Bán Chạy' : 'Best Seller'}</span>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Card details */}
-                  <div className="p-6 space-y-4 flex-1 flex flex-col justify-between">
-                    <div className="space-y-2">
-                      <div className="flex justify-between items-start gap-2">
-                        <h3 className="text-lg font-black tracking-tight group-hover:text-[#C8102E] transition-colors font-poppins text-neutral-900 dark:text-white uppercase leading-tight">
-                          {p.name}
-                        </h3>
-                        {/* 5 Star Rating overlay */}
-                        <div className="flex text-[#D4AF37] shrink-0 mt-1">
-                          <Star size={10} fill="currentColor" />
-                          <Star size={10} fill="currentColor" />
-                          <Star size={10} fill="currentColor" />
-                          <Star size={10} fill="currentColor" />
-                          <Star size={10} fill="currentColor" />
-                        </div>
-                      </div>
-
-                      <div className="flex flex-wrap items-center justify-between gap-2 pt-1 border-b border-neutral-100 dark:border-neutral-900/60 pb-2.5">
-                        <span className="text-[#C8102E] font-black font-price text-lg">
-                          {isVi ? p.priceVi : p.priceEn}
-                        </span>
-                        {p.id === 'gk48ev' && (
-                          <span className="text-[10px] text-emerald-500 font-mono font-bold uppercase">{isVi ? 'Tặng 7tr' : 'Promo'}</span>
-                        )}
-                        <span className="text-[10px] font-mono text-[#D4AF37] font-bold bg-[#D4AF37]/5 dark:bg-[#D4AF37]/10 px-2.5 py-1 rounded border border-[#D4AF37]/20">
-                          {getMonthlyInstallment(p.priceVi)}
-                        </span>
-                      </div>
-
-                      <p className="text-xs text-neutral-500 dark:text-neutral-400 leading-relaxed min-h-[48px] line-clamp-3">
-                        {isVi ? p.shortDescVi : p.shortDescEn}
-                      </p>
-                    </div>
-
-                    {/* Core specs grid */}
-                    <div className="grid grid-cols-2 gap-2 text-[10px] font-mono text-neutral-500 dark:text-neutral-400 bg-neutral-50 dark:bg-neutral-900/40 p-3 rounded-xl border border-neutral-100 dark:border-neutral-850">
-                      <div>
-                        <span className="text-neutral-400 dark:text-neutral-500 block uppercase font-bold text-[8px]">{isVi ? 'TẢI TRỌNG:' : 'PAYLOAD:'}</span>
-                        <span className="font-extrabold text-neutral-800 dark:text-neutral-200">{p.payload}</span>
-                      </div>
-                      <div>
-                        <span className="text-neutral-400 dark:text-neutral-500 block uppercase font-bold text-[8px]">{isVi ? 'ĐỘNG CƠ:' : 'ENGINE:'}</span>
-                        <span className="font-extrabold text-neutral-800 dark:text-neutral-200 truncate block">{p.power}</span>
-                      </div>
-                    </div>
-
-                    {/* Grid of buttons with exactly 20px rounded */}
-                    <div className="grid grid-cols-2 gap-3 pt-2">
-                      <button
-                        onClick={() => setSelectedProductId(p.id)}
-                        className={`text-center text-xs font-bold border ${themeBorder} hover:border-[#D4AF37] py-3 rounded-xl cursor-pointer hover:text-white hover:bg-neutral-900 dark:hover:bg-neutral-800 transition-all font-sans ${isDarkMode ? 'text-neutral-300' : 'text-neutral-700'}`}
-                      >
-                        {isVi ? 'Xem chi tiết' : 'Details Studio'}
-                      </button>
-                      <button
-                        onClick={() => openBookingModal(p.name, 'quote')}
-                        className="text-center text-xs font-bold bg-[#C8102E] hover:bg-red-700 py-3 rounded-xl text-white cursor-pointer transition-colors shadow-md shadow-red-900/10 font-sans"
-                      >
-                        {isVi ? 'Báo giá lăn bánh' : 'Get Quote'}
-                      </button>
-                    </div>
-                  </div>
-
-                </div>
-              );
-            })}
-          </div>
-
-        </div>
-      </section>
 
       {/* Pricing Matrix Section */}
       <PriceListSection
@@ -1124,7 +945,7 @@ export default function App() {
           </div>
 
           {/* Form capture box */}
-          <div className={`${themeCardBg} border ${themeBorder} rounded-[18px] p-6 sm:p-8 space-y-6 shadow-md`}>
+          <div className={`lg:col-span-7 ${themeCardBg} border ${themeBorder} rounded-[18px] p-6 sm:p-8 space-y-6 shadow-md`}>
             <div className="space-y-1">
               <h3 className="text-xl font-bold font-poppins text-neutral-800 dark:text-white uppercase">
                 {isVi ? 'Yêu Cầu Báo Giá & Đăng Ký Lái Thử' : 'Inquire On-Road Quote & Demo'}
