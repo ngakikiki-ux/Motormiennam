@@ -4,6 +4,7 @@ import {
   FileText, Sparkles, Filter, ShieldAlert, ChevronRight, HelpCircle, 
   Flame, DollarSign, Fuel, Award
 } from 'lucide-react';
+import { PRODUCTS } from '../data';
 
 export interface VehiclePriceItem {
   dong: 'BUS GHẾ' | 'BUS GIƯỜNG' | 'TẢI';
@@ -23,6 +24,58 @@ interface PriceListSectionProps {
   onOpenBooking: (vehicleName: string, type: 'quote' | 'test-drive' | 'installment' | 'general') => void;
   onOpenAdminLogin?: () => void;
 }
+
+const getVehicleImage = (row: VehiclePriceItem): string => {
+  // Try to find matching product name or keyword in PRODUCTS
+  const found = PRODUCTS.find(p => {
+    const maLoaiClean = row.maLoai.toLowerCase();
+    const pNameClean = p.name.toLowerCase();
+    
+    // Exact match or partial name match
+    if (pNameClean.includes(maLoaiClean) || maLoaiClean.includes(pNameClean)) {
+      return true;
+    }
+    
+    // Check key models
+    if (maLoaiClean.includes('x9') && pNameClean.includes('x9')) {
+      // Check if version is 16 chỗ / minibus versus van
+      if (row.phienBan.includes('16') || row.loaiXe.toLowerCase().includes('bus')) {
+        return pNameClean.includes('16');
+      }
+      return pNameClean.includes('van');
+    }
+    if (maLoaiClean.includes('29') && pNameClean.includes('29')) {
+      return true;
+    }
+    if (maLoaiClean.includes('47') && pNameClean.includes('47')) {
+      return true;
+    }
+    if (maLoaiClean.includes('g34') && pNameClean.includes('g34')) {
+      return true;
+    }
+    if (maLoaiClean.includes('g32') && pNameClean.includes('g32')) {
+      return true;
+    }
+    if (maLoaiClean.includes('kiman9') && pNameClean.includes('kiman9')) {
+      if (row.phienBan.includes('1.99') || row.loaiXe.includes('1.99')) {
+        return pNameClean.includes('1.99');
+      }
+      return pNameClean.includes('2.49');
+    }
+    return false;
+  });
+
+  if (found) return found.image;
+
+  // Fallback images depending on category
+  if (row.dong === 'TẢI') {
+    return 'https://images.unsplash.com/photo-1591768793355-74d75b51a55d?auto=format&fit=crop&q=80&w=800';
+  } else if (row.dong === 'BUS GIƯỜNG') {
+    return 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&q=80&w=800'; // luxury coach bus
+  } else {
+    return 'https://images.unsplash.com/photo-1570125909232-eb263c188f7e?auto=format&fit=crop&q=80&w=800'; // bus
+  }
+};
 
 export default function PriceListSection({
   language,
@@ -567,51 +620,64 @@ export default function PriceListSection({
                   return (
                     <div 
                       key={index} 
-                      className={`rounded-2xl border ${cardBg} p-5 shadow-sm hover:shadow-md transition-all duration-300 hover:border-[#C8102E]/30 text-left flex flex-col md:flex-row md:items-center justify-between gap-4`}
+                      className={`rounded-2xl border ${cardBg} p-5 shadow-sm hover:shadow-md transition-all duration-300 hover:border-[#C8102E]/30 text-left flex flex-col lg:flex-row lg:items-center justify-between gap-5`}
                     >
-                      {/* Left: Model Name, Version & Segment badges */}
-                      <div className="flex-1 min-w-0 space-y-2">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <span className="text-[9px] font-mono font-bold uppercase tracking-widest bg-neutral-100 dark:bg-neutral-900 text-neutral-500 dark:text-neutral-400 px-2 py-0.5 rounded">
-                            {row.dong}
-                          </span>
-                          {isElectric ? (
-                            <span className="text-[8px] font-mono font-bold uppercase tracking-widest bg-emerald-500/10 text-emerald-500 px-2 py-0.5 rounded border border-emerald-500/20">
-                              EV
-                            </span>
-                          ) : (
-                            <span className="text-[8px] font-mono font-bold uppercase tracking-widest bg-amber-500/10 text-amber-500 px-2 py-0.5 rounded border border-amber-500/20">
-                              Diesel
-                            </span>
-                          )}
-                          <span className="text-[10px] text-neutral-400 font-mono">Đời {row.namSx}</span>
-                        </div>
-                        
-                        <div className="space-y-1.5">
-                          <h3 className="text-lg sm:text-2xl font-black tracking-tight text-[#C8102E] dark:text-red-500 uppercase font-poppins block">
-                            {row.maLoai}
-                          </h3>
-                          <div className="flex flex-wrap items-center gap-2 text-xs text-neutral-600 dark:text-neutral-300">
-                            <span className="font-semibold bg-neutral-100 dark:bg-neutral-800 px-2.5 py-1 rounded text-neutral-800 dark:text-neutral-200">
-                              {row.loaiXe}
-                            </span>
-                            <span className="text-neutral-300 dark:text-neutral-700">&bull;</span>
-                            <span className="font-bold text-[#D4AF37] bg-[#D4AF37]/5 dark:bg-[#D4AF37]/10 px-2.5 py-1 rounded border border-[#D4AF37]/20 uppercase tracking-wider text-[11px]">
-                              {row.phienBan}
-                            </span>
-                          </div>
+                      {/* Left Side Container: Image & Info */}
+                      <div className="flex flex-col sm:flex-row gap-5 flex-1 min-w-0 items-start sm:items-center">
+                        {/* Vehicle Representative Image */}
+                        <div className="w-full sm:w-36 h-24 rounded-xl overflow-hidden bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 shrink-0 shadow-sm relative">
+                          <img 
+                            src={getVehicleImage(row)} 
+                            alt={row.maLoai} 
+                            className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                            referrerPolicy="no-referrer"
+                          />
                         </div>
 
-                        <div className="text-[11px] text-neutral-500 dark:text-neutral-400 flex flex-wrap gap-x-4 gap-y-1">
-                          <span className="flex items-center gap-1.5">
-                            <span className="font-bold text-neutral-400 uppercase text-[8px]">{isVi ? 'Động cơ/Quy cách:' : 'Engine/Spec:'}</span>
-                            <span className="font-semibold text-neutral-700 dark:text-neutral-300">{row.dongCoQuyCach}</span>
-                          </span>
-                          {row.ghiChu && (
-                            <span className="text-red-500 font-medium italic">
-                              * {row.ghiChu}
+                        {/* Model Name, Version & Segment badges */}
+                        <div className="flex-1 min-w-0 space-y-2">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <span className="text-[9px] font-mono font-bold uppercase tracking-widest bg-neutral-100 dark:bg-neutral-900 text-neutral-500 dark:text-neutral-400 px-2 py-0.5 rounded">
+                              {row.dong}
                             </span>
-                          )}
+                            {isElectric ? (
+                              <span className="text-[8px] font-mono font-bold uppercase tracking-widest bg-emerald-500/10 text-emerald-500 px-2 py-0.5 rounded border border-emerald-500/20">
+                                EV
+                              </span>
+                            ) : (
+                              <span className="text-[8px] font-mono font-bold uppercase tracking-widest bg-amber-500/10 text-amber-500 px-2 py-0.5 rounded border border-amber-500/20">
+                                Diesel
+                              </span>
+                            )}
+                            <span className="text-[10px] text-neutral-400 font-mono">Đời {row.namSx}</span>
+                          </div>
+                          
+                          <div className="space-y-1.5">
+                            <h3 className="text-lg sm:text-2xl font-black tracking-tight text-[#C8102E] dark:text-red-500 uppercase font-poppins block">
+                              {row.maLoai}
+                            </h3>
+                            <div className="flex flex-wrap items-center gap-2 text-xs text-neutral-600 dark:text-neutral-300">
+                              <span className="font-semibold bg-neutral-100 dark:bg-neutral-800 px-2.5 py-1 rounded text-neutral-800 dark:text-neutral-200">
+                                {row.loaiXe}
+                              </span>
+                              <span className="text-neutral-300 dark:text-neutral-700">&bull;</span>
+                              <span className="font-bold text-[#D4AF37] bg-[#D4AF37]/5 dark:bg-[#D4AF37]/10 px-2.5 py-1 rounded border border-[#D4AF37]/20 uppercase tracking-wider text-[11px]">
+                                {row.phienBan}
+                              </span>
+                            </div>
+                          </div>
+
+                          <div className="text-[11px] text-neutral-500 dark:text-neutral-400 flex flex-wrap gap-x-4 gap-y-1">
+                            <span className="flex items-center gap-1.5">
+                              <span className="font-bold text-neutral-400 uppercase text-[8px]">{isVi ? 'Động cơ/Quy cách:' : 'Engine/Spec:'}</span>
+                              <span className="font-semibold text-neutral-700 dark:text-neutral-300">{row.dongCoQuyCach}</span>
+                            </span>
+                            {row.ghiChu && (
+                              <span className="text-red-500 font-medium italic">
+                                * {row.ghiChu}
+                              </span>
+                            )}
+                          </div>
                         </div>
                       </div>
 
