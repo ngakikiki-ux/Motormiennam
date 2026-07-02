@@ -1,4 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
 @import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-poppins: "Poppins", sans-serif;
+}
 
 @layer utilities {
   /* Scrollbar Hide and Custom scrollbars */
@@ -27,11 +33,11 @@
 
   /* Micro animations */
   @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(4px); }
+    from { opacity: 0; transform: translateY(8px); }
     to { opacity: 1; transform: translateY(0); }
   }
   .animate-fade-in {
-    animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   }
 
   @keyframes slideInRight {
@@ -39,11 +45,49 @@
     to { transform: translateX(0); }
   }
   .animate-slide-in-right {
-    animation: slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: slideInRight 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  @keyframes pulseSubtle {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.85; transform: scale(1.02); }
+  }
+  .animate-pulse-subtle {
+    animation: pulseSubtle 3s ease-in-out infinite;
+  }
+
+  @keyframes spinSlow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  .animate-spin-slow {
+    animation: spinSlow 12s linear infinite;
+  }
+
+  /* Premium glassmorphic effects */
+  .glass-header {
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
   }
 }
 
 /* Base HTML Smooth Scroll behavior */
 html {
   scroll-behavior: smooth;
+}
+
+/* Smooth transition for theme colors */
+body, div, header, section, footer, h1, h2, h3, h4, p, span, button, a, table, td, th {
+  transition: background-color 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
+              border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
+              color 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Skeleton Loading screen animation */
+@keyframes skeletonPulse {
+  0%, 100% { background-color: rgba(144, 144, 144, 0.1); }
+  50% { background-color: rgba(144, 144, 144, 0.25); }
+}
+.skeleton {
+  animation: skeletonPulse 1.5s ease-in-out infinite;
 }

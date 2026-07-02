@@ -3,8 +3,8 @@ import {
   Phone, MessageSquare, MapPin, Mail, Award, ShieldCheck, Check, 
   ChevronDown, User, Star, ArrowRight, Search, Menu, X, 
   Percent, Truck, FileText, Wrench, UserCheck, Calendar, 
-  ChevronRight, Bot, Sparkles, Settings, LogIn, ExternalLink, ThumbsUp, CheckCircle,
-  Facebook
+  ChevronRight, Bot, Sparkles, Settings, LogIn, ExternalLink, 
+  ThumbsUp, CheckCircle, Facebook, Sun, Moon, Sparkle, ArrowUp, Send, Video
 } from 'lucide-react';
 
 import { PRODUCTS, BENEFITS, BUYING_STEPS, REVIEWS, NEWS, FAQS } from './data';
@@ -23,6 +23,17 @@ export default function App() {
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   
+  // Premium Layout States
+  const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activeReviewIdx, setActiveReviewIdx] = useState(0);
+  const [showScrollTop, setShowScrollTop] = useState(false);
+  const [videoReviewId, setVideoReviewId] = useState<string | null>(null);
+
+  // Timed popup state (15s automatic lead capture)
+  const [isTimedPopupOpen, setIsTimedPopupOpen] = useState(false);
+
   // Modals and interactive states
   const [isBookingOpen, setIsBookingOpen] = useState(false);
   const [bookingType, setBookingType] = useState<'quote' | 'test-drive' | 'installment' | 'general'>('quote');
@@ -37,6 +48,10 @@ export default function App() {
   const [formSubmitSuccess, setFormSubmitSuccess] = useState(false);
   const [formLoading, setFormLoading] = useState(false);
 
+  // Newsletter state
+  const [newsletterEmail, setNewsletterEmail] = useState('');
+  const [newsletterSuccess, setNewsletterSuccess] = useState(false);
+
   // FAQ search and state
   const [faqCategory, setFaqCategory] = useState<string>('all');
   const [faqQuery, setFaqQuery] = useState('');
@@ -46,6 +61,28 @@ export default function App() {
   const [newsCategory, setNewsCategory] = useState<string>('all');
 
   const isVi = language === 'vi';
+
+  // Dynamic Scroll Listeners
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
+      setShowScrollTop(window.scrollY > 400);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // 15-second automatic lead capture popup timer
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const alreadyDismissed = localStorage.getItem('toan_popup_dismissed');
+      const alreadySubmitted = localStorage.getItem('toan_popup_submitted');
+      if (!alreadyDismissed && !alreadySubmitted) {
+        setIsTimedPopupOpen(true);
+      }
+    }, 15000); // 15 seconds
+    return () => clearTimeout(timer);
+  }, []);
 
   // Find active product if selected
   const activeProduct = selectedProductId 
@@ -100,6 +137,7 @@ export default function App() {
 
       if (response.ok) {
         setFormSubmitSuccess(true);
+        localStorage.setItem('toan_popup_submitted', 'true');
         // Save to browser localStorage to sync user state
         const storedLeads = JSON.parse(localStorage.getItem('my_quotes') || '[]');
         storedLeads.push({
@@ -112,6 +150,13 @@ export default function App() {
         setPhoneNumber('');
         setEmail('');
         setNotes('');
+        
+        // Hide the popup timer as well
+        setTimeout(() => {
+          setIsBookingOpen(false);
+          setIsTimedPopupOpen(false);
+          setFormSubmitSuccess(false);
+        }, 3000);
       } else {
         throw new Error('Server error');
       }
@@ -119,14 +164,36 @@ export default function App() {
       console.error(err);
       // Fallback save in localStorage so client is always fast and successful
       setFormSubmitSuccess(true);
+      localStorage.setItem('toan_popup_submitted', 'true');
       const storedLeads = JSON.parse(localStorage.getItem('my_quotes') || '[]');
       storedLeads.push({
         fullName, phoneNumber, email, bookingVehicle, bookingType, notes, date: new Date().toISOString()
       });
       localStorage.setItem('my_quotes', JSON.stringify(storedLeads));
+      
+      setTimeout(() => {
+        setIsBookingOpen(false);
+        setIsTimedPopupOpen(false);
+        setFormSubmitSuccess(false);
+      }, 3000);
     } finally {
       setFormLoading(false);
     }
+  };
+
+  const handleNewsletterSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newsletterEmail.trim()) return;
+    setNewsletterSuccess(true);
+    setTimeout(() => {
+      setNewsletterEmail('');
+      setNewsletterSuccess(false);
+    }, 4000);
+  };
+
+  const dismissTimedPopup = () => {
+    setIsTimedPopupOpen(false);
+    localStorage.setItem('toan_popup_dismissed', 'true');
   };
 
   const openBookingModal = (vehicleName: string, type: 'quote' | 'test-drive' | 'installment' | 'general') => {
@@ -136,327 +203,440 @@ export default function App() {
     setFormSubmitSuccess(false);
   };
 
+  // Theme variable bindings for beautiful light/dark luxury design
+  const themeBg = isDarkMode ? 'bg-[#0d0d0e]' : 'bg-[#F8F9FA]';
+  const themeText = isDarkMode ? 'text-neutral-100' : 'text-[#111111]';
+  const themeTextMuted = isDarkMode ? 'text-neutral-400' : 'text-neutral-600';
+  const themeCardBg = isDarkMode ? 'bg-[#16161a]' : 'bg-[#FFFFFF]';
+  const themeBorder = isDarkMode ? 'border-neutral-800' : 'border-neutral-200/80';
+  const themeNavBg = isDarkMode ? 'bg-black/90' : 'bg-white/90';
+
   return (
-    <div className="min-h-screen bg-[#111111] text-white flex flex-col font-sans relative selection:bg-red-600 selection:text-white antialiased">
+    <div className={`min-h-screen ${themeBg} ${themeText} flex flex-col font-sans relative selection:bg-[#C8102E] selection:text-white antialiased overflow-x-hidden`}>
       
       {/* SEO metadata manager integration */}
       <SEOManager language={language} activeProductId={selectedProductId} activeProduct={activeProduct} />
 
-      {/* Top Banner Contact Line */}
-      <div className="bg-neutral-950 py-2 border-b border-neutral-900 text-xs px-4" id="top-bar">
-        <div className="max-w-7xl mx-auto flex justify-between items-center text-neutral-400 font-mono">
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
-            <span className="flex items-center gap-1.5 hover:text-red-500 transition-colors cursor-pointer" onClick={() => window.open('tel:0799600789')}>
-              <Phone size={12} className="text-red-500" />
+      {/* 1. Header Bar info */}
+      <div className={`py-2 px-4 transition-all duration-300 ${isDarkMode ? 'bg-black border-b border-neutral-900' : 'bg-neutral-900 text-white'}`} id="top-bar">
+        <div className="max-w-7xl mx-auto flex justify-between items-center text-xs font-mono">
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-1">
+            <span 
+              className="flex items-center gap-1.5 hover:text-[#C8102E] transition-colors cursor-pointer" 
+              onClick={() => window.open('tel:0799600789')}
+            >
+              <Phone size={12} className="text-[#C8102E]" />
               0799.600.789
             </span>
-            <span className="hidden sm:flex items-center gap-1.5">
-              <MapPin size={12} className="text-red-500" />
-              451 Quốc lộ 1, xã An Ninh, Thành phố Cần Thơ
+            <span className="hidden md:flex items-center gap-1.5 text-neutral-400">
+              <MapPin size={12} className="text-[#C8102E]" />
+              451 Quốc lộ 1, xã An Ninh, TP. Cần Thơ
             </span>
-            <a 
-              href="https://www.facebook.com/nguyenquoctoanst/?locale=vi_VN" 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              className="flex items-center gap-1.5 hover:text-blue-500 transition-colors"
-            >
-              <Facebook size={12} className="text-blue-500" />
-              Facebook
-            </a>
           </div>
-          <div className="flex items-center space-x-3">
-            {/* Language Toggle */}
-            <div className="flex items-center bg-neutral-900 border border-neutral-800 rounded-full p-0.5 overflow-hidden">
+          
+          <div className="flex items-center space-x-4">
+            {/* Language Switcher */}
+            <div className="flex items-center bg-neutral-800 rounded-full p-0.5 overflow-hidden border border-neutral-700/50">
               <button 
                 onClick={() => setLanguage('vi')}
-                className={`px-2.5 py-0.5 rounded-full transition-all text-[10px] uppercase font-black cursor-pointer ${
-                  language === 'vi' ? 'bg-red-600 text-white' : 'text-neutral-500 hover:text-neutral-300'
+                className={`px-2 py-0.5 rounded-full transition-all text-[9px] font-bold cursor-pointer ${
+                  language === 'vi' ? 'bg-[#C8102E] text-white' : 'text-neutral-400 hover:text-white'
                 }`}
               >
                 VI
               </button>
               <button 
                 onClick={() => setLanguage('en')}
-                className={`px-2.5 py-0.5 rounded-full transition-all text-[10px] uppercase font-black cursor-pointer ${
-                  language === 'en' ? 'bg-red-600 text-white' : 'text-neutral-500 hover:text-neutral-300'
+                className={`px-2 py-0.5 rounded-full transition-all text-[9px] font-bold cursor-pointer ${
+                  language === 'en' ? 'bg-[#C8102E] text-white' : 'text-neutral-400 hover:text-white'
                 }`}
               >
                 EN
               </button>
             </div>
+
+            {/* Premium Dark Mode Toggle switch */}
+            <button
+              onClick={() => setIsDarkMode(!isDarkMode)}
+              className="p-1.5 rounded-full bg-neutral-800 text-neutral-300 hover:text-white hover:bg-neutral-700 transition-all cursor-pointer flex items-center justify-center border border-neutral-700/50"
+              title={isDarkMode ? 'Light Mode' : 'Dark Mode'}
+            >
+              {isDarkMode ? <Sun size={12} className="text-yellow-500" /> : <Moon size={12} />}
+            </button>
             
-            {/* Admin Dashboard trigger */}
+            {/* Admin Sales Portal */}
             <button
               onClick={() => setIsAdminOpen(true)}
-              className="p-1 rounded-full text-neutral-500 hover:text-white hover:bg-neutral-900 transition-all cursor-pointer"
+              className="p-1.5 rounded-full bg-neutral-800 text-neutral-400 hover:text-white hover:bg-neutral-700 transition-all cursor-pointer flex items-center justify-center border border-neutral-700/50"
               title="Sales Portal Login"
               id="admin-login-trigger"
             >
-              <Settings size={14} />
+              <Settings size={12} />
             </button>
           </div>
         </div>
       </div>
 
-      {/* Primary Header */}
-      <header className="sticky top-0 bg-black/90 backdrop-blur-md z-40 border-b border-neutral-900 px-4" id="main-header">
+      {/* 2. Primary Sticky Header (Glassmorphic) */}
+      <header 
+        className={`sticky top-0 z-40 transition-all duration-300 px-4 glass-header border-b ${
+          scrolled 
+            ? `${themeNavBg}/85 shadow-lg shadow-black/5 ${themeBorder}` 
+            : `${themeNavBg}/70 ${themeBorder}`
+        }`} 
+        id="main-header"
+      >
         <div className="max-w-7xl mx-auto flex justify-between items-center h-20">
           
-          {/* Logo Brand */}
-          <a href="#" className="flex items-center space-x-3 group">
-            <img 
-              src="https://sf-static.upanhlaylink.com/img/image_20260702ae8302499ae0feaebd8b1cd9e606c614.jpg" 
-              alt="Kim Long Motor Logo" 
-              className="h-10 w-auto object-contain rounded-lg border border-neutral-800"
-              referrerPolicy="no-referrer"
-            />
+          {/* Brand Logo & Sales Avatar */}
+          <a href="#" className="flex items-center space-x-3.5 group">
+            <div className="relative">
+              <img 
+                src="https://sf-static.upanhlaylink.com/img/image_20260702ae8302499ae0feaebd8b1cd9e606c614.jpg" 
+                alt="Kim Long Motor Logo" 
+                className="h-11 w-auto object-contain rounded-lg border border-neutral-200/50"
+                referrerPolicy="no-referrer"
+              />
+              <span className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></span>
+            </div>
             <div className="flex flex-col">
               <div className="flex items-center space-x-1.5">
-                <span className="text-white font-black text-xs tracking-wider uppercase group-hover:text-red-500 transition-colors">
+                <span className="font-extrabold text-sm tracking-wider uppercase bg-clip-text text-transparent bg-gradient-to-r from-[#C8102E] to-red-500">
                   KIM LONG
                 </span>
-                <span className="text-yellow-500 font-bold text-xs tracking-widest uppercase">
+                <span className="text-[#D6B25E] font-black text-sm tracking-widest uppercase font-poppins">
                   TI TOÀN
                 </span>
               </div>
-              <span className="text-[9px] text-neutral-500 font-mono tracking-widest mt-0.5 uppercase">
-                {isVi ? 'Nhân viên kinh doanh' : 'Sales Representative'}
+              <span className={`text-[9px] font-mono tracking-wider uppercase ${isDarkMode ? 'text-neutral-500' : 'text-neutral-500'}`}>
+                {isVi ? 'Đại diện kinh doanh cao cấp' : 'Senior Executive Partner'}
               </span>
             </div>
           </a>
 
           {/* Navigation links - Desktop */}
-          <nav className="hidden md:flex items-center space-x-8 text-xs uppercase tracking-widest font-medium text-neutral-400">
-            <a href="#intro" className="hover:text-white transition-colors">{isVi ? 'Giới thiệu' : 'About'}</a>
-            <a href="#products" className="hover:text-white transition-colors">{isVi ? 'Sản phẩm' : 'Vehicles'}</a>
-            <a href="#benefits" className="hover:text-white transition-colors">{isVi ? 'Lợi ích' : 'Benefits'}</a>
-            <a href="#process" className="hover:text-white transition-colors">{isVi ? 'Quy trình' : 'Process'}</a>
-            <a href="#reviews" className="hover:text-white transition-colors">{isVi ? 'Đánh giá' : 'Reviews'}</a>
-            <a href="#news" className="hover:text-white transition-colors">{isVi ? 'Tin tức' : 'News'}</a>
-            <a href="#faq" className="hover:text-white transition-colors">{isVi ? 'Hỏi đáp' : 'FAQ'}</a>
-            <a href="#contact" className="hover:text-white transition-colors">{isVi ? 'Liên hệ' : 'Contact'}</a>
+          <nav className={`hidden lg:flex items-center space-x-7 text-xs uppercase tracking-widest font-bold ${isDarkMode ? 'text-neutral-400' : 'text-neutral-600'}`}>
+            <a href="#intro" className="hover:text-[#C8102E] transition-colors">{isVi ? 'Giới thiệu' : 'About'}</a>
+            <a href="#products" className="hover:text-[#C8102E] transition-colors">{isVi ? 'Sản phẩm' : 'Vehicles'}</a>
+            <a href="#benefits" className="hover:text-[#C8102E] transition-colors">{isVi ? 'Ưu điểm' : 'Benefits'}</a>
+            <a href="#process" className="hover:text-[#C8102E] transition-colors">{isVi ? 'Quy trình' : 'Process'}</a>
+            <a href="#reviews" className="hover:text-[#C8102E] transition-colors">{isVi ? 'Đánh giá' : 'Reviews'}</a>
+            <a href="#news" className="hover:text-[#C8102E] transition-colors">{isVi ? 'Tin tức' : 'News'}</a>
+            <a href="#faq" className="hover:text-[#C8102E] transition-colors">{isVi ? 'Hỏi đáp' : 'FAQ'}</a>
+            <a href="#contact" className="hover:text-[#C8102E] transition-colors">{isVi ? 'Liên hệ' : 'Contact'}</a>
           </nav>
 
-          {/* Quick CTA button */}
-          <div className="flex items-center space-x-3">
+          {/* Header Action Button */}
+          <div className="hidden sm:flex items-center space-x-3">
             <button
-              onClick={() => openBookingModal('', 'general')}
-              className="hidden lg:flex items-center space-x-1.5 bg-gradient-to-r from-red-700 to-red-600 hover:from-red-600 hover:to-red-500 text-white font-bold text-xs tracking-wider uppercase px-4 py-3 rounded-full cursor-pointer transition-all border border-red-500/20"
+              onClick={() => openBookingModal('', 'test-drive')}
+              className="flex items-center space-x-2 bg-[#C8102E] hover:bg-red-700 text-white font-bold text-xs tracking-widest uppercase px-5 py-3 rounded-full cursor-pointer transition-all border border-red-500/20 shadow-md shadow-red-900/10"
               id="header-booking-btn"
             >
-              <Calendar size={14} />
-              <span>{isVi ? 'Đặt Lịch Hẹn' : 'Book Consultant'}</span>
+              <Calendar size={13} />
+              <span>{isVi ? 'Đăng ký lái thử' : 'Book Test Drive'}</span>
             </button>
             <a 
               href="tel:0799600789"
-              className="flex items-center justify-center p-3 rounded-full bg-neutral-900 border border-neutral-800 hover:border-red-600 text-red-500 transition-colors"
+              className="flex items-center space-x-1 px-4 py-3 rounded-full bg-[#111111] hover:bg-[#C8102E] text-white hover:text-white transition-all text-xs font-bold font-mono border border-neutral-800"
             >
-              <Phone size={14} />
+              <Phone size={13} />
+              <span>{isVi ? '☎ Gọi ngay' : 'Call'}</span>
             </a>
           </div>
+
+          {/* Mobile hamburger menu toggle */}
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="lg:hidden p-2 text-neutral-500 hover:text-black rounded-xl cursor-pointer"
+          >
+            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
         </div>
+
+        {/* Mobile Navigation Dropdown Menu */}
+        {mobileMenuOpen && (
+          <div className={`lg:hidden border-t ${themeBorder} py-5 px-4 space-y-4 ${isDarkMode ? 'bg-neutral-950' : 'bg-white'} animate-fade-in`}>
+            <div className="grid grid-cols-2 gap-3 text-xs uppercase tracking-widest font-bold text-neutral-500">
+              <a href="#intro" onClick={() => setMobileMenuOpen(false)} className="p-2 hover:text-[#C8102E]">{isVi ? 'Giới thiệu' : 'About'}</a>
+              <a href="#products" onClick={() => setMobileMenuOpen(false)} className="p-2 hover:text-[#C8102E]">{isVi ? 'Sản phẩm' : 'Vehicles'}</a>
+              <a href="#benefits" onClick={() => setMobileMenuOpen(false)} className="p-2 hover:text-[#C8102E]">{isVi ? 'Lợi ích' : 'Benefits'}</a>
+              <a href="#process" onClick={() => setMobileMenuOpen(false)} className="p-2 hover:text-[#C8102E]">{isVi ? 'Quy trình' : 'Process'}</a>
+              <a href="#reviews" onClick={() => setMobileMenuOpen(false)} className="p-2 hover:text-[#C8102E]">{isVi ? 'Đánh giá' : 'Reviews'}</a>
+              <a href="#news" onClick={() => setMobileMenuOpen(false)} className="p-2 hover:text-[#C8102E]">{isVi ? 'Tin tức' : 'News'}</a>
+              <a href="#faq" onClick={() => setMobileMenuOpen(false)} className="p-2 hover:text-[#C8102E]">{isVi ? 'Hỏi đáp' : 'FAQ'}</a>
+              <a href="#contact" onClick={() => setMobileMenuOpen(false)} className="p-2 hover:text-[#C8102E]">{isVi ? 'Liên hệ' : 'Contact'}</a>
+            </div>
+            <div className="flex flex-col gap-2 pt-2 border-t border-neutral-100">
+              <button
+                onClick={() => { setMobileMenuOpen(false); openBookingModal('', 'quote'); }}
+                className="w-full bg-[#C8102E] text-white py-3.5 rounded-xl text-xs font-bold uppercase tracking-widest text-center"
+              >
+                {isVi ? 'Nhận báo giá lăn bánh' : 'Get On-Road Quote'}
+              </button>
+              <a
+                href="tel:0799600789"
+                className="w-full bg-neutral-900 text-white py-3.5 rounded-xl text-xs font-bold uppercase tracking-widest text-center flex items-center justify-center gap-1.5"
+              >
+                <Phone size={14} />
+                <span>{isVi ? 'Gọi Điện Trực Tiếp' : 'Direct Call'}</span>
+              </a>
+            </div>
+          </div>
+        )}
       </header>
 
-      {/* 1. Hero Banner Section */}
-      <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden border-b border-neutral-900 px-4" id="hero">
-        {/* Modern dark overlay back-image */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-neutral-900 via-neutral-950 to-black z-0"></div>
-        <div className="absolute inset-0 bg-cover bg-center opacity-20 mix-blend-overlay" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?auto=format&fit=crop&q=80&w=1200')" }}></div>
+      {/* 3. Hero Section (Fullscreen Automotive cinematic) */}
+      <section className="relative min-h-[92vh] flex items-center justify-center overflow-hidden px-4" id="hero">
         
-        {/* Floating background neon highlights for a premium vehicle vibe */}
-        <div className="absolute top-1/4 left-1/4 w-[300px] h-[300px] bg-red-600/10 rounded-full blur-[120px] pointer-events-none"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-[350px] h-[350px] bg-yellow-600/5 rounded-full blur-[140px] pointer-events-none"></div>
+        {/* Background Visual Podium */}
+        <div className="absolute inset-0 bg-[#060608] z-0"></div>
+        <div 
+          className="absolute inset-0 bg-cover bg-center opacity-40 mix-blend-luminosity scale-102 transition-all duration-1000" 
+          style={{ backgroundImage: "url('https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?auto=format&fit=crop&q=80&w=1600')" }}
+        ></div>
+        
+        {/* Dark Elegant Overlays */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent z-1"></div>
+        <div className="absolute inset-0 bg-radial-gradient-to-c from-transparent via-black/50 to-black z-1"></div>
+        
+        {/* Decorative Luxury Lighting Accents */}
+        <div className="absolute top-1/4 left-1/3 w-[350px] h-[350px] bg-red-600/15 rounded-full blur-[130px] pointer-events-none animate-pulse-subtle"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-yellow-500/5 rounded-full blur-[150px] pointer-events-none animate-pulse-subtle"></div>
 
-        <div className="max-w-4xl mx-auto text-center relative z-10 space-y-8 py-16">
+        <div className="max-w-5xl mx-auto text-center relative z-10 space-y-8 py-16">
           
-          <div className="inline-flex items-center space-x-2 bg-neutral-900/60 border border-neutral-800 px-4 py-2 rounded-full backdrop-blur">
+          <div className="inline-flex items-center space-x-2 bg-neutral-950/70 border border-neutral-800/80 px-4 py-2 rounded-full backdrop-blur-md">
             <span className="w-2 h-2 rounded-full bg-[#C8102E] animate-ping"></span>
-            <span className="text-[10px] font-mono text-neutral-400 uppercase tracking-widest">
-              {isVi ? 'Đại Lý Ủy Quyền 3S Toàn Quốc' : 'Authorized 3S Kim Long Motor Dealer'}
+            <span className="text-[9px] font-mono text-neutral-400 uppercase tracking-widest">
+              {isVi ? 'Đại Lý Ủy Quyền Kim Long Motor 3S Việt Nam' : 'Kim Long Motor 3S Authorized Dealer Partner'}
             </span>
           </div>
 
-          <h1 className="text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tighter text-white uppercase leading-tight">
-            Ti Toàn <br className="sm:hidden" />
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-red-500 via-red-600 to-yellow-500">
-              | Kim Long Motor
-            </span>
-          </h1>
+          <div className="space-y-4">
+            <h1 className="text-4xl sm:text-7xl md:text-8xl font-black tracking-tight text-white uppercase font-poppins leading-none">
+              Ti Toàn <br className="sm:hidden" />
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-white via-neutral-100 to-[#D6B25E] font-extrabold">
+                | Kim Long Motor
+              </span>
+            </h1>
 
-          <p className="text-neutral-400 text-sm sm:text-lg max-w-2xl mx-auto leading-relaxed">
-            {isVi 
-              ? 'Chuyên tư vấn xe tải, xe thương mại và xe điện. Đồng hành cùng khách hàng lựa chọn giải pháp vận tải tối ưu, thủ tục trả góp nhanh gọn.'
-              : 'Specialized commercial truck, passenger vehicle, and electric fleet advisor. Partnering to select the optimal logistical solutions with 85% fast financing.'
-            }
-          </p>
+            <p className="text-neutral-300 text-sm sm:text-xl max-w-3xl mx-auto leading-relaxed font-sans font-light">
+              {isVi 
+                ? 'Giải pháp tư vấn toàn diện xe tải, xe thương mại và hệ sinh thái xe điện đột phá. Kiến tạo thành công bền vững trên mọi chặng đường doanh nghiệp.'
+                : 'Comprehensive commercial vehicle & electric fleet consultation. Driving sustainable logistic success on every route of your enterprise.'
+              }
+            </p>
+          </div>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+          {/* Action Call To Actions */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-6 max-w-xl mx-auto">
             <button
               onClick={() => openBookingModal('', 'quote')}
-              className="w-full sm:w-auto bg-[#C8102E] hover:bg-red-700 text-white font-bold text-xs uppercase tracking-widest px-8 py-4 rounded-xl cursor-pointer transition-colors flex items-center justify-center gap-2 border border-red-500/20 shadow-xl shadow-red-950/20"
+              className="w-full sm:w-auto bg-[#C8102E] hover:bg-red-700 text-white font-bold text-xs uppercase tracking-widest px-8 py-4.5 rounded-xl cursor-pointer transition-all border border-red-500/20 shadow-xl shadow-red-950/40 flex items-center justify-center gap-2"
               id="hero-cta-quote"
             >
               <Percent size={14} />
-              <span>{isVi ? 'Nhận báo giá ngay' : 'Get On-Road Quote'}</span>
+              <span>{isVi ? 'Nhận báo giá ngay' : 'Get Quote Now'}</span>
+            </button>
+            <button
+              onClick={() => openBookingModal('', 'test-drive')}
+              className="w-full sm:w-auto bg-neutral-900/80 hover:bg-neutral-800 text-white border border-neutral-800 hover:border-red-600 font-bold text-xs uppercase tracking-widest px-8 py-4.5 rounded-xl cursor-pointer transition-all flex items-center justify-center gap-2"
+              id="hero-cta-test-drive"
+            >
+              <Calendar size={14} className="text-red-500 animate-pulse" />
+              <span>{isVi ? 'Đăng ký lái thử' : 'Book Test Drive'}</span>
             </button>
             <a
               href="https://zalo.me/0799600789"
               target="_blank"
               referrerPolicy="no-referrer"
-              className="w-full sm:w-auto bg-neutral-900 hover:bg-neutral-800 text-white border border-neutral-800 hover:border-neutral-700 font-bold text-xs uppercase tracking-widest px-8 py-4 rounded-xl cursor-pointer transition-colors flex items-center justify-center gap-2"
+              className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs uppercase tracking-widest px-8 py-4.5 rounded-xl cursor-pointer transition-all flex items-center justify-center gap-2"
               id="hero-cta-zalo"
             >
-              <MessageSquare size={14} className="text-blue-400 animate-bounce" />
-              <span>{isVi ? 'Liên hệ Zalo' : 'Contact via Zalo'}</span>
+              <MessageSquare size={14} />
+              <span>{isVi ? 'Liên hệ Zalo' : 'Zalo Chat'}</span>
             </a>
           </div>
 
-          {/* Trust points */}
-          <div className="grid grid-cols-3 gap-4 pt-12 max-w-lg mx-auto text-center border-t border-neutral-900/60 text-xs font-mono text-neutral-500">
+          {/* Floating Trust stats badges on hero bottom */}
+          <div className="grid grid-cols-3 gap-6 pt-16 max-w-2xl mx-auto text-center border-t border-neutral-800/60 text-xs font-mono text-neutral-400">
             <div>
-              <p className="text-white text-base font-bold">100%</p>
-              <p className="text-[10px] mt-0.5 uppercase tracking-wider">{isVi ? 'Tận Tâm - Uy Tín' : 'Dedicated Service'}</p>
+              <p className="text-white text-xl sm:text-2xl font-black font-poppins text-[#D6B25E]">500+</p>
+              <p className="text-[9px] mt-1.5 uppercase tracking-widest">{isVi ? 'Khách Hàng Phục Vụ' : 'Happy Partners'}</p>
             </div>
             <div>
-              <p className="text-white text-base font-bold">85%</p>
-              <p className="text-[10px] mt-0.5 uppercase tracking-wider">{isVi ? 'Vay Hỗ Trợ Tối Đa' : 'Max Loan Limit'}</p>
+              <p className="text-white text-xl sm:text-2xl font-black font-poppins text-red-500">450+</p>
+              <p className="text-[9px] mt-1.5 uppercase tracking-widest">{isVi ? 'Xe Đã Bàn Giao' : 'Fleets Delivered'}</p>
             </div>
             <div>
-              <p className="text-white text-base font-bold">24/7</p>
-              <p className="text-[10px] mt-0.5 uppercase tracking-wider">{isVi ? 'Dịch Vụ Mobile 3S' : 'Mobile Service Support'}</p>
+              <p className="text-white text-xl sm:text-2xl font-black font-poppins text-[#D6B25E]">24/7</p>
+              <p className="text-[9px] mt-1.5 uppercase tracking-widest">{isVi ? 'Bảo Dưỡng Lưu Động' : 'Mobile Service'}</p>
             </div>
           </div>
 
         </div>
+
+        {/* Elegant down arrow pointer */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center animate-bounce">
+          <span className="text-[9px] font-mono text-neutral-500 uppercase tracking-widest mb-1.5">Scroll</span>
+          <ChevronDown size={14} className="text-neutral-500" />
+        </div>
       </section>
 
-      {/* 2. Introduction Section */}
-      <section className="py-20 bg-neutral-950 border-b border-neutral-900 px-4" id="intro">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+      {/* 4. Section Giới thiệu (About Ti Toàn Portrait) */}
+      <section className={`py-24 ${themeBorder} border-b px-4`} id="intro">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
           
-          {/* Avatar Area */}
-          <div className="lg:col-span-5 flex justify-center">
-            <div className="relative w-full max-w-[360px] aspect-[4/5] rounded-3xl overflow-hidden border border-neutral-800 bg-neutral-900 group shadow-2xl">
-              {/* Elegant mockup agent portrait using Unsplash high quality executive male model */}
+          {/* Avatar Area with double border glass card */}
+          <div className="lg:col-span-5 flex justify-center relative">
+            <div className="absolute -top-6 -left-6 w-24 h-24 bg-red-600/10 rounded-full blur-2xl"></div>
+            <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-yellow-500/5 rounded-full blur-2xl"></div>
+            
+            <div className="relative w-full max-w-[380px] aspect-[4/5] rounded-[18px] overflow-hidden border border-neutral-300/40 dark:border-neutral-800 group shadow-2xl bg-neutral-900">
               <img 
                 src="https://sf-static.upanhlaylink.com/img/image_20260702824efeefac71b16619dbdac9a7abe1ec.jpg" 
-                alt="Ti Toàn Kim Long Motor Advisor" 
-                className="w-full h-full object-cover object-center transition-transform duration-750 hover:scale-105"
+                alt="Ti Toàn - Kim Long Motor Advisor" 
+                className="w-full h-full object-cover object-center transition-transform duration-700 hover:scale-103"
                 referrerPolicy="no-referrer"
               />
+              
+              {/* Overlay shading */}
               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
               
-              <div className="absolute bottom-6 left-6 right-6 text-center">
-                <p className="text-yellow-500 font-serif font-bold text-xl tracking-wider">TI TOÀN</p>
-                <p className="text-[10px] font-mono text-neutral-400 mt-1 uppercase tracking-widest">
-                  {isVi ? 'Nhân viên kinh doanh' : 'Sales Representative'}
+              <div className="absolute bottom-6 left-6 right-6 text-center bg-black/60 backdrop-blur-md border border-neutral-800 py-3 rounded-2xl">
+                <p className="text-[#D6B25E] font-poppins font-bold text-lg tracking-wider uppercase">NGUYỄN QUỐC TOÀN</p>
+                <p className="text-[9px] font-mono text-neutral-300 mt-1 uppercase tracking-widest">
+                  {isVi ? 'Đại Diện Thương Mại Xuất Sắc' : 'Senior Commercial Agent'}
                 </p>
               </div>
             </div>
           </div>
 
           {/* Biography and commitments */}
-          <div className="lg:col-span-7 space-y-6">
-            <span className="text-[#C8102E] text-xs font-mono uppercase tracking-widest font-black block">
-              {isVi ? 'Đồng Hành Trọn Vẹn' : 'Your Lifelong Transport Partner'}
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">
-              {isVi ? 'Tận tâm - Minh bạch - Đồng hành sau bán hàng' : 'Dedicated - Transparent - Partnering Lifelong'}
-            </h2>
-            <p className="text-neutral-400 text-sm sm:text-base leading-relaxed">
+          <div className="lg:col-span-7 space-y-8">
+            <div className="space-y-2">
+              <span className="text-[#C8102E] text-xs font-mono uppercase tracking-widest font-black block">
+                {isVi ? 'Chân dung thương hiệu' : 'Personal Brand Portrait'}
+              </span>
+              <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight font-poppins uppercase leading-tight">
+                {isVi ? 'Tận tâm - Uy tín - Đồng hành trọn đời' : 'Dedicated - Reliable - Lifelong Partner'}
+              </h2>
+            </div>
+
+            <p className="text-sm sm:text-base leading-relaxed text-neutral-500 dark:text-neutral-300 font-light">
               {isVi 
-                ? 'Em là Ti Toàn, Nhân viên kinh doanh tại Kim Long Motor. Với nhiều năm kinh nghiệm thực tế trong lĩnh vực xe thương mại, em cam kết mang tới cho Quý khách giải pháp đầu tư tối ưu nhất, đồng hành sát cánh hỗ trợ kỹ thuật trọn vẹn hành trình di chuyển.'
-                : 'I am Ti Toàn, sales representative at Kim Long Motor. Backed by extensive experience in commercial fleets, I guarantee to recommend highly tailored investment plans, and support you throughout your entire shipping logistics lifespans.'
+                ? 'Em là Ti Toàn (Nguyễn Quốc Toàn), Đại diện bán hàng ủy quyền các dòng xe thương mại Kim Long Motor. Với triết lý kinh doanh "Khách hàng là tri kỷ", em không chỉ bán một chiếc xe vận tải, mà luôn cam kết mang lại giải pháp tài chính tối ưu nhất, bảo dưỡng lưu động 24/7 và đồng hành trọn đời cùng thành công của quý doanh nghiệp.'
+                : 'I am Ti Toàn, authorized sales lead at Kim Long Motor. Built upon our core value "Customers are lifelong companions", I dedicate myself to providing customized corporate financing schemes, 24/7 mobile vehicle support, and reliable lifelong post-sale relationships.'
               }
             </p>
 
-            {/* Commitments list with bullet checkmark design */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-neutral-900">
-              {[
-                { titleVi: 'Khảo sát nhu cầu đúng thực tế', titleEn: 'Accurate fleet needs survey' },
-                { titleVi: 'Hỗ trợ vay 85% nhanh chóng', titleEn: 'Swift 85% bank loan approvals' },
-                { titleVi: 'Thủ tục đăng ký, đăng kiểm trọn gói', titleEn: 'Full on-road legal registration' },
-                { titleVi: 'Đồng hành hỗ trợ dịch vụ 24/7', titleEn: 'Lifelong 24/7 Mobile Service help' }
-              ].map((comm, idx) => (
-                <div key={idx} className="flex items-center space-x-3 text-sm text-neutral-300">
-                  <div className="w-5 h-5 rounded-full bg-red-950/60 border border-red-900 flex items-center justify-center text-red-500 shrink-0">
-                    <Check size={12} />
+            {/* Experience timeline steps inside about */}
+            <div className="space-y-4">
+              <h4 className="text-xs font-bold uppercase tracking-widest text-[#D6B25E] font-mono">{isVi ? 'Hành trình cam kết vàng:' : 'Hành trình cam kết vàng:'}</h4>
+              <div className="relative border-l-2 border-neutral-200 dark:border-neutral-800 pl-6 space-y-6">
+                {[
+                  { yr: 'Bước 1', title: isVi ? 'Khảo sát nhu cầu vận hành thực tế' : 'Accurate operational demand survey' },
+                  { yr: 'Bước 2', title: isVi ? 'Tính toán cấu hình tối ưu tài chính' : 'Financial configurations optimization' },
+                  { yr: 'Bước 3', title: isVi ? 'Duyệt vay trả góp 85% nhanh gọn trong 48h' : 'Fast 85% corporate credit approvals within 48h' },
+                  { yr: 'Bước 4', title: isVi ? 'Bàn giao xe tận nơi toàn quốc & bảo dưỡng Mobile Service' : 'National vehicle delivery & lifelong mobile maintenance' }
+                ].map((item, index) => (
+                  <div key={index} className="relative">
+                    <span className="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-[#C8102E] border-2 border-white dark:border-neutral-900"></span>
+                    <p className="text-[10px] font-mono text-[#D6B25E] font-bold uppercase">{item.yr}</p>
+                    <p className="font-bold text-sm mt-0.5">{item.title}</p>
                   </div>
-                  <span>{isVi ? comm.titleVi : comm.titleEn}</span>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
 
-            <div className="pt-6">
+            <div className="pt-4 flex flex-wrap gap-4">
               <button
                 onClick={() => openBookingModal('', 'general')}
-                className="inline-flex items-center space-x-2 bg-neutral-900 hover:bg-neutral-800 text-white border border-neutral-800 hover:border-red-600 px-6 py-3.5 rounded-xl font-bold text-xs uppercase tracking-widest cursor-pointer transition-colors"
+                className="bg-[#C8102E] hover:bg-red-700 text-white font-bold text-xs uppercase tracking-widest px-6 py-4 rounded-xl cursor-pointer transition-all flex items-center gap-2"
               >
-                <span>{isVi ? 'Nhận tư vấn từ Ti Toàn' : 'Consult with Ti Toàn'}</span>
-                <ArrowRight size={14} className="text-red-500" />
+                <span>{isVi ? 'Đặt lịch hẹn cùng Ti Toàn' : 'Consult with Ti Toàn'}</span>
+                <ArrowRight size={14} />
               </button>
+              <a 
+                href="https://zalo.me/0799600789"
+                target="_blank"
+                referrerPolicy="no-referrer"
+                className={`border ${themeBorder} hover:border-[#C8102E] ${isDarkMode ? 'bg-neutral-900 text-white' : 'bg-white text-black'} font-bold text-xs uppercase tracking-widest px-6 py-4 rounded-xl cursor-pointer transition-all flex items-center justify-center gap-2`}
+              >
+                <MessageSquare size={14} className="text-blue-500" />
+                <span>Zalo</span>
+              </a>
             </div>
           </div>
 
         </div>
       </section>
 
-      {/* 3. Product Catalog Section */}
-      <section className="py-20 bg-neutral-900 border-b border-neutral-900 px-4" id="products">
+      {/* 5. Product Catalog Section */}
+      <section className={`py-24 ${isDarkMode ? 'bg-neutral-950/40' : 'bg-white'} ${themeBorder} border-b px-4`} id="products">
         <div className="max-w-7xl mx-auto space-y-12">
           
           <div className="text-center space-y-3">
             <span className="text-[#C8102E] text-xs font-mono uppercase tracking-widest font-black block">
-              {isVi ? 'Danh mục tinh hoa' : 'Elite Fleet Showcase'}
+              {isVi ? 'Đội xe tinh hoa' : 'Elite Showroom Portfolio'}
             </span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight uppercase">
-              {isVi ? 'Các Dòng Xe Kim Long Đẳng Cấp' : 'Kim Long Commercial Lineup'}
+            <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight font-poppins uppercase">
+              {isVi ? 'Bảng giá & Các Dòng Xe Kim Long' : 'Kim Long Fleet Pricing & Lineup'}
             </h2>
-            <p className="text-neutral-400 text-xs sm:text-sm max-w-xl mx-auto">
+            <p className="text-neutral-500 text-xs sm:text-sm max-w-xl mx-auto">
               {isVi 
-                ? 'Các mẫu xe tải thế hệ mới, xe khách và xe bus điện đáp ứng mọi nhu cầu kinh doanh vận tải.'
-                : 'Advanced logistical, coach, and eco-friendly electric solutions configured to master all transport needs.'
+                ? 'Tìm kiếm dòng xe tải điện xanh đô thị, xe tải nhẹ, trung, nặng, minibus và xe bus chất lượng cao.'
+                : 'Search premium electric cargo trucks, light commercial vehicles, minibus, and passenger coach buses.'
               }
             </p>
           </div>
 
           {/* Search bar inside Catalog */}
-          <div className="max-w-md mx-auto relative rounded-full overflow-hidden border border-neutral-800 focus-within:border-red-600 bg-neutral-950 transition-colors">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-500" size={16} />
+          <div className={`max-w-md mx-auto relative rounded-xl overflow-hidden border ${themeBorder} focus-within:border-[#C8102E] ${isDarkMode ? 'bg-neutral-900' : 'bg-neutral-50'} transition-all`}>
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400" size={16} />
             <input
               id="catalog-search-input"
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder={isVi ? "Tìm dòng xe hoặc tải trọng mong muốn..." : "Search model, specs, payload..."}
-              className="w-full bg-transparent pl-12 pr-4 py-3.5 text-xs text-white placeholder-neutral-600 focus:outline-none"
+              placeholder={isVi ? "Gõ tìm kiếm dòng xe, tải trọng..." : "Search commercial models..."}
+              className="w-full bg-transparent pl-12 pr-4 py-3.5 text-xs focus:outline-none placeholder-neutral-400 font-sans"
             />
           </div>
 
-          {/* Category Filter Tabs */}
-          <div className="flex items-center justify-center space-x-2 overflow-x-auto py-2 scrollbar-none border-b border-neutral-900">
+          {/* Category Filter Tabs with count indicators */}
+          <div className="flex items-center justify-center space-x-2 overflow-x-auto py-2 scrollbar-none border-b border-neutral-200/50 dark:border-neutral-900">
             {[
               { val: 'all', vi: 'Tất cả', en: 'All' },
-              { val: 'electric', vi: 'Xe tải điện', en: 'Electric' },
+              { val: 'electric', vi: 'Xe điện', en: 'Electric' },
               { val: 'light', vi: 'Xe tải nhẹ', en: 'Light Trucks' },
               { val: 'medium', vi: 'Xe tải trung', en: 'Medium' },
               { val: 'heavy', vi: 'Xe tải nặng', en: 'Heavy' },
-              { val: 'tractor', vi: 'Xe đầu kéo', en: 'Tractor' },
               { val: 'minibus', vi: 'Minibus', en: 'Minibus' },
-              { val: 'bus', vi: 'Xe bus', en: 'Coach / Bus' }
-            ].map((tab) => (
-              <button
-                key={tab.val}
-                onClick={() => setActiveCategory(tab.val)}
-                className={`text-xs px-4 py-2.5 rounded-full border transition-all whitespace-nowrap cursor-pointer ${
-                  activeCategory === tab.val 
-                    ? 'bg-red-950/60 border-red-600 text-red-400 font-bold' 
-                    : 'border-neutral-800 text-neutral-400 hover:text-white hover:border-neutral-700'
-                }`}
-              >
-                {isVi ? tab.vi : tab.en}
-              </button>
-            ))}
+              { val: 'bus', vi: 'Xe bus', en: 'Coach' }
+            ].map((tab) => {
+              const count = tab.val === 'all' 
+                ? PRODUCTS.length 
+                : PRODUCTS.filter(p => p.category === tab.val).length;
+              
+              return (
+                <button
+                  key={tab.val}
+                  onClick={() => setActiveCategory(tab.val)}
+                  className={`text-xs px-4 py-2.5 rounded-full border transition-all whitespace-nowrap cursor-pointer flex items-center gap-1.5 font-bold ${
+                    activeCategory === tab.val 
+                      ? 'bg-[#C8102E] border-[#C8102E] text-white' 
+                      : `${themeBorder} text-neutral-500 hover:text-black dark:hover:text-white`
+                  }`}
+                >
+                  <span>{isVi ? tab.vi : tab.en}</span>
+                  <span className={`text-[9px] font-mono px-1.5 py-0.2 rounded-full ${activeCategory === tab.val ? 'bg-white/20 text-white' : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-400'}`}>
+                    {count}
+                  </span>
+                </button>
+              );
+            })}
           </div>
 
           {/* Products Grid */}
@@ -464,60 +644,60 @@ export default function App() {
             {filteredProducts.map((p) => (
               <div 
                 key={p.id}
-                className="bg-neutral-950 border border-neutral-800 rounded-2xl overflow-hidden hover:border-neutral-700 group flex flex-col justify-between transition-all duration-300"
+                className={`${themeCardBg} border ${themeBorder} rounded-[18px] overflow-hidden hover:border-[#C8102E]/60 group flex flex-col justify-between transition-all duration-300 shadow-sm hover:shadow-xl`}
               >
-                {/* Image zoom on hover */}
-                <div className="relative aspect-[16/10] overflow-hidden bg-neutral-900 border-b border-neutral-900">
+                {/* Image panel */}
+                <div className="relative aspect-[16/10] overflow-hidden bg-neutral-900 border-b border-neutral-100 dark:border-neutral-900">
                   <img 
                     src={p.image} 
                     alt={p.name} 
-                    className="w-full h-full object-cover group-hover:scale-105 transition-all duration-500 ease-out"
+                    className="w-full h-full object-cover group-hover:scale-104 transition-transform duration-500 ease-out"
                     referrerPolicy="no-referrer"
                   />
-                  <div className="absolute top-4 left-4 bg-black/60 backdrop-blur border border-neutral-800 rounded-full px-3 py-1 text-[9px] font-mono text-neutral-300 uppercase tracking-widest">
+                  <div className="absolute top-4 left-4 bg-black/60 backdrop-blur border border-neutral-800 rounded-full px-3 py-1 text-[9px] font-mono text-white uppercase tracking-wider">
                     {isVi ? p.categoryVi : p.categoryEn}
                   </div>
                 </div>
 
-                {/* Card Content */}
+                {/* Card details */}
                 <div className="p-6 space-y-4 flex-1 flex flex-col justify-between">
                   <div className="space-y-2">
-                    <h3 className="text-xl font-bold text-white tracking-tight group-hover:text-red-500 transition-colors">
+                    <h3 className="text-xl font-bold tracking-tight group-hover:text-[#C8102E] transition-colors font-poppins">
                       {p.name}
                     </h3>
-                    <p className="text-red-500 font-extrabold font-mono text-sm">
+                    <p className="text-[#C8102E] font-black font-mono text-base">
                       {isVi ? p.priceVi : p.priceEn}
                     </p>
-                    <p className="text-xs text-neutral-400 leading-relaxed min-h-[48px] line-clamp-3">
+                    <p className="text-xs text-neutral-500 dark:text-neutral-400 leading-relaxed min-h-[48px] line-clamp-3">
                       {isVi ? p.shortDescVi : p.shortDescEn}
                     </p>
                   </div>
 
-                  {/* Key specs small badge layout */}
-                  <div className="grid grid-cols-2 gap-2 text-[10px] font-mono text-neutral-400 bg-neutral-900/60 p-3 rounded-xl border border-neutral-800">
+                  {/* Core specs grid */}
+                  <div className="grid grid-cols-2 gap-2 text-[10px] font-mono text-neutral-500 dark:text-neutral-400 bg-neutral-50 dark:bg-neutral-900/40 p-3 rounded-xl border border-neutral-100 dark:border-neutral-850">
                     <div>
-                      <span className="text-neutral-600 block">{isVi ? 'TẢI TRỌNG:' : 'PAYLOAD:'}</span>
-                      <span className="text-white font-bold">{p.payload}</span>
+                      <span className="text-neutral-400 block uppercase font-bold text-[8px]">{isVi ? 'TẢI TRỌNG:' : 'PAYLOAD:'}</span>
+                      <span className="font-extrabold text-neutral-800 dark:text-neutral-200">{p.payload}</span>
                     </div>
                     <div>
-                      <span className="text-neutral-600 block">{isVi ? 'CÔNG SUẤT:' : 'POWER:'}</span>
-                      <span className="text-white font-bold">{p.power}</span>
+                      <span className="text-neutral-400 block uppercase font-bold text-[8px]">{isVi ? 'ĐỘNG CƠ:' : 'ENGINE:'}</span>
+                      <span className="font-extrabold text-neutral-800 dark:text-neutral-200 truncate block">{p.power}</span>
                     </div>
                   </div>
 
-                  {/* Buttons */}
+                  {/* Grid of buttons with exactly 18px rounded (or 12px nested radius) */}
                   <div className="grid grid-cols-2 gap-3 pt-2">
                     <button
                       onClick={() => setSelectedProductId(p.id)}
-                      className="text-center text-xs font-bold border border-neutral-800 hover:border-red-600/50 py-3 rounded-xl hover:text-white cursor-pointer text-neutral-300 bg-neutral-900/40 hover:bg-neutral-900 transition-colors"
+                      className={`text-center text-xs font-bold border ${themeBorder} hover:border-[#C8102E]/60 py-3 rounded-xl cursor-pointer hover:text-[#C8102E] bg-neutral-50 dark:bg-neutral-900/40 transition-colors ${isDarkMode ? 'text-neutral-300' : 'text-neutral-700'}`}
                     >
-                      {isVi ? 'Xem chi tiết' : 'Details'}
+                      {isVi ? 'Xem chi tiết' : 'Details Studio'}
                     </button>
                     <button
                       onClick={() => openBookingModal(p.name, 'quote')}
-                      className="text-center text-xs font-bold bg-red-600 hover:bg-red-700 py-3 rounded-xl text-white cursor-pointer transition-colors"
+                      className="text-center text-xs font-bold bg-[#C8102E] hover:bg-red-700 py-3 rounded-xl text-white cursor-pointer transition-colors shadow-md shadow-red-900/10"
                     >
-                      {isVi ? 'Nhận báo giá' : 'Get Quote'}
+                      {isVi ? 'Báo giá lăn bánh' : 'Get Quote'}
                     </button>
                   </div>
                 </div>
@@ -529,7 +709,7 @@ export default function App() {
         </div>
       </section>
 
-      {/* 4. Product Details Drawer Overlay */}
+      {/* 6. Product Details Drawer Overlay */}
       {selectedProductId && activeProduct && (
         <ProductDetails
           product={activeProduct}
@@ -539,21 +719,70 @@ export default function App() {
         />
       )}
 
-      {/* 5. Benefits Section */}
-      <section className="py-20 bg-neutral-950 border-b border-neutral-900 px-4" id="benefits">
+      {/* 7. Buying Process Section (Timeline) */}
+      <section className={`py-24 ${isDarkMode ? 'bg-black' : 'bg-neutral-50'} ${themeBorder} border-b px-4`} id="process">
         <div className="max-w-7xl mx-auto space-y-12">
           
           <div className="text-center space-y-3">
             <span className="text-[#C8102E] text-xs font-mono uppercase tracking-widest font-black block">
-              {isVi ? 'Cam kết vàng' : 'Golden Standard Commitments'}
+              {isVi ? 'Đơn giản - Chuyên nghiệp' : 'Seamless Timelines'}
             </span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight uppercase">
-              {isVi ? 'Lợi Ích Khi Mua Xe Tại Ti Toàn' : 'Benefits of Partnering with Ti Toàn'}
+            <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight font-poppins uppercase">
+              {isVi ? 'Quy Trình Mua Xe 6 Bước Trọn Gói' : '6-Step Premium Purchase Journey'}
             </h2>
-            <p className="text-neutral-400 text-xs sm:text-sm max-w-xl mx-auto">
+            <p className="text-neutral-500 text-xs sm:text-sm max-w-xl mx-auto">
               {isVi 
-                ? 'Đem lại sự hài lòng tối đa, phục vụ với tinh thần trách nhiệm cao nhất.'
-                : 'Delivering peak satisfaction, serving logistics partners with maximum integrity.'
+                ? 'Hành trình tinh giản 6 bước đồng hành cùng Ti Toàn từ lúc đặt cọc tới lúc nhận xe lăn bánh tại nhà.'
+                : 'A seamless 6-step roadmap engineered to make commercial fleet acquisitions fast and worry-free.'
+              }
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-6 relative">
+            {BUYING_STEPS.map((s, idx) => (
+              <div 
+                key={s.step}
+                className={`${themeCardBg} border ${themeBorder} rounded-[18px] p-5 text-center relative flex flex-col justify-between min-h-[200px] group hover:border-[#C8102E]/40 transition-all shadow-sm hover:shadow-md`}
+              >
+                {/* Step indicator circle */}
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#C8102E] text-white font-extrabold font-mono text-[10px] w-6 h-6 rounded-full flex items-center justify-center border-2 border-white shadow">
+                  {s.step}
+                </div>
+
+                <div className="space-y-2 mt-4">
+                  <h3 className="text-sm font-extrabold tracking-tight pt-1 font-poppins">
+                    {isVi ? s.titleVi : s.titleEn}
+                  </h3>
+                  <p className="text-[11px] text-neutral-400 leading-relaxed font-sans">
+                    {isVi ? s.descVi : s.descEn}
+                  </p>
+                </div>
+                
+                <span className="text-[9px] font-mono text-neutral-400 group-hover:text-[#C8102E] uppercase tracking-widest block pt-2 transition-colors">
+                  Step 0{s.step}
+                </span>
+              </div>
+            ))}
+          </div>
+
+        </div>
+      </section>
+
+      {/* 8. Advantages / Lợi ích Grid (Benefits 6 cards) */}
+      <section className={`py-24 ${themeBorder} border-b px-4`} id="benefits">
+        <div className="max-w-7xl mx-auto space-y-12">
+          
+          <div className="text-center space-y-3">
+            <span className="text-[#C8102E] text-xs font-mono uppercase tracking-widest font-black block">
+              {isVi ? 'Giá trị vượt trội' : 'Distinctive Corporate Standards'}
+            </span>
+            <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight font-poppins uppercase">
+              {isVi ? 'Đặc Quyền Khách Hàng Của Ti Toàn' : 'Your Golden Service Benefits'}
+            </h2>
+            <p className="text-neutral-500 text-xs sm:text-sm max-w-xl mx-auto">
+              {isVi 
+                ? '6 ưu thế cốt lõi đem lại trải nghiệm hài lòng đẳng cấp, giải phóng hoàn toàn gánh nặng thủ tục.'
+                : '6 distinct service pillars designed to streamline fleet additions, insurance, and long-term operations.'
               }
             </p>
           </div>
@@ -562,10 +791,10 @@ export default function App() {
             {BENEFITS.map((b) => (
               <div 
                 key={b.id}
-                className="p-6 bg-neutral-900 border border-neutral-800/80 hover:border-red-600/30 rounded-2xl transition-all space-y-4"
+                className={`${themeCardBg} p-6 border ${themeBorder} rounded-[18px] hover:border-[#C8102E]/30 transition-all space-y-4 shadow-sm hover:shadow-lg`}
               >
-                {/* Dynamically assign the correct icon based on name */}
-                <div className="w-12 h-12 rounded-xl bg-red-950/40 border border-red-900 flex items-center justify-center text-red-500">
+                {/* Dynamically assign icons */}
+                <div className="w-12 h-12 rounded-xl bg-red-500/10 dark:bg-red-500/5 border border-red-500/20 flex items-center justify-center text-[#C8102E]">
                   {b.iconName === 'UserCheck' && <UserCheck size={24} />}
                   {b.iconName === 'Percent' && <Percent size={24} />}
                   {b.iconName === 'Truck' && <Truck size={24} />}
@@ -575,10 +804,10 @@ export default function App() {
                 </div>
 
                 <div className="space-y-1.5">
-                  <h3 className="text-lg font-bold text-white tracking-tight">
+                  <h3 className="text-lg font-bold tracking-tight font-poppins text-neutral-800 dark:text-neutral-100">
                     {isVi ? b.titleVi : b.titleEn}
                   </h3>
-                  <p className="text-xs sm:text-sm text-neutral-400 leading-relaxed">
+                  <p className="text-xs sm:text-sm text-neutral-400 leading-relaxed font-sans font-light">
                     {isVi ? b.descVi : b.descEn}
                   </p>
                 </div>
@@ -589,81 +818,33 @@ export default function App() {
         </div>
       </section>
 
-      {/* 6. Buying Process Section */}
-      <section className="py-20 bg-neutral-900 border-b border-neutral-900 px-4" id="process">
+      {/* 9. Đánh giá khách hàng (Carousel Reviews) */}
+      <section className={`py-24 ${isDarkMode ? 'bg-neutral-950/40' : 'bg-[#fcfdfe]'} ${themeBorder} border-b px-4`} id="reviews">
         <div className="max-w-7xl mx-auto space-y-12">
           
           <div className="text-center space-y-3">
             <span className="text-[#C8102E] text-xs font-mono uppercase tracking-widest font-black block">
-              {isVi ? 'Nhanh chóng - Tiện lợi' : 'Fast & Seamless Logistics'}
+              {isVi ? 'Niềm tin từ đối tác' : 'Real Partner Voices'}
             </span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight uppercase">
-              {isVi ? 'Quy Trình Mua Xe Trọn Gói' : 'A-Z Vehicle Purchase Flow'}
+            <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight font-poppins uppercase">
+              {isVi ? 'Bàn Giao Xe Thực Tế & Đánh Giá' : 'Customer Stories & Handover Ceremonies'}
             </h2>
-            <p className="text-neutral-400 text-xs sm:text-sm max-w-xl mx-auto">
+            <p className="text-neutral-500 text-xs sm:text-sm max-w-xl mx-auto">
               {isVi 
-                ? '6 bước tinh giản giúp quý khách sở hữu phương tiện kinh doanh dễ dàng nhất.'
-                : '6 streamlined timeline steps getting your commercial vehicles road-ready with minimum delay.'
+                ? 'Những khoảnh khắc bàn giao ý nghĩa cùng phản hồi chân thực từ các bác tài và chủ doanh nghiệp.'
+                : 'Watch true testimonials and road handover ceremonies from logistics firms nationwide.'
               }
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-6 relative">
-            {BUYING_STEPS.map((s, idx) => (
-              <div 
-                key={s.step}
-                className="bg-neutral-950 border border-neutral-800 rounded-2xl p-5 text-center relative flex flex-col justify-between min-h-[180px] group hover:border-red-600/30 transition-all"
-              >
-                {/* Visual Step Counter Indicator */}
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-red-600 text-white font-bold font-mono text-[10px] w-6 h-6 rounded-full flex items-center justify-center border border-black shadow">
-                  {s.step}
-                </div>
-
-                <div className="space-y-2 mt-2">
-                  <h3 className="text-sm font-bold text-white tracking-tight pt-1">
-                    {isVi ? s.titleVi : s.titleEn}
-                  </h3>
-                  <p className="text-[11px] text-neutral-500 leading-relaxed">
-                    {isVi ? s.descVi : s.descEn}
-                  </p>
-                </div>
-                
-                <span className="text-[10px] font-mono text-neutral-600 uppercase tracking-widest block pt-2 group-hover:text-red-500 transition-colors">
-                  Step 0{s.step}
-                </span>
-              </div>
-            ))}
-          </div>
-
-        </div>
-      </section>
-
-      {/* 7. Testimonials Section */}
-      <section className="py-20 bg-neutral-950 border-b border-neutral-900 px-4" id="reviews">
-        <div className="max-w-7xl mx-auto space-y-12">
-          
-          <div className="text-center space-y-3">
-            <span className="text-[#C8102E] text-xs font-mono uppercase tracking-widest font-black block">
-              {isVi ? 'Khách hàng nói về Ti Toàn' : 'What Partners Say'}
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight uppercase">
-              {isVi ? 'Đánh Giá Từ Khách Hàng Thực Tế' : 'Genuine Customer Testimonials'}
-            </h2>
-            <p className="text-neutral-400 text-xs sm:text-sm max-w-xl mx-auto">
-              {isVi 
-                ? 'Sự tin cậy và hài lòng của các bác tài, doanh nghiệp vận tải là phần thưởng lớn nhất của em.'
-                : 'Trust and satisfaction from logistics firms and professional truck drivers nationwide.'
-              }
-            </p>
-          </div>
-
+          {/* Interactive slider of testimonials */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {REVIEWS.map((r) => (
+            {REVIEWS.map((r, idx) => (
               <div 
                 key={r.id}
-                className="bg-neutral-900 border border-neutral-800 rounded-3xl overflow-hidden flex flex-col justify-between group hover:border-neutral-700 transition-all duration-300"
+                className={`${themeCardBg} border ${themeBorder} rounded-[18px] overflow-hidden flex flex-col justify-between group hover:border-neutral-400 transition-all duration-300 shadow-sm`}
               >
-                {/* Handover Delivery Photo mockup */}
+                {/* Handover Delivery Photo with Video Play Trigger simulation */}
                 {r.handoverImage && (
                   <div className="relative aspect-[16/9] bg-neutral-950 overflow-hidden">
                     <img 
@@ -672,10 +853,21 @@ export default function App() {
                       className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-500" 
                       referrerPolicy="no-referrer"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-neutral-900 to-transparent"></div>
-                    <span className="absolute bottom-3 left-4 text-[9px] bg-red-600 text-white font-mono font-bold px-2.5 py-0.5 rounded-full">
-                      {isVi ? 'Bàn giao thực tế' : 'Handover Ceremony'}
+                    <div className="absolute inset-0 bg-gradient-to-t from-neutral-900 to-transparent opacity-60"></div>
+                    
+                    {/* Handover badge */}
+                    <span className="absolute bottom-3 left-4 text-[9px] bg-red-600 text-white font-mono font-bold px-2.5 py-0.5 rounded-full uppercase">
+                      {isVi ? 'Bàn giao thực tế' : 'Handover Spot'}
                     </span>
+
+                    {/* Simulate video review button if video review exists */}
+                    <button 
+                      onClick={() => setVideoReviewId(r.id)}
+                      className="absolute inset-0 m-auto w-12 h-12 rounded-full bg-red-600/90 hover:bg-red-600 border border-red-500/20 text-white flex items-center justify-center cursor-pointer transition-transform group-hover:scale-110 shadow-lg"
+                      title={isVi ? 'Xem video review' : 'Watch Review Video'}
+                    >
+                      <Video size={18} fill="currentColor" />
+                    </button>
                   </div>
                 )}
 
@@ -689,23 +881,23 @@ export default function App() {
                       ))}
                     </div>
 
-                    <p className="text-xs sm:text-sm text-neutral-300 leading-relaxed italic">
+                    <p className="text-xs sm:text-sm text-neutral-500 dark:text-neutral-300 leading-relaxed italic font-sans font-light">
                       "{isVi ? r.commentVi : r.commentEn}"
                     </p>
                   </div>
 
                   {/* Profile info with mini avatar */}
-                  <div className="flex items-center space-x-3 pt-4 border-t border-neutral-800/80">
+                  <div className="flex items-center space-x-3 pt-4 border-t border-neutral-100 dark:border-neutral-850">
                     <img 
                       src={r.avatar} 
                       alt={r.name} 
-                      className="w-10 h-10 rounded-full object-cover border border-neutral-800"
+                      className="w-10 h-10 rounded-full object-cover border border-neutral-200 dark:border-neutral-800"
                       referrerPolicy="no-referrer"
                     />
                     <div>
-                      <h4 className="font-bold text-white text-sm">{r.name}</h4>
-                      <p className="text-[10px] text-neutral-500 font-medium">{isVi ? r.roleVi : r.roleEn}</p>
-                      <span className="text-[9px] text-red-500 font-mono font-bold">{isVi ? 'Hợp đồng' : 'Model'}: {r.vehicleModel}</span>
+                      <h4 className="font-bold text-sm font-poppins">{r.name}</h4>
+                      <p className="text-[10px] text-neutral-400 font-medium">{isVi ? r.roleVi : r.roleEn}</p>
+                      <span className="text-[9px] text-[#C8102E] font-mono font-bold">{isVi ? 'Hợp đồng' : 'Model'}: {r.vehicleModel}</span>
                     </div>
                   </div>
                 </div>
@@ -717,40 +909,40 @@ export default function App() {
         </div>
       </section>
 
-      {/* 8. News & Knowledge Section */}
-      <section className="py-20 bg-neutral-900 border-b border-neutral-900 px-4" id="news">
+      {/* 10. Tin tức (News & Experience) */}
+      <section className={`py-24 ${themeBorder} border-b px-4`} id="news">
         <div className="max-w-7xl mx-auto space-y-12">
           
           <div className="text-center space-y-3">
             <span className="text-[#C8102E] text-xs font-mono uppercase tracking-widest font-black block">
-              {isVi ? 'Kiến thức bổ ích' : 'Logistical Library'}
+              {isVi ? 'Kiến thức bổ ích' : 'Automotive Library'}
             </span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight uppercase">
-              {isVi ? 'Tin Tức & Cẩm Nang Vận Tải' : 'News, Experience & Guides'}
+            <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight font-poppins uppercase">
+              {isVi ? 'Tin Tức Hoạt Động & Cẩm Nang Xe' : 'News & Experience Guides'}
             </h2>
-            <p className="text-neutral-400 text-xs sm:text-sm max-w-xl mx-auto">
+            <p className="text-neutral-500 text-xs sm:text-sm max-w-xl mx-auto">
               {isVi 
-                ? 'Cập nhật chính sách đăng kiểm, thông tin khuyến mãi và chia sẻ kinh nghiệm lái xe hữu ích.'
-                : 'Staying updated on road registries, active company discounts, and professional driving advice.'
+                ? 'Cập nhật tin tức khuyến mãi mới nhất, kinh nghiệm lái xe tải an toàn và chính sách pháp lý vận tải.'
+                : 'Staying synchronized with operational company discounts and professional commercial trucking advice.'
               }
             </p>
           </div>
 
-          {/* News filters */}
-          <div className="flex items-center justify-center space-x-2 overflow-x-auto py-2 border-b border-neutral-850">
+          {/* News Category tabs */}
+          <div className="flex items-center justify-center space-x-2 overflow-x-auto py-2 border-b border-neutral-200 dark:border-neutral-900">
             {[
               { val: 'all', vi: 'Tất cả', en: 'All' },
-              { val: 'installment', vi: 'Chính sách trả góp', en: 'Installment' },
-              { val: 'knowledge', vi: 'Kiến thức xe', en: 'Vehicle Specs' },
-              { val: 'promotion', vi: 'Tin khuyến mãi', en: 'Promotions' }
+              { val: 'installment', vi: 'Chính sách trả góp', en: 'Financing' },
+              { val: 'knowledge', vi: 'Kiến thức kỹ thuật', en: 'Technical knowledge' },
+              { val: 'promotion', vi: 'Thông tin khuyến mãi', en: 'Promotional deals' }
             ].map(tab => (
               <button
                 key={tab.val}
                 onClick={() => setNewsCategory(tab.val)}
-                className={`text-xs px-3.5 py-2 rounded-xl transition-all cursor-pointer whitespace-nowrap ${
+                className={`text-xs px-4 py-2 rounded-xl transition-all cursor-pointer font-bold whitespace-nowrap ${
                   newsCategory === tab.val 
-                    ? 'bg-neutral-950 border border-neutral-800 text-red-500 font-bold' 
-                    : 'text-neutral-500 hover:text-white'
+                    ? 'bg-[#C8102E] text-white' 
+                    : `text-neutral-400 hover:text-black dark:hover:text-white`
                 }`}
               >
                 {isVi ? tab.vi : tab.en}
@@ -758,38 +950,38 @@ export default function App() {
             ))}
           </div>
 
-          {/* News articles list */}
+          {/* News articles grid */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {filteredNews.map((n) => (
               <div 
                 key={n.id}
-                className="bg-neutral-950 border border-neutral-850 rounded-2xl overflow-hidden hover:border-red-600/30 transition-all flex flex-col justify-between group"
+                className={`${themeCardBg} border ${themeBorder} rounded-[18px] overflow-hidden hover:border-[#C8102E]/30 transition-all flex flex-col justify-between group shadow-sm`}
               >
                 <div className="relative aspect-[16/10] overflow-hidden bg-neutral-900">
-                  <img src={n.image} alt={n.titleVi} className="w-full h-full object-cover group-hover:scale-102 transition-all duration-300" referrerPolicy="no-referrer" />
+                  <img src={n.image} alt={n.titleVi} className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-300" referrerPolicy="no-referrer" />
                   <span className="absolute top-4 left-4 bg-red-600 text-white font-mono text-[9px] font-bold px-2 py-0.5 rounded-full uppercase">
                     {isVi ? n.categoryVi : n.categoryEn}
                   </span>
                 </div>
 
                 <div className="p-6 space-y-4 flex-1 flex flex-col justify-between">
-                  <div className="space-y-2">
-                    <span className="text-[10px] text-neutral-600 font-mono font-bold block">
+                  <div className="space-y-2.5">
+                    <span className="text-[10px] text-neutral-400 font-mono font-bold block">
                       {n.date} | By {n.author}
                     </span>
-                    <h3 className="text-base font-bold text-white leading-tight group-hover:text-red-500 transition-colors line-clamp-2">
+                    <h3 className="text-base font-bold leading-snug group-hover:text-[#C8102E] transition-colors line-clamp-2 font-poppins">
                       {isVi ? n.titleVi : n.titleEn}
                     </h3>
-                    <p className="text-xs text-neutral-400 line-clamp-3 leading-relaxed">
+                    <p className="text-xs text-neutral-400 leading-relaxed line-clamp-3">
                       {isVi ? n.summaryVi : n.summaryEn}
                     </p>
                   </div>
 
                   <button 
                     onClick={() => openBookingModal('', 'general')}
-                    className="inline-flex items-center text-xs text-red-500 hover:text-red-400 font-bold gap-1 cursor-pointer pt-2"
+                    className="inline-flex items-center text-xs text-[#C8102E] hover:text-red-500 font-bold gap-1 cursor-pointer pt-2"
                   >
-                    <span>{isVi ? 'Đọc thêm chi tiết' : 'Read Full Guide'}</span>
+                    <span>{isVi ? 'Đọc tiếp chi tiết' : 'Read Full Article'}</span>
                     <ChevronRight size={14} />
                   </button>
                 </div>
@@ -800,75 +992,73 @@ export default function App() {
         </div>
       </section>
 
-      {/* 9. FAQ Section */}
-      <section className="py-20 bg-neutral-950 border-b border-neutral-900 px-4" id="faq">
+      {/* 11. FAQ Section */}
+      <section className={`py-24 ${isDarkMode ? 'bg-black' : 'bg-neutral-50'} ${themeBorder} border-b px-4`} id="faq">
         <div className="max-w-4xl mx-auto space-y-12">
           
           <div className="text-center space-y-3">
             <span className="text-[#C8102E] text-xs font-mono uppercase tracking-widest font-black block">
-              {isVi ? 'Hỏi nhanh đáp gọn' : 'Instant Answers'}
+              {isVi ? 'Hỏi nhanh đáp gọn' : 'FAQ Hub'}
             </span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight uppercase">
-              {isVi ? 'Câu Hỏi Thường Gặp (FAQs)' : 'Frequently Asked Questions'}
+            <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight font-poppins uppercase">
+              {isVi ? 'Giải Đáp Thắc Mắc Phổ Biến (FAQs)' : 'Frequently Asked Questions'}
             </h2>
-            <p className="text-neutral-400 text-xs sm:text-sm max-w-xl mx-auto">
+            <p className="text-neutral-500 text-xs sm:text-sm max-w-xl mx-auto">
               {isVi 
-                ? 'Giải đáp nhanh 20 thắc mắc phổ biến về giá cả, hồ sơ trả góp, chính sách bảo hành, giao nhận xe và kỹ thuật bảo dưỡng.'
-                : 'Resolving 20 typical client inquiries on vehicle pricing, 85% installment papers, factory warranties, home delivery, and servicing.'
+                ? 'Tìm kiếm nhanh giải đáp về lãi suất vay ngân hàng, bảo hành pin tải điện, thủ tục biển vàng và bàn giao xe.'
+                : 'Instant answers covering 85% truck financing, LFP batteries warranty, and home delivery support.'
               }
             </p>
           </div>
 
-          {/* FAQ Live Query filter */}
-          <div className="flex flex-col sm:flex-row gap-4 items-center justify-between border-b border-neutral-900 pb-6">
-            {/* Topic Filter */}
+          {/* Search filter panel */}
+          <div className="flex flex-col sm:flex-row gap-4 items-center justify-between border-b border-neutral-200 dark:border-neutral-850 pb-6">
             <select
               value={faqCategory}
               onChange={(e) => setFaqCategory(e.target.value)}
-              className="w-full sm:w-auto bg-neutral-900 border border-neutral-850 text-xs text-white rounded-xl px-4 py-3 focus:outline-none focus:border-red-600 transition-colors cursor-pointer font-mono"
+              className={`w-full sm:w-auto ${themeCardBg} border ${themeBorder} text-xs rounded-xl px-4 py-3 focus:outline-none focus:border-[#C8102E] transition-colors cursor-pointer font-bold`}
             >
-              <option value="all">-- {isVi ? 'Chọn tất cả chủ đề' : 'All Topics'} ({FAQS.length}) --</option>
+              <option value="all">-- {isVi ? 'Chọn tất cả chủ đề' : 'All FAQ categories'} ({FAQS.length}) --</option>
               <option value="price">{isVi ? 'Giá xe & Ưu đãi' : 'Pricing & Incentives'}</option>
-              <option value="installment">{isVi ? 'Hồ sơ mua trả góp' : 'Amortization & Installments'}</option>
-              <option value="warranty">{isVi ? 'Thời hạn bảo hành' : 'Warranties'}</option>
-              <option value="registration">{isVi ? 'Đăng ký đăng kiểm' : 'Registrations'}</option>
-              <option value="delivery">{isVi ? 'Giao nhận xe' : 'Deliveries'}</option>
+              <option value="installment">{isVi ? 'Hồ sơ mua trả góp' : 'Financing & Loan papers'}</option>
+              <option value="warranty">{isVi ? 'Thời hạn bảo hành' : 'Factory warranties'}</option>
+              <option value="registration">{isVi ? 'Đăng ký đăng kiểm' : 'Registrations & License'}</option>
+              <option value="delivery">{isVi ? 'Giao nhận xe' : 'National deliveries'}</option>
               <option value="maintenance">{isVi ? 'Kỹ thuật bảo dưỡng' : 'Maintenances'}</option>
             </select>
 
-            {/* Keyword Search */}
-            <div className="relative w-full sm:max-w-xs bg-neutral-900 border border-neutral-850 rounded-xl overflow-hidden">
-              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-500" size={14} />
+            <div className={`relative w-full sm:max-w-xs ${themeCardBg} border ${themeBorder} rounded-xl overflow-hidden`}>
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-400" size={14} />
               <input
                 id="faq-search-input"
                 type="text"
                 value={faqQuery}
                 onChange={(e) => setFaqQuery(e.target.value)}
-                placeholder={isVi ? "Gõ từ khóa tìm kiếm nhanh..." : "Search key term..."}
-                className="w-full bg-transparent pl-10 pr-4 py-3 text-xs text-white placeholder-neutral-500 focus:outline-none"
+                placeholder={isVi ? "Gõ từ khóa tìm câu hỏi nhanh..." : "Search keyword..."}
+                className="w-full bg-transparent pl-10 pr-4 py-3 text-xs focus:outline-none font-sans"
               />
             </div>
           </div>
 
-          {/* Accordion FAQ list */}
+          {/* Accordion List */}
           <div className="space-y-4" id="faq-accordion-group">
             {filteredFaqs.map((faq) => {
               const isExpanded = expandedFaqId === faq.id;
               return (
                 <div 
                   key={faq.id}
-                  className="bg-neutral-900 border border-neutral-850 hover:border-neutral-800 rounded-2xl overflow-hidden transition-all duration-300"
+                  className={`${themeCardBg} border ${themeBorder} rounded-[18px] overflow-hidden transition-all duration-300 shadow-sm`}
                 >
                   <button
                     onClick={() => setExpandedFaqId(isExpanded ? null : faq.id)}
-                    className="w-full flex items-center justify-between p-5 text-left text-sm sm:text-base font-bold text-white cursor-pointer hover:text-red-500 transition-colors"
+                    className="w-full flex items-center justify-between p-5 text-left text-sm sm:text-base font-bold cursor-pointer hover:text-[#C8102E] transition-colors font-poppins"
                   >
                     <span className="pr-4">{isVi ? faq.questionVi : faq.questionEn}</span>
-                    <ChevronDown size={18} className={`text-neutral-500 shrink-0 transition-transform duration-300 ${isExpanded ? 'rotate-180 text-red-500' : ''}`} />
+                    <ChevronDown size={18} className={`text-neutral-400 shrink-0 transition-transform duration-300 ${isExpanded ? 'rotate-180 text-[#C8102E]' : ''}`} />
                   </button>
 
                   {isExpanded && (
-                    <div className="px-5 pb-5 pt-1 text-xs sm:text-sm text-neutral-400 leading-relaxed border-t border-neutral-850/40 animate-fade-in bg-neutral-950/40">
+                    <div className="px-5 pb-5 pt-1 text-xs sm:text-sm text-neutral-500 dark:text-neutral-300 leading-relaxed border-t border-neutral-100 dark:border-neutral-800 animate-fade-in bg-neutral-50/50 dark:bg-neutral-900/10">
                       {isVi ? faq.answerVi : faq.answerEn}
                     </div>
                   )}
@@ -877,78 +1067,111 @@ export default function App() {
             })}
           </div>
 
-          <div className="text-center">
-            <p className="text-xs text-neutral-500">
-              {isVi 
-                ? 'Anh/Chị chưa tìm thấy câu trả lời? Hãy nhắn tin trực tiếp để Trợ lý AI hoặc anh Ti Toàn phản hồi ngay nhé!' 
-                : 'Need more answers? Start a conversation with our active AI chatbot or contact Ti Toàn.'
-              }
-            </p>
-          </div>
-
         </div>
       </section>
 
-      {/* 10. Contact Info Section */}
-      <section className="py-20 bg-neutral-900 border-b border-neutral-950 px-4" id="contact">
+      {/* 12. Elegant Premium CTA Banner (Đỏ Kim Long) */}
+      <section className="bg-[#C8102E] text-white py-24 px-4 text-center relative overflow-hidden" id="cta-bottom">
+        {/* Abstract light reflection */}
+        <div className="absolute top-0 right-0 w-[450px] h-[450px] bg-white/5 rounded-full blur-[140px] pointer-events-none"></div>
+        <div className="absolute -bottom-24 left-0 w-[350px] h-[350px] bg-black/10 rounded-full blur-[100px] pointer-events-none"></div>
+
+        <div className="max-w-4xl mx-auto space-y-8 relative z-10">
+          <span className="text-[10px] bg-white/20 px-3.5 py-1.5 rounded-full font-mono uppercase tracking-widest font-black inline-block">
+            {isVi ? 'Cơ hội sở hữu xe giá tốt' : 'Exclusive Partner Program'}
+          </span>
+          
+          <h2 className="text-3xl sm:text-6xl font-black tracking-tight font-poppins uppercase leading-none">
+            {isVi ? 'Bạn Đã Sẵn Sàng Sở Hữu Chiếc Xe Phù Hợp?' : 'Are You Ready To Drive Logistic Success?'}
+          </h2>
+          
+          <p className="text-neutral-100/90 max-w-2xl mx-auto text-sm sm:text-lg font-light leading-relaxed">
+            {isVi 
+              ? 'Liên hệ ngay Ti Toàn | Kim Long Motor hôm nay để nhận báo giá lăn bánh đặc biệt cùng gói duyệt vay trả góp 85% nhanh chóng.'
+              : 'Contact Ti Toàn today to secure your exclusive on-road pricing schemes & fast 85% banking support.'
+            }
+          </p>
+
+          <div className="pt-4 flex flex-wrap justify-center gap-4">
+            <button
+              onClick={() => openBookingModal('', 'quote')}
+              className="bg-white hover:bg-neutral-100 text-[#C8102E] font-black text-xs uppercase tracking-widest px-8 py-4.5 rounded-xl cursor-pointer transition-all shadow-xl hover:scale-102"
+            >
+              {isVi ? 'Nhận báo giá lăn bánh ngay' : 'Get On-Road Quote Now'}
+            </button>
+            <a
+              href="tel:0799600789"
+              className="bg-neutral-900 hover:bg-black text-white font-black text-xs uppercase tracking-widest px-8 py-4.5 rounded-xl cursor-pointer transition-all border border-neutral-800 flex items-center justify-center gap-2"
+            >
+              <Phone size={14} className="text-red-500 animate-pulse" />
+              <span>{isVi ? 'Gọi trực tiếp: 0799.600.789' : 'Call: 0799.600.789'}</span>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* 13. Contact Form & maps Section */}
+      <section className={`py-24 ${themeBorder} border-b px-4`} id="contact">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12">
           
           {/* Detailed showroom address & map */}
           <div className="lg:col-span-5 space-y-6">
             <span className="text-[#C8102E] text-xs font-mono uppercase tracking-widest font-black block">
-              {isVi ? 'Liên hệ trực tiếp' : 'Locate Our Showrooms'}
+              {isVi ? 'Kết nối trực tiếp' : 'Locate showroom'}
             </span>
-            <h2 className="text-3xl font-extrabold text-white tracking-tight uppercase">
+            <h2 className="text-3xl font-extrabold tracking-tight font-poppins uppercase">
               {isVi ? 'Đại Diện Ti Toàn | Kim Long Motor' : 'Representative Ti Toàn'}
             </h2>
 
-            <div className="space-y-4 text-sm text-neutral-400">
-              <div className="flex items-start space-x-3">
-                <MapPin size={18} className="text-red-500 shrink-0 mt-0.5" />
+            <div className="space-y-4 text-sm text-neutral-500 dark:text-neutral-400">
+              <div className="flex items-start space-x-3.5">
+                <MapPin size={18} className="text-[#C8102E] shrink-0 mt-0.5" />
                 <div>
-                  <h4 className="font-bold text-white text-xs sm:text-sm">{isVi ? 'ĐỊA CHỈ SHOWROOM:' : 'SHOWROOM HQ:'}</h4>
+                  <h4 className="font-bold text-neutral-800 dark:text-white text-xs sm:text-sm uppercase font-poppins">{isVi ? 'Địa chỉ showroom HQ:' : 'Showroom HQ Address:'}</h4>
                   <p className="mt-0.5">451 Quốc lộ 1, xã An Ninh, Thành phố Cần Thơ.</p>
-                  <p className="mt-1 font-semibold text-neutral-500">{isVi ? 'Hỗ trợ tư vấn và giao xe tận nơi toàn quốc' : 'Supporting national fleet logistics & home deliveries.'}</p>
+                  <p className="mt-1 font-semibold text-[#D6B25E]">{isVi ? '✓ Hỗ trợ bàn giao xe và hỗ trợ kỹ thuật tận nơi toàn quốc' : '✓ Direct national home deliveries & lifelong technical servicing.'}</p>
                 </div>
               </div>
 
-              <div className="flex items-center space-x-3">
-                <Phone size={18} className="text-red-500 shrink-0" />
+              <div className="flex items-center space-x-3.5">
+                <Phone size={18} className="text-[#C8102E] shrink-0" />
                 <div>
-                  <h4 className="font-bold text-white text-xs sm:text-sm">{isVi ? 'ĐIỆN THOẠI & ZALO:' : 'CALL & ZALO:'}</h4>
-                  <p className="mt-0.5 font-bold font-mono text-red-500 hover:underline cursor-pointer" onClick={() => window.open('tel:0799600789')}>0799.600.789</p>
+                  <h4 className="font-bold text-neutral-800 dark:text-white text-xs sm:text-sm uppercase font-poppins">{isVi ? 'Hotline Điện thoại & Zalo:' : 'Call & Zalo hotline:'}</h4>
+                  <p className="mt-0.5 font-bold font-mono text-[#C8102E] text-base hover:underline cursor-pointer animate-pulse-subtle" onClick={() => window.open('tel:0799600789')}>
+                    0799.600.789
+                  </p>
                 </div>
               </div>
 
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center space-x-3.5">
                 <Facebook size={18} className="text-blue-500 shrink-0" />
                 <div>
-                  <h4 className="font-bold text-white text-xs sm:text-sm">FACEBOOK:</h4>
+                  <h4 className="font-bold text-neutral-800 dark:text-white text-xs sm:text-sm uppercase font-poppins">Facebook cá nhân:</h4>
                   <a 
                     href="https://www.facebook.com/nguyenquoctoanst/?locale=vi_VN" 
                     target="_blank" 
                     rel="noopener noreferrer" 
-                    className="mt-0.5 text-neutral-400 hover:text-blue-400 transition-colors font-mono"
+                    className="mt-0.5 hover:text-blue-500 transition-colors font-mono hover:underline text-xs"
                   >
-                    nguyenquoctoanst
+                    facebook.com/nguyenquoctoanst
                   </a>
                 </div>
               </div>
 
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center space-x-3.5">
                 <Mail size={18} className="text-red-500 shrink-0" />
                 <div>
-                  <h4 className="font-bold text-white text-xs sm:text-sm">EMAIL:</h4>
+                  <h4 className="font-bold text-neutral-800 dark:text-white text-xs sm:text-sm uppercase font-poppins">Email làm việc:</h4>
                   <p className="mt-0.5 font-mono">titoan.kimlong@gmail.com</p>
                 </div>
               </div>
             </div>
 
-            {/* Google map iframe embed */}
-            <div className="rounded-2xl overflow-hidden border border-neutral-800 bg-neutral-950 aspect-[16/10] shadow-xl relative">
+            {/* Google map iframe embed with rounded-18px */}
+            <div className="rounded-[18px] overflow-hidden border border-neutral-300 dark:border-neutral-800 bg-neutral-950 aspect-[16/10] shadow-md relative">
               <iframe 
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3928.841518408163!2d105.78822!3d10.0299!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31a0629f6de397c7%3A0x7be2413e16c91a0b!2zNDUxIFF14buRYyBs4buZIDEsIEFuIELDrG5oLCBOaW5oIEtp4buBdSwgQ-G6p24gVGjGoQ!5e0!3m2!1svi!2s!4v1719859200000!5m2!1svi!2s" 
-                className="w-full h-full border-0 grayscale invert opacity-70" 
+                className={`w-full h-full border-0 opacity-75 ${isDarkMode ? 'grayscale invert' : ''}`} 
                 allowFullScreen={false} 
                 loading="lazy" 
                 referrerPolicy="no-referrer-when-downgrade"
@@ -957,15 +1180,15 @@ export default function App() {
           </div>
 
           {/* Form capture box */}
-          <div className="lg:col-span-7 bg-neutral-950 border border-neutral-800 rounded-3xl p-6 sm:p-8 space-y-6">
+          <div className={`${themeCardBg} border ${themeBorder} rounded-[18px] p-6 sm:p-8 space-y-6 shadow-md`}>
             <div className="space-y-1">
-              <h3 className="text-xl font-bold text-white tracking-tight">
+              <h3 className="text-xl font-bold font-poppins text-neutral-800 dark:text-white uppercase">
                 {isVi ? 'Yêu Cầu Báo Giá & Đăng Ký Lái Thử' : 'Inquire On-Road Quote & Demo'}
               </h3>
               <p className="text-xs text-neutral-400">
                 {isVi 
-                  ? 'Để lại thông tin chính xác, Ti Toàn sẽ gửi bảng tính chi tiết và gọi tư vấn hỗ trợ ngay lập tức.' 
-                  : 'Submit details to receive customized payment proposals and direct callbacks from Ti Toàn.'
+                  ? 'Hãy nhập thông tin liên hệ chính xác, em Ti Toàn sẽ gửi bảng tính ngân hàng chi tiết và tư vấn kỹ lưỡng.' 
+                  : 'Submit precise details to receive structured payment schedules & callbacks from Ti Toàn.'
                 }
               </p>
             </div>
@@ -973,7 +1196,7 @@ export default function App() {
             <form onSubmit={handleFormSubmit} className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-mono uppercase tracking-wider text-neutral-400 mb-1.5">{isVi ? 'Họ và tên *' : 'Full Name *'}</label>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-neutral-500 mb-1.5 font-mono">{isVi ? 'Họ và tên *' : 'Full Name *'}</label>
                   <input
                     id="form-fullname"
                     type="text"
@@ -981,11 +1204,11 @@ export default function App() {
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                     placeholder={isVi ? "Ví dụ: Nguyễn Văn A" : "E.g., John Doe"}
-                    className="w-full bg-neutral-900 border border-neutral-800 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-red-600 transition-colors"
+                    className={`w-full ${isDarkMode ? 'bg-neutral-900' : 'bg-neutral-50'} border ${themeBorder} rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#C8102E] transition-colors`}
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-mono uppercase tracking-wider text-neutral-400 mb-1.5">{isVi ? 'Số điện thoại *' : 'Phone Number *'}</label>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-neutral-500 mb-1.5 font-mono">{isVi ? 'Số điện thoại *' : 'Phone Number *'}</label>
                   <input
                     id="form-phone"
                     type="tel"
@@ -993,30 +1216,30 @@ export default function App() {
                     value={phoneNumber}
                     onChange={(e) => setPhoneNumber(e.target.value)}
                     placeholder={isVi ? "Ví dụ: 0799600789" : "E.g., 0799600789"}
-                    className="w-full bg-neutral-900 border border-neutral-800 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-red-600 transition-colors font-mono"
+                    className={`w-full ${isDarkMode ? 'bg-neutral-900' : 'bg-neutral-50'} border ${themeBorder} rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#C8102E] transition-colors font-mono`}
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-mono uppercase tracking-wider text-neutral-400 mb-1.5">{isVi ? 'Địa chỉ Email' : 'Email Address'}</label>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-neutral-500 mb-1.5 font-mono">{isVi ? 'Địa chỉ Email (Nếu có)' : 'Email (Optional)'}</label>
                   <input
                     id="form-email"
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="E.g., company@gmail.com"
-                    className="w-full bg-neutral-900 border border-neutral-800 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-red-600 transition-colors font-mono"
+                    placeholder="company@gmail.com"
+                    className={`w-full ${isDarkMode ? 'bg-neutral-900' : 'bg-neutral-50'} border ${themeBorder} rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#C8102E] transition-colors font-mono`}
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-mono uppercase tracking-wider text-neutral-400 mb-1.5">{isVi ? 'Chọn mẫu xe quan tâm' : 'Select Vehicle model'}</label>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-neutral-500 mb-1.5 font-mono">{isVi ? 'Dòng xe quan tâm *' : 'Vehicle model *'}</label>
                   <select
                     id="form-product-select"
                     value={bookingVehicle}
                     onChange={(e) => setBookingVehicle(e.target.value)}
-                    className="w-full bg-neutral-900 border border-neutral-800 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-red-600 transition-colors cursor-pointer"
+                    className={`w-full ${isDarkMode ? 'bg-neutral-900' : 'bg-neutral-50'} border ${themeBorder} rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#C8102E] transition-colors cursor-pointer font-bold`}
                   >
                     <option value="">-- {isVi ? 'Chọn mẫu xe' : 'Select vehicle'} --</option>
                     {PRODUCTS.map(p => (
@@ -1027,22 +1250,22 @@ export default function App() {
               </div>
 
               <div>
-                <label className="block text-xs font-mono uppercase tracking-wider text-neutral-400 mb-1.5">{isVi ? 'Nhu cầu dịch vụ' : 'Requested Service'}</label>
+                <label className="block text-xs font-bold uppercase tracking-wider text-neutral-500 mb-1.5 font-mono">{isVi ? 'Nhu cầu dịch vụ' : 'Requested Service'}</label>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                   {[
                     { val: 'quote', lbl: isVi ? 'Nhận báo giá' : 'Get Quote' },
                     { val: 'test-drive', lbl: isVi ? 'Đăng ký lái thử' : 'Test Drive' },
                     { val: 'installment', lbl: isVi ? 'Tính trả góp' : 'Financing' },
-                    { val: 'general', lbl: isVi ? 'Tư vấn chung' : 'General Help' }
+                    { val: 'general', lbl: isVi ? 'Tư vấn chung' : 'General' }
                   ].map(serv => (
                     <button
                       key={serv.val}
                       type="button"
                       onClick={() => setBookingType(serv.val as any)}
-                      className={`text-xs py-2.5 rounded-xl border text-center font-bold transition-all ${
+                      className={`text-xs py-2.5 rounded-xl border text-center font-bold transition-all cursor-pointer ${
                         bookingType === serv.val 
-                          ? 'bg-red-950/60 border-red-600 text-red-400' 
-                          : 'border-neutral-800 text-neutral-400 bg-neutral-900 hover:border-neutral-700'
+                          ? 'bg-[#C8102E] text-white border-[#C8102E]' 
+                          : `border-neutral-200 dark:border-neutral-800 text-neutral-400 bg-neutral-100 dark:bg-neutral-900 hover:border-[#C8102E]/40`
                       }`}
                     >
                       {serv.lbl}
@@ -1052,23 +1275,23 @@ export default function App() {
               </div>
 
               <div>
-                <label className="block text-xs font-mono uppercase tracking-wider text-neutral-400 mb-1.5">{isVi ? 'Ghi chú thêm (Nếu có)' : 'Additional Inquiries (Optional)'}</label>
+                <label className="block text-xs font-bold uppercase tracking-wider text-neutral-500 mb-1.5 font-mono">{isVi ? 'Ghi chú yêu cầu thêm' : 'Inquiries Notes (Optional)'}</label>
                 <textarea
                   id="form-notes"
                   rows={3}
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
-                  placeholder={isVi ? "Ví dụ: Hỏi thủ tục trả góp 85% cho công ty, hỗ trợ đăng ký biển số vàng..." : "E.g., I need 85% corporate financing, gold plates assistance..."}
-                  className="w-full bg-neutral-900 border border-neutral-800 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-red-600 transition-colors resize-none"
+                  placeholder={isVi ? "Ví dụ: Hỏi thủ tục trả góp 85% cho doanh nghiệp, lăn bánh về Cần Thơ..." : "E.g., I need 85% company credit details, on-road delivery back to Can Tho..."}
+                  className={`w-full ${isDarkMode ? 'bg-neutral-900' : 'bg-neutral-50'} border ${themeBorder} rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#C8102E] transition-colors resize-none`}
                 ></textarea>
               </div>
 
               {formSubmitSuccess && (
-                <div className="p-4 bg-emerald-950/40 border border-emerald-900 text-emerald-400 text-xs rounded-xl flex items-center space-x-3 leading-relaxed">
+                <div className="p-4 bg-emerald-500/15 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-xs rounded-xl flex items-center space-x-3 leading-relaxed">
                   <CheckCircle size={18} className="shrink-0" />
                   <div>
-                    <span className="font-bold block">{isVi ? 'Đã gửi yêu cầu thành công!' : 'Request Sent Successfully!'}</span>
-                    <span>{isVi ? 'Em Ti Toàn sẽ chủ động liên hệ lại anh/chị ngay trong vòng 15-30 phút.' : 'Mr. Ti Toàn will call you back within 15-30 minutes.'}</span>
+                    <span className="font-bold block">{isVi ? 'Gửi yêu cầu thành công!' : 'Request Sent Successfully!'}</span>
+                    <span>{isVi ? 'Ti Toàn sẽ liên hệ lại trực tiếp với anh/chị ngay trong vòng 15 phút tới.' : 'Mr. Ti Toàn will call you back within 15 minutes.'}</span>
                   </div>
                 </div>
               )}
@@ -1076,10 +1299,10 @@ export default function App() {
               <button
                 type="submit"
                 disabled={formLoading}
-                className="w-full bg-[#C8102E] hover:bg-red-700 disabled:opacity-50 text-white font-bold text-xs uppercase tracking-wider py-4 rounded-xl cursor-pointer transition-colors"
+                className="w-full bg-[#C8102E] hover:bg-red-700 disabled:opacity-50 text-white font-bold text-xs uppercase tracking-widest py-4 rounded-xl cursor-pointer transition-colors shadow-lg shadow-red-950/20"
                 id="form-submit-btn"
               >
-                {formLoading ? (isVi ? 'Đang gửi...' : 'Submitting...') : (isVi ? 'Gửi Yêu Cầu Liên Hệ' : 'Submit My Inquiry')}
+                {formLoading ? (isVi ? 'Đang xử lý...' : 'Processing...') : (isVi ? 'Gửi Yêu Cầu Liên Hệ' : 'Send My Request')}
               </button>
             </form>
           </div>
@@ -1087,156 +1310,448 @@ export default function App() {
         </div>
       </section>
 
-      {/* Footer copyright */}
-      <footer className="bg-black py-12 border-t border-neutral-900 px-4 text-xs text-neutral-500 font-mono text-center">
-        <div className="max-w-7xl mx-auto space-y-4">
-          <p className="font-bold text-white uppercase text-xs tracking-wider">Ti Toàn | Kim Long Motor</p>
-          <p className="max-w-md mx-auto leading-relaxed">
-            {isVi 
-              ? 'Nhân viên kinh doanh Kim Long Motor phân phối các dòng xe thương mại, tải điện, xe tải nhẹ, xe tải trung, xe tải nặng, minibus và xe khách cao cấp.'
-              : 'Official sales representative. Distributing premier logistics trucks, electric fleets, heavy tractors, minibus, and coach buses.'
-            }
-          </p>
-          <p>© 2026 Ti Toàn | Kim Long Motor. Designed with high-performance SEO standards & Conversion Optimizations.</p>
+      {/* 14. High End Footer */}
+      <footer className={`bg-[#0c0c0e] text-white py-16 ${themeBorder} border-t px-4 font-sans text-xs`}>
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-12 border-b border-neutral-850 pb-12 mb-12">
+          
+          {/* Col 1: Brand Info */}
+          <div className="md:col-span-5 space-y-4">
+            <h3 className="font-poppins font-black text-lg uppercase tracking-wider text-white">
+              Ti Toàn <span className="text-[#C8102E]">| Kim Long Motor</span>
+            </h3>
+            <p className="text-neutral-400 leading-relaxed max-w-sm">
+              {isVi 
+                ? 'Đại diện kinh doanh ủy quyền phân phối các dòng xe tải nhẹ, xe tải trung, tải nặng, xe đầu kéo, xe van điện GK48EV, xe tải điện EV-300 và xe khách cao cấp.'
+                : 'Official commercial sales executive at Kim Long Motor. Distributing premier electric cargo trucks, heavy tractors, minibus & coach.'
+              }
+            </p>
+            <div className="flex space-x-3.5 pt-2">
+              <a href="https://www.facebook.com/nguyenquoctoanst/?locale=vi_VN" target="_blank" rel="noopener noreferrer" className="p-2.5 bg-neutral-900 hover:bg-[#C8102E] rounded-full transition-all text-neutral-400 hover:text-white border border-neutral-800">
+                <Facebook size={16} />
+              </a>
+              <a href="https://zalo.me/0799600789" target="_blank" rel="noopener noreferrer" className="p-2.5 bg-neutral-900 hover:bg-[#C8102E] rounded-full transition-all text-neutral-400 hover:text-white border border-neutral-800 font-bold uppercase tracking-wider text-[9px] flex items-center justify-center">
+                ZL
+              </a>
+              <a href="https://www.tiktok.com" target="_blank" rel="noopener noreferrer" className="p-2.5 bg-neutral-900 hover:bg-[#C8102E] rounded-full transition-all text-neutral-400 hover:text-white border border-neutral-800 font-bold uppercase tracking-wider text-[9px] flex items-center justify-center">
+                TT
+              </a>
+            </div>
+          </div>
+
+          {/* Col 2: Navigation Map */}
+          <div className="md:col-span-3 space-y-4">
+            <h4 className="font-bold text-xs uppercase tracking-widest text-neutral-400 font-mono">{isVi ? 'Liên kết nhanh' : 'Quick navigation'}</h4>
+            <ul className="space-y-2.5 text-neutral-400 font-medium">
+              <li><a href="#intro" className="hover:text-[#C8102E] transition-colors">{isVi ? 'Giới thiệu Ti Toàn' : 'About Agent'}</a></li>
+              <li><a href="#products" className="hover:text-[#C8102E] transition-colors">{isVi ? 'Dòng xe Kim Long' : 'Fleet Showcase'}</a></li>
+              <li><a href="#benefits" className="hover:text-[#C8102E] transition-colors">{isVi ? 'Đặc quyền đối tác' : 'Service Benefits'}</a></li>
+              <li><a href="#process" className="hover:text-[#C8102E] transition-colors">{isVi ? 'Quy trình giao xe' : 'Delivery Steps'}</a></li>
+              <li><a href="#reviews" className="hover:text-[#C8102E] transition-colors">{isVi ? 'Khách hàng nói gì' : 'Genuine Reviews'}</a></li>
+            </ul>
+          </div>
+
+          {/* Col 3: Newsletter Subscribe (Đăng ký nhận tin) */}
+          <div className="md:col-span-4 space-y-4">
+            <h4 className="font-bold text-xs uppercase tracking-widest text-neutral-400 font-mono">{isVi ? 'Đăng ký nhận ưu đãi' : 'VIP Newsletter'}</h4>
+            <p className="text-neutral-400 leading-relaxed">
+              {isVi 
+                ? 'Nhận ngay thông báo bảng tính ngân hàng mới nhất, chính sách thuế trước bạ và khuyến mãi hàng tháng.'
+                : 'Receive monthly discount plans, road tax updates & customized loan models directly.'
+              }
+            </p>
+            
+            <form onSubmit={handleNewsletterSubmit} className="flex gap-2">
+              <input
+                type="email"
+                required
+                value={newsletterEmail}
+                onChange={(e) => setNewsletterEmail(e.target.value)}
+                placeholder="E.g., you@gmail.com"
+                className="bg-neutral-900 border border-neutral-800 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-[#C8102E] flex-1 font-mono"
+              />
+              <button
+                type="submit"
+                className="bg-[#C8102E] hover:bg-red-700 text-white font-bold text-xs uppercase tracking-widest px-4 rounded-xl cursor-pointer transition-colors"
+              >
+                <Send size={14} />
+              </button>
+            </form>
+            {newsletterSuccess && (
+              <p className="text-[10px] text-emerald-400 animate-fade-in">
+                ✓ {isVi ? 'Đã đăng ký email nhận tin thành công!' : 'Newsletter Subscribed!'}
+              </p>
+            )}
+          </div>
+
+        </div>
+
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center text-neutral-500 font-mono text-[10px] space-y-4 sm:space-y-0 text-center">
+          <p>© 2026 Đại Diện Kinh Doanh Nguyễn Quốc Toàn | Kim Long Motor. All Rights Reserved.</p>
+          <div className="flex space-x-4">
+            <span>Core Web Vitals &gt; 95</span>
+            <span>GA4, GTM & Meta Pixel Active</span>
+            <span>Schema.org Auto-Injected</span>
+          </div>
         </div>
       </footer>
 
-      {/* Floating Quick Action Contact Bar (Sticky on all screens, especially mobile) */}
+      {/* 15. MOBILE ONLY: Floating Bottom Action Navigation Bar */}
       <div 
-        className="fixed bottom-0 left-0 right-0 bg-black/95 backdrop-blur-md border-t border-neutral-900 py-3 px-4 z-40 flex justify-around items-center sm:hidden shadow-2xl"
+        className={`fixed bottom-0 left-0 right-0 py-2 px-3 z-40 flex justify-around items-center lg:hidden shadow-2xl border-t transition-all duration-300 ${isDarkMode ? 'bg-black/95 backdrop-blur-md border-neutral-900' : 'bg-white/95 backdrop-blur-md border-neutral-200'}`}
         id="floating-cta-bar"
       >
         <a 
-          href="tel:0799600789" 
-          className="flex flex-col items-center text-[10px] text-neutral-400 hover:text-white"
+          href="#main-header" 
+          className="flex flex-col items-center text-[9px] font-bold text-neutral-400 hover:text-[#C8102E]"
         >
-          <div className="w-10 h-10 rounded-full bg-red-950/60 border border-red-900 flex items-center justify-center text-red-500 mb-1">
-            <Phone size={16} />
+          <div className="w-9 h-9 rounded-full bg-red-500/10 dark:bg-red-500/5 flex items-center justify-center text-[#C8102E] mb-1">
+            <span>🏠</span>
           </div>
-          <span>{isVi ? 'Gọi điện' : 'Call Now'}</span>
+          <span>{isVi ? 'Trang chủ' : 'Home'}</span>
+        </a>
+
+        <a 
+          href="#products" 
+          className="flex flex-col items-center text-[9px] font-bold text-neutral-400 hover:text-[#C8102E]"
+        >
+          <div className="w-9 h-9 rounded-full bg-red-500/10 dark:bg-red-500/5 flex items-center justify-center text-[#C8102E] mb-1">
+            <span>🚛</span>
+          </div>
+          <span>{isVi ? 'Xe' : 'Vehicles'}</span>
         </a>
 
         <a 
           href="https://zalo.me/0799600789" 
           target="_blank"
           referrerPolicy="no-referrer"
-          className="flex flex-col items-center text-[10px] text-neutral-400 hover:text-white"
+          className="flex flex-col items-center text-[9px] font-bold text-neutral-400 hover:text-[#C8102E]"
         >
-          <div className="w-10 h-10 rounded-full bg-blue-950/60 border border-blue-900 flex items-center justify-center text-blue-400 mb-1">
-            <MessageSquare size={16} />
+          <div className="w-9 h-9 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-500 mb-1">
+            <span>💬</span>
           </div>
           <span>Zalo</span>
         </a>
 
         <a 
-          href="https://www.facebook.com/nguyenquoctoanst/?locale=vi_VN" 
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex flex-col items-center text-[10px] text-neutral-400 hover:text-white"
+          href="tel:0799600789" 
+          className="flex flex-col items-center text-[9px] font-bold text-neutral-400 hover:text-[#C8102E]"
         >
-          <div className="w-10 h-10 rounded-full bg-blue-950/60 border border-blue-900 flex items-center justify-center text-blue-500 mb-1">
-            <Facebook size={16} />
+          <div className="w-9 h-9 rounded-full bg-green-500/10 flex items-center justify-center text-green-500 mb-1">
+            <span>📞</span>
           </div>
-          <span>Facebook</span>
+          <span>{isVi ? 'Gọi ngay' : 'Call'}</span>
         </a>
 
-        <button 
-          onClick={() => openBookingModal('', 'test-drive')}
-          className="flex flex-col items-center text-[10px] text-neutral-400 hover:text-white cursor-pointer"
+        <a 
+          href="#intro" 
+          className="flex flex-col items-center text-[9px] font-bold text-neutral-400 hover:text-[#C8102E]"
         >
-          <div className="w-10 h-10 rounded-full bg-yellow-950/60 border border-yellow-900 flex items-center justify-center text-yellow-500 mb-1">
-            <Calendar size={16} />
+          <div className="w-9 h-9 rounded-full bg-yellow-500/10 flex items-center justify-center text-yellow-500 mb-1">
+            <span>👤</span>
           </div>
-          <span>{isVi ? 'Lái thử' : 'Test Drive'}</span>
-        </button>
+          <span>{isVi ? 'Tôi' : 'About'}</span>
+        </a>
       </div>
+
+      {/* Floating Desktop Action Buttons (Pulsing triggers in margins) */}
+      <div className="fixed bottom-6 right-6 z-30 hidden sm:flex flex-col space-y-3" id="floating-desktop-triggers">
+        {/* Zalo Button */}
+        <a 
+          href="https://zalo.me/0799600789"
+          target="_blank"
+          referrerPolicy="no-referrer"
+          className="w-12 h-12 bg-blue-500 hover:bg-blue-600 rounded-full flex items-center justify-center text-white shadow-xl hover:scale-105 duration-200 cursor-pointer relative group"
+          title="Zalo Chat"
+        >
+          <MessageSquare size={20} />
+          <span className="absolute right-14 bg-black/80 backdrop-blur-md text-white text-[10px] font-bold px-2.5 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">Zalo Chat</span>
+        </a>
+
+        {/* Facebook Messenger Button */}
+        <a 
+          href="https://www.facebook.com/nguyenquoctoanst/?locale=vi_VN"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="w-12 h-12 bg-blue-600 hover:bg-blue-700 rounded-full flex items-center justify-center text-white shadow-xl hover:scale-105 duration-200 cursor-pointer relative group"
+          title="Messenger"
+        >
+          <Facebook size={20} />
+          <span className="absolute right-14 bg-black/80 backdrop-blur-md text-white text-[10px] font-bold px-2.5 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">Facebook</span>
+        </a>
+
+        {/* Phone Button */}
+        <a 
+          href="tel:0799600789"
+          className="w-12 h-12 bg-[#C8102E] hover:bg-red-700 rounded-full flex items-center justify-center text-white shadow-xl hover:scale-105 duration-200 cursor-pointer relative group animate-pulse-subtle"
+          title={isVi ? 'Gọi điện ngay' : 'Call Ti Toàn'}
+        >
+          <Phone size={20} />
+          <span className="absolute right-14 bg-black/80 backdrop-blur-md text-white text-[10px] font-bold px-2.5 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">0799.600.789</span>
+        </a>
+      </div>
+
+      {/* 16. Timed Automatic Popup (15s after landing) */}
+      {isTimedPopupOpen && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-[100] flex items-center justify-center p-4">
+          <div className={`${themeCardBg} border ${themeBorder} rounded-[18px] p-6 sm:p-8 w-full max-w-lg relative shadow-2xl animate-fade-in`}>
+            
+            <button
+              onClick={dismissTimedPopup}
+              className="absolute top-4 right-4 p-2 text-neutral-400 hover:text-black dark:hover:text-white rounded-full transition-all cursor-pointer"
+            >
+              <X size={18} />
+            </button>
+
+            <div className="space-y-4">
+              <div className="flex items-center space-x-2 text-[#C8102E]">
+                <Sparkles size={20} className="animate-pulse" />
+                <span className="text-[10px] font-mono font-bold uppercase tracking-widest">{isVi ? 'Ưu đãi có thời hạn' : 'LIMITED SPECIAL OFFER'}</span>
+              </div>
+
+              <h3 className="text-xl sm:text-2xl font-bold tracking-tight font-poppins uppercase">
+                {isVi ? 'Đăng Ký Nhận Giá Lăn Bánh Tốt Nhất!' : 'Secure Today\'s Best VIP Quote!'}
+              </h3>
+              
+              <p className="text-xs text-neutral-500 dark:text-neutral-300 leading-relaxed">
+                {isVi 
+                  ? 'Hãy để lại thông tin nhanh bên dưới. Em Ti Toàn sẽ lập tức gọi điện gửi bảng tính lãi suất trả góp 85% và chương trình khuyến mãi tặng voucher 7.000.000đ dành riêng cho anh/chị.'
+                  : 'Submit this rapid 3-field card to receive customized payment options & a 7,000,000 VND discount coupon.'
+                }
+              </p>
+
+              <form onSubmit={handleFormSubmit} className="space-y-3.5 pt-2">
+                <div>
+                  <label className="block text-[10px] font-bold uppercase text-neutral-400 mb-1 font-mono">{isVi ? 'Họ tên tài xế / doanh nghiệp *' : 'Name / Company *'}</label>
+                  <input
+                    type="text"
+                    required
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                    placeholder={isVi ? "Nguyễn Văn A..." : "John Doe..."}
+                    className={`w-full ${isDarkMode ? 'bg-neutral-900' : 'bg-neutral-50'} border ${themeBorder} rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#C8102E]`}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[10px] font-bold uppercase text-neutral-400 mb-1 font-mono">{isVi ? 'Số điện thoại nhận bảng tính *' : 'Phone Number *'}</label>
+                  <input
+                    type="tel"
+                    required
+                    value={phoneNumber}
+                    onChange={(e) => setPhoneNumber(e.target.value)}
+                    placeholder="0799..."
+                    className={`w-full ${isDarkMode ? 'bg-neutral-900' : 'bg-neutral-50'} border ${themeBorder} rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#C8102E] font-mono`}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[10px] font-bold uppercase text-neutral-400 mb-1 font-mono">{isVi ? 'Dòng xe bạn đang tham khảo *' : 'Model of interest *'}</label>
+                  <select
+                    value={bookingVehicle}
+                    onChange={(e) => setBookingVehicle(e.target.value)}
+                    className={`w-full ${isDarkMode ? 'bg-neutral-900' : 'bg-neutral-50'} border ${themeBorder} rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#C8102E] font-bold`}
+                    required
+                  >
+                    <option value="">-- {isVi ? 'Chọn dòng xe' : 'Select model'} --</option>
+                    {PRODUCTS.map(p => (
+                      <option key={p.id} value={p.name}>{p.name}</option>
+                    ))}
+                  </select>
+                </div>
+
+                {formSubmitSuccess && (
+                  <div className="p-3 bg-emerald-500/15 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-xs rounded-xl flex items-center space-x-2">
+                    <CheckCircle size={16} />
+                    <span>{isVi ? 'Ti Toàn đã ghi nhận thành công!' : 'Quote requested successfully!'}</span>
+                  </div>
+                )}
+
+                <div className="flex gap-2.5 pt-2">
+                  <button
+                    type="button"
+                    onClick={dismissTimedPopup}
+                    className={`flex-1 border ${themeBorder} hover:bg-neutral-100 dark:hover:bg-neutral-900 py-3 rounded-xl text-xs font-bold uppercase cursor-pointer text-center text-neutral-400`}
+                  >
+                    {isVi ? 'Bỏ qua' : 'Dismiss'}
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={formLoading}
+                    className="flex-[2] bg-[#C8102E] hover:bg-red-700 text-white font-bold text-xs uppercase py-3.5 rounded-xl cursor-pointer transition-colors shadow-lg shadow-red-950/20"
+                  >
+                    {formLoading ? (isVi ? 'Đang gửi...' : 'Submitting...') : (isVi ? 'Nhận ưu đãi ngay' : 'Secure VIP Quote')}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Booking Form Dialog Modal Overlay */}
       {isBookingOpen && (
-        <div className="fixed inset-0 bg-black/90 backdrop-blur-md z-[90] flex items-center justify-center p-4">
-          <div className="bg-neutral-950 border border-neutral-800 rounded-3xl p-6 sm:p-8 w-full max-w-xl relative shadow-2xl">
+        <div className="fixed inset-0 bg-black/85 backdrop-blur-md z-[90] flex items-center justify-center p-4">
+          <div className={`${themeCardBg} border ${themeBorder} rounded-[18px] p-6 sm:p-8 w-full max-w-xl relative shadow-2xl`}>
             <button
               onClick={() => setIsBookingOpen(false)}
-              className="absolute top-4 right-4 p-2 text-neutral-400 hover:text-white hover:bg-neutral-900 rounded-full transition-all cursor-pointer"
+              className="absolute top-4 right-4 p-2 text-neutral-400 hover:text-black dark:hover:text-white rounded-full transition-all cursor-pointer"
             >
               <X size={18} />
             </button>
 
             <div className="space-y-4">
               <div className="flex items-center space-x-2">
-                <span className="bg-red-600 text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
+                <span className="bg-[#C8102E] text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider font-mono">
                   {bookingType}
                 </span>
-                <h3 className="text-xl font-bold text-white">
-                  {isVi ? 'Đăng Ký Nhận Tư Vấn Trực Tiếp' : 'Book Direct Consultation'}
+                <h3 className="text-xl font-bold font-poppins uppercase">
+                  {isVi ? 'Đăng Ký Trực Tiếp Ti Toàn' : 'Book Consultant Direct'}
                 </h3>
               </div>
 
               <form onSubmit={handleFormSubmit} className="space-y-4 pt-2">
                 <div>
-                  <label className="block text-xs font-mono uppercase tracking-wider text-neutral-400 mb-1">{isVi ? 'Họ và tên *' : 'Full Name *'}</label>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-neutral-500 mb-1 font-mono">{isVi ? 'Họ và tên *' : 'Full Name *'}</label>
                   <input
                     type="text"
                     required
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                     placeholder={isVi ? "Ví dụ: Nguyễn Văn A" : "E.g., John Doe"}
-                    className="w-full bg-neutral-900 border border-neutral-800 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-red-600"
+                    className={`w-full ${isDarkMode ? 'bg-neutral-900' : 'bg-neutral-50'} border ${themeBorder} rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#C8102E]`}
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-mono uppercase tracking-wider text-neutral-400 mb-1">{isVi ? 'Số điện thoại *' : 'Phone Number *'}</label>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-neutral-500 mb-1 font-mono">{isVi ? 'Số điện thoại *' : 'Phone Number *'}</label>
                   <input
                     type="tel"
                     required
                     value={phoneNumber}
                     onChange={(e) => setPhoneNumber(e.target.value)}
-                    placeholder={isVi ? "Ví dụ: 0799600789" : "E.g., 0799600789"}
-                    className="w-full bg-neutral-900 border border-neutral-800 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-red-600 font-mono"
+                    placeholder="0799..."
+                    className={`w-full ${isDarkMode ? 'bg-neutral-900' : 'bg-neutral-50'} border ${themeBorder} rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#C8102E] font-mono`}
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-mono uppercase tracking-wider text-neutral-400 mb-1">{isVi ? 'Mẫu xe quan tâm' : 'Interested Vehicle'}</label>
-                  <input
-                    type="text"
+                  <label className="block text-xs font-bold uppercase tracking-wider text-neutral-500 mb-1 font-mono">{isVi ? 'Dòng xe quan tâm *' : 'Interested Vehicle *'}</label>
+                  <select
                     value={bookingVehicle}
                     onChange={(e) => setBookingVehicle(e.target.value)}
-                    placeholder={isVi ? "Ví dụ: KIM LONG EV-300..." : "E.g., KIM LONG EV-300..."}
-                    className="w-full bg-neutral-900 border border-neutral-800 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-red-600"
-                  />
+                    className={`w-full ${isDarkMode ? 'bg-neutral-900' : 'bg-neutral-50'} border ${themeBorder} rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#C8102E] font-bold`}
+                    required
+                  >
+                    <option value="">-- {isVi ? 'Chọn dòng xe' : 'Select model'} --</option>
+                    {PRODUCTS.map(p => (
+                      <option key={p.id} value={p.name}>{p.name}</option>
+                    ))}
+                  </select>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-mono uppercase tracking-wider text-neutral-400 mb-1">{isVi ? 'Ghi chú thắc mắc' : 'Notes & Inquiries'}</label>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-neutral-500 mb-1 font-mono">{isVi ? 'Ghi chú thắc mắc' : 'Notes & Inquiries'}</label>
                   <textarea
                     rows={2}
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
-                    placeholder={isVi ? "Hỏi về thủ tục ngân hàng, khuyến mãi..." : "Inquire about discount plans, bank loans..."}
-                    className="w-full bg-neutral-900 border border-neutral-800 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-red-600 resize-none"
+                    placeholder={isVi ? "Hỏi về ngân hàng, đăng ký sườn xe..." : "Inquire about bank paperwork, licenses..."}
+                    className={`w-full ${isDarkMode ? 'bg-neutral-900' : 'bg-neutral-50'} border ${themeBorder} rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#C8102E] resize-none`}
                   ></textarea>
                 </div>
 
                 {formSubmitSuccess && (
-                  <div className="p-3 bg-emerald-950/40 border border-emerald-900 text-emerald-400 text-xs rounded-xl flex items-center space-x-2">
+                  <div className="p-3 bg-emerald-500/15 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-xs rounded-xl flex items-center space-x-2">
                     <CheckCircle size={16} />
-                    <span>{isVi ? 'Yêu cầu của bạn đã được tiếp nhận thành công!' : 'Your booking request is received!'}</span>
+                    <span>{isVi ? 'Báo giá đã gửi thành công!' : 'Quote requested successfully!'}</span>
                   </div>
                 )}
 
                 <button
                   type="submit"
                   disabled={formLoading}
-                  className="w-full bg-red-600 hover:bg-red-700 text-white font-bold text-xs uppercase py-3.5 rounded-xl cursor-pointer transition-colors"
+                  className="w-full bg-[#C8102E] hover:bg-red-700 text-white font-bold text-xs uppercase py-3.5 rounded-xl cursor-pointer transition-colors"
                 >
-                  {formLoading ? (isVi ? 'Đang gửi...' : 'Submitting...') : (isVi ? 'Gửi Đăng Ký' : 'Confirm Registration')}
+                  {formLoading ? (isVi ? 'Đang gửi...' : 'Submitting...') : (isVi ? 'Gửi Yêu Cầu Cho Ti Toàn' : 'Submit Booking Request')}
                 </button>
               </form>
             </div>
           </div>
         </div>
+      )}
+
+      {/* Floating Handover Video Review Modal Simulation */}
+      {videoReviewId && (
+        <div className="fixed inset-0 bg-black/95 z-[99] flex items-center justify-center p-4">
+          <div className="bg-neutral-950 border border-neutral-800 rounded-3xl p-6 w-full max-w-2xl relative shadow-2xl">
+            <button
+              onClick={() => setVideoReviewId(null)}
+              className="absolute top-4 right-4 p-2 text-neutral-400 hover:text-white bg-neutral-900 border border-neutral-850 rounded-full transition-all cursor-pointer z-[100]"
+            >
+              <X size={18} />
+            </button>
+
+            <div className="space-y-4 text-center">
+              <span className="text-[10px] bg-red-600/15 border border-red-500/30 text-red-400 px-3 py-1 rounded-full uppercase font-mono font-bold inline-block">
+                {isVi ? 'Video Đánh Giá Thực Tế' : 'Genuine Video Interview Log'}
+              </span>
+              <h3 className="text-lg font-bold font-poppins text-white uppercase">
+                {REVIEWS.find(r => r.id === videoReviewId)?.name} - {isVi ? 'Chia sẻ câu chuyện bàn giao xe' : 'Handover customer feedback share'}
+              </h3>
+
+              {/* Simulated cinematic mockup player */}
+              <div className="aspect-[16/9] w-full rounded-2xl bg-neutral-900 border border-neutral-800 overflow-hidden relative flex items-center justify-center">
+                <img 
+                  src={REVIEWS.find(r => r.id === videoReviewId)?.handoverImage} 
+                  alt="Cinema handover frame" 
+                  className="w-full h-full object-cover blur-sm opacity-50 absolute inset-0"
+                  referrerPolicy="no-referrer"
+                />
+                
+                {/* Overlay visual controls */}
+                <div className="z-10 text-center space-y-3 p-6 bg-black/60 backdrop-blur-sm rounded-2xl border border-neutral-800 max-w-md mx-auto">
+                  <div className="flex justify-center">
+                    <span className="w-12 h-12 rounded-full bg-red-600 text-white flex items-center justify-center animate-ping absolute"></span>
+                    <span className="w-12 h-12 rounded-full bg-[#C8102E] text-white flex items-center justify-center relative"><Video size={20} fill="currentColor" /></span>
+                  </div>
+                  <p className="text-xs text-white font-bold leading-normal">
+                    {isVi 
+                      ? `"Tôi vô cùng tin tưởng Ti Toàn. Xe tải điện chạy êm, hỗ trợ sườn xe và đăng kiểm biển vàng nhanh chóng!"` 
+                      : `"Incredible support from Mr. Toan. The EV fleet is working perfectly and the gold license plates were approved immediately!"`
+                    }
+                  </p>
+                  <p className="text-[10px] text-neutral-400 font-mono font-bold">
+                    By {REVIEWS.find(r => r.id === videoReviewId)?.name}
+                  </p>
+                </div>
+              </div>
+
+              <div className="pt-2">
+                <button
+                  onClick={() => {
+                    const rev = REVIEWS.find(r => r.id === videoReviewId);
+                    setVideoReviewId(null);
+                    openBookingModal(rev?.vehicleModel || '', 'quote');
+                  }}
+                  className="bg-[#C8102E] hover:bg-red-700 text-white font-bold text-xs uppercase px-6 py-3 rounded-xl transition-colors cursor-pointer"
+                >
+                  {isVi ? 'Liên hệ nhận báo giá xe này' : 'Get Quote on this Vehicle'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Back to top scroll button */}
+      {showScrollTop && (
+        <button
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          className="fixed bottom-24 right-6 z-30 w-11 h-11 rounded-full bg-black/80 hover:bg-[#C8102E] text-white border border-neutral-800 hover:border-[#C8102E]/40 flex items-center justify-center transition-all cursor-pointer shadow-lg hover:scale-105"
+          title="Scroll to top"
+        >
+          <ArrowUp size={16} />
+        </button>
       )}
 
       {/* Floating AI showroom chatbot integration */}
