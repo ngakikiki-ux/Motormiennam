@@ -45,6 +45,57 @@ if (!fs.existsSync(LEADS_FILE_PATH)) {
 }
 
 // API: Capture Customer Lead
+async function sendTelegramMessage(lead: any) {
+  const botToken = process.env.TELEGRAM_BOT_TOKEN;
+  const chatId = process.env.TELEGRAM_CHAT_ID;
+
+  if (!botToken || !chatId) {
+    console.log('Telegram integration is not fully configured (TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID is missing). Skipping Telegram notification.');
+    return;
+  }
+
+  const { fullName, phoneNumber, email, selectedProduct, leadType, notes } = lead;
+  
+  const leadTypeName = leadType === 'test-drive' 
+    ? 'Lái thử xe' 
+    : leadType === 'quote' 
+      ? 'Nhận báo giá' 
+      : 'Liên hệ chung';
+
+  const messageText = `🔔 <b>YÊU CẦU LIÊN HỆ MỚI (TI TOÀN)</b>\n` +
+    `----------------------------------------\n` +
+    `👤 <b>Khách hàng:</b> ${fullName}\n` +
+    `📞 <b>Điện thoại:</b> <code>${phoneNumber}</code>\n` +
+    `📧 <b>Email:</b> ${email || 'Không có'}\n` +
+    `🚗 <b>Dòng xe quan tâm:</b> ${selectedProduct || 'Không xác định'}\n` +
+    `📝 <b>Hình thức:</b> ${leadTypeName}\n` +
+    `💬 <b>Lời nhắn:</b> ${notes || 'Không có'}\n` +
+    `----------------------------------------\n` +
+    `📅 <b>Thời gian:</b> ${new Date().toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' })} (Giờ VN)`;
+
+  try {
+    const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: chatId,
+        text: messageText,
+        parse_mode: 'HTML'
+      })
+    });
+
+    if (!response.ok) {
+      const errText = await response.text();
+      console.error(`Telegram API response error: ${response.status} - ${errText}`);
+    } else {
+      console.log('Contact request successfully forwarded to Telegram.');
+    }
+  } catch (error) {
+    console.error('Failed to send message to Telegram:', error);
+  }
+}
+
 app.post('/api/leads', (req, res) => {
   const { fullName, phoneNumber, email, selectedProduct, leadType, notes } = req.body;
   
@@ -67,6 +118,11 @@ app.post('/api/leads', (req, res) => {
 
   leads.unshift(newLead);
   const success = writeLeadsToFile(leads);
+
+  // Send notification to Telegram asynchronously
+  sendTelegramMessage(newLead).catch(err => {
+    console.error('Async error forwarding to Telegram:', err);
+  });
 
   if (success) {
     return res.json({ success: true, lead: newLead });
