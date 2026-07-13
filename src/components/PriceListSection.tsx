@@ -421,7 +421,9 @@ export default function PriceListSection({
 
     // 3. Fuel filter
     if (filterFuel !== 'all') {
-      const isElec = item.maLoai.toLowerCase().includes('ev') || item.dongCoQuyCach.toLowerCase().includes('điện');
+      const isElec = (item.maLoai.toLowerCase().includes('ev') || item.dongCoQuyCach.toLowerCase().includes('điện')) && 
+                     !item.dongCoQuyCach.toLowerCase().includes('phun điện tử') && 
+                     !item.maLoai.toLowerCase().includes('kiman');
       if (filterFuel === 'electric' && !isElec) return false;
       if (filterFuel === 'diesel' && isElec) return false;
     }
@@ -501,11 +503,14 @@ export default function PriceListSection({
           <div className="lg:col-span-9 space-y-6">
             
             {/* ADVANCED MULTI-SELECT FILTER PANEL */}
-            <div className={`p-6 rounded-[20px] ${cardBg} border shadow-lg space-y-4 text-left`}>
+            <div className={`p-4 sm:p-6 rounded-[20px] ${cardBg} border shadow-lg space-y-4 text-left`}>
               <div className="flex items-center justify-between border-b pb-3 border-neutral-100 dark:border-neutral-900">
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2">
                   <Filter size={16} className="text-[#C8102E]" />
                   <span className="text-xs font-bold uppercase tracking-wider font-poppins">{isVi ? 'Bộ Lọc Thông Minh' : 'Advanced Filters'}</span>
+                  <span className="bg-[#C8102E]/10 text-[#C8102E] text-[10px] font-bold px-2 py-0.5 rounded-full font-mono">
+                    {filteredData.length} {isVi ? 'kết quả' : 'results'}
+                  </span>
                 </div>
                 <button 
                   onClick={() => {
@@ -522,7 +527,7 @@ export default function PriceListSection({
               </div>
 
               {/* Grid of filters requested: Vehicle Type, Price, Payload, Fuel */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
                 
                 {/* 1. Vehicle Type */}
                 <div className="space-y-1.5">
@@ -614,7 +619,9 @@ export default function PriceListSection({
                 </div>
               ) : (
                 filteredData.map((row, index) => {
-                  const isElectric = row.maLoai.toLowerCase().includes('ev') || row.dongCoQuyCach.toLowerCase().includes('điện');
+                  const isElectric = (row.maLoai.toLowerCase().includes('ev') || row.dongCoQuyCach.toLowerCase().includes('điện')) && 
+                                     !row.dongCoQuyCach.toLowerCase().includes('phun điện tử') && 
+                                     !row.maLoai.toLowerCase().includes('kiman');
                   const numericPrice = typeof row.giaCongBo === 'number' ? row.giaCongBo : 0;
                   
                   return (
@@ -684,11 +691,16 @@ export default function PriceListSection({
                       {/* Right: Installment & Pricing & Button */}
                       <div className="flex flex-col sm:flex-row sm:items-center gap-4 shrink-0 border-t md:border-t-0 pt-3 md:pt-0 border-neutral-100 dark:border-neutral-900">
                         {/* Installment Badge */}
-                        <div className="text-left sm:text-right space-y-1">
+                        <div className="text-left sm:text-right space-y-1 max-w-[200px]">
                           <span className="text-[9px] font-mono font-bold text-amber-600 dark:text-amber-500 bg-amber-500/5 dark:bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/10 block w-fit sm:ml-auto">
                             {getCardInstallment(row.giaCongBo)}
                           </span>
-                          <span className="text-[8px] text-neutral-400 block uppercase font-bold tracking-wider">{isVi ? 'GIÁ CÔNG BỐ (VAT):' : 'MSRP (VAT):'}</span>
+                          <span className="text-[7.5px] text-neutral-400 dark:text-neutral-500 block leading-tight text-left sm:text-right font-light">
+                            {isVi 
+                              ? 'Khoản trả góp chỉ mang tính tham khảo, phụ thuộc giá trị vay, thời hạn vay, lãi suất và hồ sơ khách hàng.'
+                              : 'Installments are references only, subject to final credit profile, bank rates, and approved terms.'}
+                          </span>
+                          <span className="text-[8px] text-neutral-400 block uppercase font-bold tracking-wider pt-1">{isVi ? 'GIÁ CÔNG BỐ (VAT):' : 'MSRP (VAT):'}</span>
                           <span className="text-[#C8102E] font-black font-poppins text-lg block leading-none">
                             {numericPrice > 0 ? `${new Intl.NumberFormat('vi-VN').format(numericPrice)} VNĐ` : (isVi ? 'Liên hệ' : 'Contact')}
                           </span>
@@ -717,7 +729,7 @@ export default function PriceListSection({
               <ul className="list-disc pl-5 space-y-1.5 font-light">
                 <li>
                   {isVi 
-                    ? 'Giá niêm yết công bố ở trên đã bao gồm thuế giá trị gia tăng (VAT) 10% nhưng chưa bao gồm các lệ phí lăn bánh lăn bánh như lệ phí trước bạ, chi phí biển số, bảo hiểm, phí dịch vụ đăng ký, đăng kiểm.' 
+                    ? 'Giá niêm yết công bố ở trên đã bao gồm thuế giá trị gia tăng (VAT) 10% nhưng chưa bao gồm các lệ phí lăn bánh như lệ phí trước bạ, chi phí biển số, bảo hiểm, phí dịch vụ đăng ký, đăng kiểm.' 
                     : 'All listed MSRP prices include 10% VAT tax but exclude licensing, registration service fees, road tax, and insurance plans.'}
                 </li>
                 <li>

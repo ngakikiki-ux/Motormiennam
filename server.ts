@@ -242,7 +242,21 @@ app.get('/sitemap.xml', (req, res) => {
   const urlPrefix = host.startsWith('http') ? host : `https://${host}`;
   const currentDate = new Date().toISOString().split('T')[0];
 
-  const products = ['ev-300', 'star-x', 'king-m', 'heavy-d', 'prime-t', 'solati-m', 'cruiser-bus'];
+  const products = [
+    'gk48ev',
+    'ev-300',
+    'kiman9-199',
+    'kiman9-249',
+    'king-m',
+    'heavy-d',
+    'prime-t',
+    'x9-van',
+    'kimlong-x9',
+    'kimlong-99n29',
+    'kimlong-29n35',
+    'kimlong-99n47',
+    'kimlong-99g34'
+  ];
   const news = ['news-1', 'news-2', 'news-3'];
 
   let xml = `<?xml version="1.0" encoding="UTF-8"?>
