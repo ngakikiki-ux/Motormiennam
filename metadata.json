@@ -1,6 +1,6 @@
 {
   "name": "Kim Long Motor Miền Nam",
-  "description": "Landing page tư vấn và nhận báo giá xe Kim Long Motor Miền Nam của Ti Toàn",
+  "description": "Đại lý xe điện Kim Long Motor Miền Nam",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

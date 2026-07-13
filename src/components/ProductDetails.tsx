@@ -126,7 +126,7 @@ export default function ProductDetails({ product, language, onClose, onOpenBooki
                 alt={`${product.name} 360`} 
                 width="640"
                 height="400"
-                className="max-h-[80%] max-w-[90%] object-contain pointer-events-none transition-all duration-150"
+                className="max-h-[80%] max-w-[90%] object-contain pointer-events-none transition-all duration-150 image-render-sharp"
                 referrerPolicy="no-referrer"
                 onError={(event) => {
                   event.currentTarget.onerror = null;
@@ -152,7 +152,7 @@ export default function ProductDetails({ product, language, onClose, onOpenBooki
                 alt={product.name} 
                 width="800"
                 height="500"
-                className="w-full h-full object-cover transition-all duration-700 group-hover:scale-102" 
+                className="w-full h-full object-cover transition-all duration-700 group-hover:scale-102 image-render-sharp" 
                 referrerPolicy="no-referrer"
                 onError={(event) => {
                   event.currentTarget.onerror = null;
@@ -510,8 +510,14 @@ export default function ProductDetails({ product, language, onClose, onOpenBooki
               src={angles[activeImageIdx]} 
               alt={product.name} 
               style={{ transform: `scale(${zoomScale})` }}
-              className="max-h-[90%] max-w-[90%] object-contain transition-transform duration-200 pointer-events-none"
+              width="1280"
+              height="800"
+              className="max-h-[90%] max-w-[90%] object-contain transition-transform duration-200 pointer-events-none image-render-sharp"
               referrerPolicy="no-referrer"
+              onError={(event) => {
+                event.currentTarget.onerror = null;
+                event.currentTarget.src = "/images/vehicles/vehicle-placeholder.svg";
+              }}
             />
           </div>
         </div>

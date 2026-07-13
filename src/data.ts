@@ -7,10 +7,14 @@ export const PRODUCTS: Product[] = [
     categoryVi: 'Xe tải điện',
     categoryEn: 'Electric Trucks',
     name: 'GK48EV VAN EV',
-    image: 'https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?auto=format&fit=crop&q=80&w=800',
+    image: 'https://i.postimg.cc/PPMzRmgZ/z8037501120914-2faebe91272b43e77e2c6ad4b553228e.jpg',
     gallery: [
-      'https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?auto=format&fit=crop&q=80&w=800',
-      'https://images.unsplash.com/photo-1516594798947-e65505dbb29d?auto=format&fit=crop&q=80&w=800'
+      'https://i.postimg.cc/PPMzRmgZ/z8037501120914-2faebe91272b43e77e2c6ad4b553228e.jpg',
+      'https://i.postimg.cc/pmXYbmvT/z8037501126671-b66920a955877cd4dc80c3ce039ae9b5.jpg',
+      'https://i.postimg.cc/BjQc9j3n/z8037501132221-35f7f5d09b904d32222ec9d419b6dd28.jpg',
+      'https://i.postimg.cc/685LJ8KQ/z8037501133790-d3f55ab60a628f86cbd489429005c0c9.jpg',
+      'https://i.postimg.cc/fVTjnVsx/z8037501138598-3316d91bae10adcb5ed1aac548f2788a.jpg',
+      'https://i.postimg.cc/5XNqdXJ8/z8037501142028-3fe815054efbf1969f3183d069e3c246.jpg'
     ],
     priceVi: '480.000.000 VNĐ (Tặng 7tr)',
     priceEn: '480,000,000 VND (7M Promo)',
@@ -253,10 +257,9 @@ export const PRODUCTS: Product[] = [
     categoryVi: 'Minibus & Van',
     categoryEn: 'Minibus & Van',
     name: 'KIM LONG X9 VAN',
-    image: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&q=80&w=800',
+    image: 'https://i.postimg.cc/hfwxwpCt/z8037506928203-062afbad3ad1ddb9645f8baa99e90eca.jpg',
     gallery: [
-      'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&q=80&w=800',
-      'https://images.unsplash.com/photo-1557223562-6c77ef16210f?auto=format&fit=crop&q=80&w=800'
+      'https://i.postimg.cc/hfwxwpCt/z8037506928203-062afbad3ad1ddb9645f8baa99e90eca.jpg'
     ],
     priceVi: '530.000.000 VNĐ',
     priceEn: '530,000,000 VND',

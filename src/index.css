@@ -76,6 +76,16 @@
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
   }
+
+  /* Crisp, high-definition rendering for vehicles */
+  .image-render-sharp {
+    image-rendering: -webkit-optimize-contrast; /* Safari */
+    image-rendering: crisp-edges;               /* Firefox */
+    image-rendering: pixelated;                 /* Chrome / Edge */
+    backface-visibility: hidden;                /* Avoid flickering */
+    transform: translateZ(0);                  /* Hardware acceleration */
+    filter: contrast(1.01) saturate(1.02);
+  }
 }
 
 /* Base HTML Smooth Scroll behavior */
