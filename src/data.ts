@@ -75,10 +75,12 @@ export const PRODUCTS: Product[] = [
     categoryVi: 'Xe tải nhẹ',
     categoryEn: 'Light Trucks',
     name: 'KIM LONG KIMAN9 (1.99T)',
-    image: 'https://images.unsplash.com/photo-1591768793355-74d75b51a55d?auto=format&fit=crop&q=80&w=800',
+    image: '/images/vehicles/kiman9-199t-thung-kin.webp',
     gallery: [
-      'https://images.unsplash.com/photo-1591768793355-74d75b51a55d?auto=format&fit=crop&q=80&w=800',
-      'https://images.unsplash.com/photo-1506306813292-261595f32a0c?auto=format&fit=crop&q=80&w=800'
+      '/images/vehicles/kiman9-199t-thung-kin.webp',
+      '/images/vehicles/kiman9-199t-mui-bat-5b.webp',
+      '/images/vehicles/kiman9-199t-thung-lung.webp',
+      '/images/vehicles/kiman9-199t-chassis.webp'
     ],
     priceVi: 'Từ 336.000.000 VNĐ',
     priceEn: 'From 336,000,000 VND',
@@ -111,10 +113,12 @@ export const PRODUCTS: Product[] = [
     categoryVi: 'Xe tải nhẹ',
     categoryEn: 'Light Trucks',
     name: 'KIM LONG KIMAN9 (2.49T)',
-    image: 'https://images.unsplash.com/photo-1591768793355-74d75b51a55d?auto=format&fit=crop&q=80&w=800',
+    image: '/images/vehicles/kiman9-249t-thung-kin.webp',
     gallery: [
-      'https://images.unsplash.com/photo-1591768793355-74d75b51a55d?auto=format&fit=crop&q=80&w=800',
-      'https://images.unsplash.com/photo-1506306813292-261595f32a0c?auto=format&fit=crop&q=80&w=800'
+      '/images/vehicles/kiman9-249t-thung-kin.webp',
+      '/images/vehicles/kiman9-249t-mui-bat-5b.webp',
+      '/images/vehicles/kiman9-249t-thung-lung.webp',
+      '/images/vehicles/kiman9-249t-chassis.webp'
     ],
     priceVi: 'Từ 389.000.000 VNĐ',
     priceEn: 'From 389,000,000 VND',
@@ -663,7 +667,7 @@ export const REVIEWS: ReviewItem[] = [
     commentVi: 'Mua xe tải nhẹ KIMAN9 của Ti Toàn làm tôi cực kỳ an tâm. Lúc xe gặp sự cố nhỏ trên đường đèo lúc đêm muộn, gọi điện em ấy vẫn nhấc máy hướng dẫn tận tình và điều đội cứu hộ lưu động đến xử lý ngay lập tức. Làm việc cực kỳ có trách nhiệm.',
     commentEn: 'Buying the KIMAN9 truck from Ti Toàn gave me absolute peace of mind. When I had a small glitch on a mountain pass late at night, he picked up right away and dispatched mobile rescue service to solve it. Immensely responsible.',
     avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=200',
-    handoverImage: 'https://images.unsplash.com/photo-1591768793355-74d75b51a55d?auto=format&fit=crop&q=80&w=800',
+    handoverImage: '/images/vehicles/kiman9-199t-thung-kin.webp',
     vehicleModel: 'KIM LONG KIMAN9 (1.99T)'
   },
   {

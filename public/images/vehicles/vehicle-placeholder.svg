@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="100%" height="100%">
+  <!-- Clean soft grey/blue background -->
+  <rect width="100%" height="100%" fill="#F5F7FA"/>
+  
+  <!-- Red elegant top accent bar -->
+  <rect width="100%" height="6" fill="#C8102E"/>
+  
+  <!-- Stylized cargo truck icon -->
+  <g transform="translate(315, 110)" fill="#9CA3AF">
+    <!-- Main cargo body -->
+    <rect x="5" y="15" width="110" height="70" rx="4" fill="#9CA3AF"/>
+    <!-- Cab -->
+    <path d="M117 35h25c8 0 13 5 15 13l5 15c1 3 1 12 1 12h-46V35z" fill="#788291"/>
+    <!-- Cab Window -->
+    <path d="M122 40h12l4 12h-16V40z" fill="#E5E7EB"/>
+    <!-- Wheels -->
+    <circle cx="35" cy="95" r="16" fill="#1F2937"/>
+    <circle cx="35" cy="95" r="7" fill="#E5E7EB"/>
+    <circle cx="85" cy="95" r="16" fill="#1F2937"/>
+    <circle cx="85" cy="95" r="7" fill="#E5E7EB"/>
+    <circle cx="135" cy="95" r="16" fill="#1F2937"/>
+    <circle cx="135" cy="95" r="7" fill="#E5E7EB"/>
+    <!-- Headlight -->
+    <circle cx="158" cy="70" r="4" fill="#FBBF24"/>
+    <!-- Under-line -->
+    <rect x="0" y="85" width="170" height="4" fill="#374151" rx="2"/>
+  </g>
+  
+  <!-- Typography -->
+  <text x="400" y="295" font-family="system-ui, -apple-system, sans-serif" font-size="28" font-weight="900" fill="#16324F" text-anchor="middle" letter-spacing="1">
+    KIM LONG MOTOR
+  </text>
+  
+  <text x="400" y="340" font-family="system-ui, -apple-system, sans-serif" font-size="20" font-weight="800" fill="#C8102E" text-anchor="middle" letter-spacing="2">
+    ẢNH XE ĐANG CẬP NHẬT
+  </text>
+  
+  <text x="400" y="385" font-family="system-ui, -apple-system, sans-serif" font-size="15" font-weight="600" fill="#4B5563" text-anchor="middle">
+    Hotline tư vấn và báo giá lăn bánh: 0799.600.789
+  </text>
+  
+  <text x="400" y="415" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="500" fill="#9CA3AF" text-anchor="middle">
+    Đại diện kinh doanh Ti Toàn hỗ trợ hồ sơ vay 85%
+  </text>
+</svg>

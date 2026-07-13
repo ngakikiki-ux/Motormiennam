@@ -124,8 +124,14 @@ export default function ProductDetails({ product, language, onClose, onOpenBooki
               <img 
                 src={angles[spinIndex]} 
                 alt={`${product.name} 360`} 
+                width="640"
+                height="400"
                 className="max-h-[80%] max-w-[90%] object-contain pointer-events-none transition-all duration-150"
                 referrerPolicy="no-referrer"
+                onError={(event) => {
+                  event.currentTarget.onerror = null;
+                  event.currentTarget.src = "/images/vehicles/vehicle-placeholder.svg";
+                }}
               />
               
               <div className="absolute top-4 left-4 bg-red-600/10 border border-red-500/30 rounded-full px-3 py-1 text-[9px] font-mono text-red-400 flex items-center gap-1.5 uppercase">
@@ -144,8 +150,14 @@ export default function ProductDetails({ product, language, onClose, onOpenBooki
               <img 
                 src={angles[activeImageIdx]} 
                 alt={product.name} 
+                width="800"
+                height="500"
                 className="w-full h-full object-cover transition-all duration-700 group-hover:scale-102" 
                 referrerPolicy="no-referrer"
+                onError={(event) => {
+                  event.currentTarget.onerror = null;
+                  event.currentTarget.src = "/images/vehicles/vehicle-placeholder.svg";
+                }}
               />
               
               {/* Overlay shadow gradient */}
@@ -206,7 +218,18 @@ export default function ProductDetails({ product, language, onClose, onOpenBooki
                       : 'border-neutral-800 hover:border-neutral-700'
                   }`}
                 >
-                  <img src={img} alt={`${product.name} angle ${idx}`} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                  <img 
+                    src={img} 
+                    alt={`${product.name} angle ${idx}`} 
+                    width="80"
+                    height="56"
+                    className="w-full h-full object-cover" 
+                    referrerPolicy="no-referrer" 
+                    onError={(event) => {
+                      event.currentTarget.onerror = null;
+                      event.currentTarget.src = "/images/vehicles/vehicle-placeholder.svg";
+                    }}
+                  />
                   {activeImageIdx === idx && (
                     <div className="absolute inset-0 bg-red-600/10 flex items-center justify-center">
                       <div className="w-1.5 h-1.5 bg-red-600 rounded-full"></div>

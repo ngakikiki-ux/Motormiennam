@@ -578,6 +578,7 @@ export default function App() {
         isAdminUnlocked={isAdminUnlocked}
         onOpenBooking={openBookingModal}
         onOpenAdminLogin={() => setIsAdminOpen(true)}
+        onSelectProduct={setSelectedProductId}
       />
 
       {/* 6. Product Details Drawer Overlay */}
@@ -1112,11 +1113,11 @@ export default function App() {
                       setBookingVehicle(e.target.value);
                       if (formError) setFormError('');
                     }}
-                    className="w-full bg-white text-gray-900 border border-gray-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#C8102E] transition-colors cursor-pointer font-bold shadow-sm"
+                    className="w-full bg-white dark:bg-neutral-900 text-gray-900 dark:text-white border border-gray-300 dark:border-neutral-800 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#C8102E] transition-colors cursor-pointer font-bold shadow-sm"
                   >
-                    <option value="" className="bg-white text-gray-900">-- {isVi ? 'Chọn mẫu xe' : 'Select vehicle'} --</option>
+                    <option value="" className="bg-white dark:bg-neutral-900 text-gray-900 dark:text-white">-- {isVi ? 'Chọn mẫu xe' : 'Select vehicle'} --</option>
                     {PRODUCTS.map(p => (
-                      <option key={p.id} value={p.name} className="bg-white text-gray-900">{p.name}</option>
+                      <option key={p.id} value={p.name} className="bg-white dark:bg-neutral-900 text-gray-900 dark:text-white">{p.name}</option>
                     ))}
                   </select>
                 </div>
@@ -1447,12 +1448,12 @@ export default function App() {
                           setBookingVehicle(e.target.value);
                           if (formError) setFormError('');
                         }}
-                        className="w-full bg-white text-gray-900 border border-gray-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#C8102E] font-bold shadow-sm cursor-pointer"
+                        className="w-full bg-white dark:bg-neutral-900 text-gray-900 dark:text-white border border-gray-300 dark:border-neutral-800 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#C8102E] font-bold shadow-sm cursor-pointer"
                         required
                       >
-                        <option value="" className="bg-white text-gray-900">-- {isVi ? 'Chọn dòng xe' : 'Select model'} --</option>
+                        <option value="" className="bg-white dark:bg-neutral-900 text-gray-900 dark:text-white">-- {isVi ? 'Chọn dòng xe' : 'Select model'} --</option>
                         {PRODUCTS.map(p => (
-                          <option key={p.id} value={p.name} className="bg-white text-gray-900">{p.name}</option>
+                          <option key={p.id} value={p.name} className="bg-white dark:bg-neutral-900 text-gray-900 dark:text-white">{p.name}</option>
                         ))}
                       </select>
                     </div>
@@ -1615,12 +1616,12 @@ export default function App() {
                           setBookingVehicle(e.target.value);
                           if (formError) setFormError('');
                         }}
-                        className="w-full bg-white text-gray-900 border border-gray-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#C8102E] font-bold shadow-sm cursor-pointer"
+                        className="w-full bg-white dark:bg-neutral-900 text-gray-900 dark:text-white border border-gray-300 dark:border-neutral-800 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#C8102E] font-bold shadow-sm cursor-pointer"
                         required
                       >
-                        <option value="" className="bg-white text-gray-900">-- {isVi ? 'Chọn dòng xe' : 'Select model'} --</option>
+                        <option value="" className="bg-white dark:bg-neutral-900 text-gray-900 dark:text-white">-- {isVi ? 'Chọn dòng xe' : 'Select model'} --</option>
                         {PRODUCTS.map(p => (
-                          <option key={p.id} value={p.name} className="bg-white text-gray-900">{p.name}</option>
+                          <option key={p.id} value={p.name} className="bg-white dark:bg-neutral-900 text-gray-900 dark:text-white">{p.name}</option>
                         ))}
                       </select>
                     </div>
@@ -1678,8 +1679,14 @@ export default function App() {
                 <img 
                   src={REVIEWS.find(r => r.id === videoReviewId)?.handoverImage} 
                   alt="Cinema handover frame" 
+                  width="640"
+                  height="360"
                   className="w-full h-full object-cover blur-sm opacity-50 absolute inset-0"
                   referrerPolicy="no-referrer"
+                  onError={(event) => {
+                    event.currentTarget.onerror = null;
+                    event.currentTarget.src = "/images/vehicles/vehicle-placeholder.svg";
+                  }}
                 />
                 
                 {/* Overlay visual controls */}
