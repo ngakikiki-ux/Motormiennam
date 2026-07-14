@@ -807,7 +807,11 @@ export default function PriceListSection({
                             decoding="async"
                             width="320"
                             height="200"
-                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-102"
+                            className={`w-full h-full transition-all duration-300 image-render-sharp ${
+                              group.maLoai.toLowerCase().includes('x9')
+                                ? 'object-contain bg-white p-3.5 hover:scale-[1.015]'
+                                : 'object-cover group-hover:scale-102'
+                            }`}
                             referrerPolicy="no-referrer"
                             onError={(event) => {
                               event.currentTarget.onerror = null;

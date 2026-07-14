@@ -146,13 +146,13 @@ export default function ProductDetails({ product, language, onClose, onOpenBooki
             </div>
           ) : (
             // Static / Gallery Mode
-            <div className="w-full h-full relative">
+            <div className="w-full h-full relative flex items-center justify-center bg-[#0d0d0d] p-4">
               <img 
                 src={angles[activeImageIdx]} 
                 alt={product.name} 
                 width="800"
                 height="500"
-                className="w-full h-full object-cover transition-all duration-700 group-hover:scale-102 image-render-sharp" 
+                className="max-w-full max-h-[85%] object-contain transition-all duration-700 group-hover:scale-101 image-render-sharp" 
                 referrerPolicy="no-referrer"
                 onError={(event) => {
                   event.currentTarget.onerror = null;

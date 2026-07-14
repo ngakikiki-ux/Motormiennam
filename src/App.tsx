@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { 
   Phone, MessageSquare, MapPin, Mail, Award, ShieldCheck, Check, 
   ChevronDown, User, ArrowRight, Menu, X, Truck, Calendar, 
-  ChevronRight, CheckCircle, ExternalLink, Lock
+  ChevronLeft, ChevronRight, CheckCircle, ExternalLink, Lock
 } from 'lucide-react';
 
 import { PRODUCTS } from './data';
@@ -26,6 +26,17 @@ export default function App() {
   
   // Selected product detail modal
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+
+  // Tracks active index for card image sliders
+  const [activeCardImageIndices, setActiveCardImageIndices] = useState<Record<string, number>>({});
+
+  // Tracks active index for the selected product detail modal gallery
+  const [modalImageIdx, setModalImageIdx] = useState(0);
+
+  // Reset modal image index when a product is opened
+  useEffect(() => {
+    setModalImageIdx(0);
+  }, [selectedProduct]);
 
   // Form states
   const [fullName, setFullName] = useState('');
@@ -391,17 +402,87 @@ export default function App() {
                 className="bg-white border border-neutral-200/60 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col group"
               >
                 {/* Vehicle Image section */}
-                <div className="relative aspect-[16/10] overflow-hidden bg-neutral-100">
+                <div className="relative aspect-[16/10] overflow-hidden bg-white flex items-center justify-center p-1 sm:p-2 border-b border-neutral-100">
+                  {/* Left arrow if there is a gallery with > 1 images */}
+                  {vehicle.gallery && vehicle.gallery.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        const currentIndex = activeCardImageIndices[vehicle.id] || 0;
+                        const nextIndex = (currentIndex - 1 + vehicle.gallery.length) % vehicle.gallery.length;
+                        setActiveCardImageIndices({
+                          ...activeCardImageIndices,
+                          [vehicle.id]: nextIndex,
+                        });
+                      }}
+                      className="absolute left-2.5 top-1/2 -translate-y-1/2 z-10 p-2 bg-black/60 hover:bg-black/80 text-white rounded-full transition-colors cursor-pointer shadow-md"
+                      title="Ảnh trước"
+                    >
+                      <ChevronLeft size={16} />
+                    </button>
+                  )}
+
+                  {/* Right arrow if there is a gallery with > 1 images */}
+                  {vehicle.gallery && vehicle.gallery.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        const currentIndex = activeCardImageIndices[vehicle.id] || 0;
+                        const nextIndex = (currentIndex + 1) % vehicle.gallery.length;
+                        setActiveCardImageIndices({
+                          ...activeCardImageIndices,
+                          [vehicle.id]: nextIndex,
+                        });
+                      }}
+                      className="absolute right-2.5 top-1/2 -translate-y-1/2 z-10 p-2 bg-black/60 hover:bg-black/80 text-white rounded-full transition-colors cursor-pointer shadow-md"
+                      title="Ảnh sau"
+                    >
+                      <ChevronRight size={16} />
+                    </button>
+                  )}
+
                   <img 
-                    src={vehicle.image} 
+                    src={vehicle.gallery && vehicle.gallery.length > 0 ? vehicle.gallery[activeCardImageIndices[vehicle.id] || 0] : vehicle.image} 
                     alt={vehicle.name} 
-                    className="w-full h-full object-cover group-hover:scale-101 transition-transform duration-500 image-render-sharp"
+                    className={`object-contain transition-all duration-300 image-render-sharp ${
+                      vehicle.id === 'x9-van'
+                        ? 'max-w-[88%] max-h-[88%] group-hover:scale-[1.015]'
+                        : 'max-w-[95%] max-h-[95%] group-hover:scale-[1.015]'
+                    }`}
                     loading="lazy"
                   />
                   {isElectric && (
                     <span className="absolute top-4 left-4 bg-emerald-600/90 text-white text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded">
                       Xe Tải Điện
                     </span>
+                  )}
+
+                  {/* Dot indicators */}
+                  {vehicle.gallery && vehicle.gallery.length > 1 && (
+                    <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5 bg-black/40 px-2.5 py-1.5 rounded-full backdrop-blur-sm z-10">
+                      {vehicle.gallery.map((_, idx) => {
+                        const isSelected = (activeCardImageIndices[vehicle.id] || 0) === idx;
+                        return (
+                          <button
+                            key={idx}
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setActiveCardImageIndices({
+                                ...activeCardImageIndices,
+                                [vehicle.id]: idx,
+                              });
+                            }}
+                            className={`w-1.5 h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
+                              isSelected ? 'bg-white w-3.5' : 'bg-white/40 hover:bg-white/70'
+                            }`}
+                            aria-label={`Go to slide ${idx + 1}`}
+                          />
+                        );
+                      })}
+                    </div>
                   )}
                 </div>
 
@@ -923,12 +1004,66 @@ export default function App() {
               
               {/* Image & Price */}
               <div className="grid grid-cols-1 md:grid-cols-5 gap-6 items-center">
-                <div className="md:col-span-3 aspect-[16/10] bg-neutral-100 rounded-xl overflow-hidden">
+                <div className="md:col-span-3 aspect-[16/10] bg-white rounded-xl overflow-hidden border border-neutral-100 flex items-center justify-center relative p-1 sm:p-2">
+                  {/* Left arrow if there is a gallery with > 1 images */}
+                  {selectedProduct.gallery && selectedProduct.gallery.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const nextIndex = (modalImageIdx - 1 + selectedProduct.gallery.length) % selectedProduct.gallery.length;
+                        setModalImageIdx(nextIndex);
+                      }}
+                      className="absolute left-2.5 top-1/2 -translate-y-1/2 z-10 p-2 bg-black/60 hover:bg-black/80 text-white rounded-full transition-colors cursor-pointer shadow-md"
+                      title="Ảnh trước"
+                    >
+                      <ChevronLeft size={16} />
+                    </button>
+                  )}
+
+                  {/* Right arrow if there is a gallery with > 1 images */}
+                  {selectedProduct.gallery && selectedProduct.gallery.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const nextIndex = (modalImageIdx + 1) % selectedProduct.gallery.length;
+                        setModalImageIdx(nextIndex);
+                      }}
+                      className="absolute right-2.5 top-1/2 -translate-y-1/2 z-10 p-2 bg-[#C8102E]/90 hover:bg-[#C8102E] text-white rounded-full transition-colors cursor-pointer shadow-md"
+                      title="Ảnh sau"
+                    >
+                      <ChevronRight size={16} />
+                    </button>
+                  )}
+
                   <img 
-                    src={selectedProduct.image} 
+                    src={selectedProduct.gallery && selectedProduct.gallery.length > 0 ? selectedProduct.gallery[modalImageIdx] : selectedProduct.image} 
                     alt={selectedProduct.name} 
-                    className="w-full h-full object-cover"
+                    className={`object-contain image-render-sharp transition-all duration-300 ${
+                      selectedProduct.id === 'x9-van'
+                        ? 'max-w-[88%] max-h-[88%]'
+                        : 'max-w-[95%] max-h-[95%]'
+                    }`}
                   />
+
+                  {/* Dot indicators */}
+                  {selectedProduct.gallery && selectedProduct.gallery.length > 1 && (
+                    <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5 bg-black/40 px-2.5 py-1.5 rounded-full backdrop-blur-sm z-10">
+                      {selectedProduct.gallery.map((_, idx) => {
+                        const isSelected = modalImageIdx === idx;
+                        return (
+                          <button
+                            key={idx}
+                            type="button"
+                            onClick={() => setModalImageIdx(idx)}
+                            className={`w-1.5 h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
+                              isSelected ? 'bg-white w-3.5' : 'bg-white/40 hover:bg-white/70'
+                            }`}
+                            aria-label={`Go to slide ${idx + 1}`}
+                          />
+                        );
+                      })}
+                    </div>
+                  )}
                 </div>
                 <div className="md:col-span-2 space-y-2">
                   <span className="text-[10px] text-neutral-400 font-bold uppercase block">Giá niêm yết nhà máy</span>

@@ -257,9 +257,12 @@ export const PRODUCTS: Product[] = [
     categoryVi: 'Minibus & Van',
     categoryEn: 'Minibus & Van',
     name: 'KIM LONG X9 VAN',
-    image: 'https://i.postimg.cc/hfwxwpCt/z8037506928203-062afbad3ad1ddb9645f8baa99e90eca.jpg',
+    image: 'https://i.postimg.cc/PPcZc26q/z8037506924215-aff716a2c7799a8eebf06e1138c01711.jpg',
     gallery: [
-      'https://i.postimg.cc/hfwxwpCt/z8037506928203-062afbad3ad1ddb9645f8baa99e90eca.jpg'
+      'https://i.postimg.cc/PPcZc26q/z8037506924215-aff716a2c7799a8eebf06e1138c01711.jpg',
+      'https://i.postimg.cc/9rSTSJxM/z8037506925668-0c10e1fe374f975a6c9900d6fe51205f.jpg',
+      'https://i.postimg.cc/hfwxwpCt/z8037506928203-062afbad3ad1ddb9645f8baa99e90eca.jpg',
+      'https://i.postimg.cc/BXyDyMhQ/z8037506941013-490c3df9224325a08db105ab2cb3b95f.jpg'
     ],
     priceVi: '530.000.000 VNĐ',
     priceEn: '530,000,000 VND',
